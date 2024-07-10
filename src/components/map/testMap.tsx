@@ -1,58 +1,42 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { GoogleMap, useJsApiLoader, MarkerF } from "@react-google-maps/api";
+"use client";
+import { MarkerF } from "@react-google-maps/api";
+import {
+  APIProvider,
+  Map,
+  MapCameraChangedEvent,
+  AdvancedMarker,
+} from "@vis.gl/react-google-maps";
+import { useState, useMemo, useEffect } from "react";
 import { useWebSocketData } from "../../containers/webSocketGems";
 
 interface TrackerData {
-  server_time: string;
-  tracker_time: string;
-  direction: number;
-  position: string;
-  speed: number;
-}
-
-interface WebSocketMessage {
-  status: string;
-  data: {
-    [key: string]: TrackerData;
-  };
-}
-const containerStyle: React.CSSProperties = {
-  width: "100%",
-  height: "100vh",
-};
+    server_time: string;
+    tracker_time: string;
+    direction: number;
+    position: string;
+    speed: number;
+  }
+  
+  interface WebSocketMessage {
+    status: string;
+    data: {
+      [key: string]: TrackerData;
+    };
+  }
 
 
-
-
-function Map() {
-
+export default function Maptest() {
   //เซ็ทตรงกลางแมพ
   const [center, setCenter] = useState({
     lat: 20.058851,
     lng: 99.899769,
   });
 
-
-   //โหลดแมพ ================================================
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: "",
-  });
-    const onLoad = useCallback((map: google.maps.Map) => {
-      console.log("Map loaded:", map);
-    }, []);
-  
-    const onUnmount = useCallback((map: google.maps.Map) => {
-      console.log("Map unmounted:", map);
-    }, []);
-
-
   // รับข้อมูลจาก websocket  ================================================
   const { messages } = useWebSocketData() as { messages: WebSocketMessage | null };
   const data = useMemo(() => {
     return messages && messages.status === "ok" ? messages.data : null;
   }, [messages]);
-
 
 
 
@@ -85,9 +69,6 @@ function Map() {
   }, [userLocation]);
 
 
-
-
-
   // Keep this useMemo for other markers ตำแหน่งรถเจม
   const markers = useMemo(() => {
     if (!data) return null;
@@ -96,11 +77,11 @@ function Map() {
         const [lat, lng] = value.position.split(',').map(Number);
         if (!isNaN(lat) && !isNaN(lng)) {
           return (
-            <MarkerF
+            <AdvancedMarker
               key={key}
               position={{ lat, lng }}
               title={`Tracker ${key}`}
-              label={key}
+              
             />
           );
         }
@@ -111,35 +92,24 @@ function Map() {
 
 
 
-
-  if (loadError) {
-    return <div>Error loading Google Maps API: {loadError.message}</div>;
-  }
-
-  return isLoaded ? (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={center}
-      zoom={15}
-      onLoad={onLoad}
-      onUnmount={onUnmount}
-    >
-      {markers}
-      {userLocation && (
-        <MarkerF
-          position={userLocation}
-          icon={{
-            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-          }}
-          title="Your Location"
-        />
-      )}
-    </GoogleMap>
-  ) : (
-    <div>Loading...</div>
+  return (
+    <APIProvider apiKey={""} onLoad={() => console.log("Maps API has loaded.")}>
+      <Map
+        style={{ width: "100%", height: "100vh" }}
+        defaultZoom={13}
+        mapId={'af4f705e9a1cc81f'}
+        defaultCenter={{ lat: 20.058851, lng: 99.899769 }}
+        onCameraChanged={(ev: MapCameraChangedEvent) =>
+          console.log(
+            "camera changed:",
+            ev.detail.center,
+            "zoom:",
+            ev.detail.zoom
+          )
+        }
+      >
+       {markers}
+      </Map>
+    </APIProvider>
   );
 }
-
-
-
-export default React.memo(Map);

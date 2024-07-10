@@ -1,4 +1,5 @@
 import Map from "../map/page";
+import Maptest from "../map/testMap";
 import Navbar from "../Navbar/navbar";
 
 const Mappage = () => {
@@ -7,7 +8,7 @@ const Mappage = () => {
     <>
       <div>
         <Navbar />
-        <Map />
+        <Maptest/>
       </div>
     </>
   );
