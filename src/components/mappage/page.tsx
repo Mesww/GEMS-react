@@ -1,7 +1,8 @@
 import Map from "../map/page";
-import Navbar from "../navbar";
+import Navbar from "../Navbar/navbar";
 
 const Mappage = () => {
+
   return (
     <>
       <div>

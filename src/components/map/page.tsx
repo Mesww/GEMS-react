@@ -1,48 +1,84 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import { useWebSocketData } from "../../containers/webSocketGems"; // Import the hook
 
-const containerStyle = {
+interface TrackerData {
+  server_time: string;
+  tracker_time: string;
+  direction: number;
+  position: string;
+  speed: number;
+}
+
+
+interface WebSocketMessage {
+  status: string;
+  data: {
+    [key: string]: TrackerData;
+  };
+}
+
+const containerStyle: React.CSSProperties = {
   width: "100%",
   height: "100vh",
 };
 
 function Map() {
   const [center, setCenter] = useState({
-    lat: 0,
-    lng: 0,
+    lat: 20.058851,
+    lng: 99.899769,
   });
+  const { messages } = useWebSocketData() as unknown as { messages: WebSocketMessage | null };
+
   const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyAHprdF-rZKc98_eI15rpU6l2-yhG7HKM4",
   });
 
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCenter({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      console.log("Geolocation is not available");
-    }
-  }, []);
+  // Use useMemo to derive data from messages
+  const data = useMemo(() => {
+    return messages && messages.status === "ok" ? messages.data : null;
+  }, [messages]);
 
-  const onLoad = React.useCallback(function callback(map: any) {
-    // Optional: Do something when map is loaded
+  // Update center when data changes
+  // useEffect(() => {
+  //   if (data) {
+  //     const firstTracker = Object.values(data)[0];
+  //     if (firstTracker && firstTracker.position) {
+  //       const [lat, lng] = firstTracker.position.split(',').map(Number);
+  //       setCenter({ lat, lng });
+  //     }
+  //   }
+  // }, [data]);
+
+  const onLoad = useCallback((map: google.maps.Map) => {
     console.log("Map loaded:", map);
   }, []);
 
-  const onUnmount = React.useCallback(function callback(map: any) {
-    // Optional: Do something when map is unmounted
+  const onUnmount = useCallback((map: google.maps.Map) => {
     console.log("Map unmounted:", map);
   }, []);
+
+  // Memoize markers to prevent unnecessary re-renders
+  const markers = useMemo(() => {
+    if (!data) return null;
+    return Object.entries(data).map(([key, value]) => {
+      if (value && value.position) {
+        const [lat, lng] = value.position.split(',').map(Number);
+        if (!isNaN(lat) && !isNaN(lng)) {
+          return (
+            <Marker
+              key={key}
+              position={{ lat, lng }}
+              title={`Tracker ${key}`}
+              label={key}
+            />
+          );
+        }
+      }
+      return null;
+    });
+  }, [data]);
 
   if (loadError) {
     return <div>Error loading Google Maps API: {loadError.message}</div>;
@@ -56,8 +92,7 @@ function Map() {
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
-      {/* Marker for current position */}
-      <Marker position={center} />
+      {markers}
     </GoogleMap>
   ) : (
     <div>Loading...</div>
