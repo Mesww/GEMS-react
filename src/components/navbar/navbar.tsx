@@ -9,7 +9,6 @@ const Navbar = () => {
         <div>1</div>
         <img src={gemlogo} alt="logo" className='   w-14 ' />
         <div>1</div>
-        
       </div>
     </nav>
   );
