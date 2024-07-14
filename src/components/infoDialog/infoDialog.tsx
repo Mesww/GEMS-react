@@ -37,6 +37,7 @@ const InfoDialog = () => {
   }, [messages]);
 
   const closestBusData = useClosestBus(location, data);
+  
 
   return (
     <>
@@ -56,13 +57,19 @@ const InfoDialog = () => {
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"
         }`}
       >
-        <div className="bg-white rounded-xl shadow-lg py-6 px-10 h-48 w-96 relative">
+        <div className="bg-white rounded-xl shadow-lg py-6 px-10 h-60 w-96 relative">
           <div className="title flex justify-between justify-center item-center">
             <p className="flex ">
               <img src={gemlogo} alt="logo" className="w-10" />
               Gem {closestBusData.busId}
             </p>
-            <p>ระยะห่างจากคุณ: {closestBusData.distance?.toFixed(2)} km</p>
+            {closestBusData.eta && closestBusData.eta > 0 ? (
+              <span className="pl-8">
+                รถจะถึงในอีก {closestBusData.eta.toFixed(2)} นาที
+              </span>
+            ) : (
+              <span className="pl-4">รถจะถึงในอีก ? นาที</span>
+            )}
           </div>
 
           <div className="divider">
@@ -91,17 +98,14 @@ const InfoDialog = () => {
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              <span className="text-white font-semibold pl-9">ตำแหน่งของคุณ</span>
+              <span className="text-white font-semibold pl-9">
+                ตำแหน่งของคุณ
+              </span>
             </div>
           </div>
 
           <div className="between flex items-center pl-8">
             <div className="h-10 border-l border-black"></div>
-            {closestBusData.eta && closestBusData.eta > 0 ? (
-            <span className="pl-8">จะถึงในอีก {closestBusData.eta.toFixed(2)} นาที</span>
-          ) : (
-            <span className="pl-4"> ไม่สามารถคำนวนได้ หรือ รถไม่ได้ขยับ</span>
-          )}
           </div>
 
           <div className="destination subtitle flex justify-center items-center">
