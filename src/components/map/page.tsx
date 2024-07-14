@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import MapComponant from "./mapComponent";
 import Navbar from "../navbar/navbar";
-
-
+import InfoDialog from "../infoDialog/infoDialog";
 const Mappage = () => {
   const [cookies, setCookie] = useCookies(["token"]);
   const navigate = useNavigate();
@@ -20,6 +19,7 @@ const Mappage = () => {
 
   return (
     <>
+      <InfoDialog/>
       <Navbar />
       <MapComponant />
     </>
