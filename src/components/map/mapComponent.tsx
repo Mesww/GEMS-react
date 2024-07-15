@@ -8,6 +8,7 @@ import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsW
 import { useCallback, useMemo, useState } from "react";
 import React from "react";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
+import StationMarker from "./stationmarker";
 
 const MAPID = import.meta.env.VITE_MAPID;
 
@@ -110,6 +111,12 @@ const MapComponant = () => {
     });
   }, [data, handleMarkerClick, selectedMarker, handleInfoWindowClose]);
 
+  const stationmarkers = {
+    "status": "ok",
+    "data": {
+      "1": {"position":"20.046209, 99.893234"},
+    }
+  }
 
   return (
     <>
@@ -124,6 +131,12 @@ const MapComponant = () => {
         />
         {/* markerรถเจม */}
         {markers}
+        {/* station markers */}
+  <StationMarker
+    position={stationmarkers}
+    selectedMarker={selectedstationMarker}
+    setSelectedMarker={setselectedstationMarker}
+  />
       </APIProvider>
     </>
   );
