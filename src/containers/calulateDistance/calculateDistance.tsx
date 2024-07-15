@@ -73,6 +73,67 @@ const useClosestBus = (
 
   return closestBus;
 };
+// find bus that closest station ==================================================================================================
+interface StationData {
+  lat: number;
+  lng: number;
+}
+
+const useCloseststation = (
+  busData: BusData | null,
+  stationData: StationData | null
+): ClosestBusResult => {
+  const [closestBus, setClosestBus] = useState<ClosestBusResult>({
+    busId: null,
+    distance: null,
+    busInfo: null,
+    eta: null,
+  });
+
+  useEffect(() => {
+    if (busData && stationData) {
+      let minDistance = Infinity;
+      let closestStationId = null;
+      let closestStationInfo = null;
+      let eta = null;
+
+      for (const [stationId, stationInfo] of Object.entries(stationData)) {
+        const [stationLat, stationLng] = stationInfo.position.split(',').map(Number);
+        const distance = calculateDistance(
+          stationData.lat,
+          stationData.lng,
+          stationLat,
+          stationLng
+        );
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestStationId = stationId;
+          closestStationInfo = stationInfo;
+          
+          // Calculate ETA
+          if (stationInfo.speed > 0) {
+            // Convert speed from km/h to km/min
+            const speedKmPerMin = stationInfo.speed / 60;
+            // Calculate ETA in minutes
+            eta = distance / speedKmPerMin;
+          } else {
+            eta = null; // Bus is not moving
+          }
+        }
+      }
+
+      setClosestStation({
+        stationId: closestStationId,
+        distance: minDistance,
+        stationInfo: closestStationInfo,
+        eta: eta,
+      });
+    }
+  }, [userLocation, stationData]);
+
+  return closestStation;
+}
+
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371; // Radius of the Earth in kilometers
