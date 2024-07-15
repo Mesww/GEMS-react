@@ -1,10 +1,11 @@
 @import '../../App'
 $animationlogoTime: 1.75s
+$animationlogoDegree: rotate(360deg)
+
 $animationcontentTime: 1.75s
 .navbar
   transition: $animationcontentTime
   background-color: $primarycolor
-
   &.navbar-close
     right: 40%
     left:  40%
@@ -18,5 +19,14 @@ $animationcontentTime: 1.75s
       opacity: 0
       display: none
     .logo
-      transition: $animationlogoTime
-      transform: rotate(720deg)
+      transition: $animationcontentTime
+      transform: $animationlogoDegree
+
+@keyframes spin 
+  from 
+    transform: $animationlogoDegree
+  to 
+    transform: rotate(0deg)
+  
+.logo.spin 
+  animation: spin $animationlogoTime   
