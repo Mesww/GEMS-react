@@ -8,7 +8,7 @@ import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsW
 import { useCallback, useMemo, useState } from "react";
 import React from "react";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
-import StationMarker from "./stationmarker";
+import StationMarker from "./stationMarker";
 
 const MAPID = import.meta.env.VITE_MAPID;
 
@@ -50,8 +50,6 @@ const MapComponant = () => {
   // ตำแหน่งของผู้ใช้งาน  ================================================
   const location = useUserLocation();
 
-
-  
   // markers รถเจม ==================================================================================================
   // เซ็ท marker ที่เลือก
   const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(
@@ -111,12 +109,31 @@ const MapComponant = () => {
     });
   }, [data, handleMarkerClick, selectedMarker, handleInfoWindowClose]);
 
+  // station markers mock ==================================================================================================
   const stationmarkers = {
-    "status": "ok",
-    "data": {
-      "1": {"position":"20.046209, 99.893234"},
-    }
+    status: "ok",
+    data: {
+      "1": { position: "20.046209, 99.893234" },
+    },
+  };
+  // ==================================================================================================
+
+  // interface SelectedMarker ==================================================================================================
+  interface SelectedstationMarker {
+    key: string;
+    value: TrackerstatioData;
   }
+  interface TrackerstatioData {
+    position: string;
+  }
+  // ==================================================================================================
+
+  // set selected station markers=================================================================================================
+  const [selectedstationMarker, setselectedstationMarker] =
+    useState<SelectedstationMarker | null>(null);
+  // ==================================================================================================
+
+
 
   return (
     <>
@@ -131,12 +148,14 @@ const MapComponant = () => {
         />
         {/* markerรถเจม */}
         {markers}
+
         {/* station markers */}
-  <StationMarker
-    position={stationmarkers}
-    selectedMarker={selectedstationMarker}
-    setSelectedMarker={setselectedstationMarker}
-  />
+        <StationMarker
+          position={stationmarkers}
+          selectedMarker={selectedstationMarker}
+          setSelectedMarker={setselectedstationMarker}
+          setCenter={setCenter}
+        />
       </APIProvider>
     </>
   );
