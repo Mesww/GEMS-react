@@ -4,17 +4,25 @@ import { useState } from 'react';
 
 const Navbar = () => {
     const [isAnimating, setIsAnimating] = useState(false);
+    const [activeContent, setActiveContent] = useState(null);
 
     const handleLogoClick = () => {
         setIsAnimating(prevState => !prevState);
     };
 
+    const handleContentClick = (contentId: any) => {
+        setActiveContent(prevContentId => prevContentId === contentId ? null : contentId);
+    };
+
+
     return (
-        <nav className={`navbar fixed bottom-5 left-0 right-0 z-50 rounded-full ${isAnimating ? 'navbar-close' : ''}`}>
-            <div className="px-4 flex items-center h-14 navbar-wrapper">
-                <div className={`content ${isAnimating ? 'center-content' : ''}`}>1</div>
-                <img src={gemlogo} alt="logo" className={`mx-auto logo w-20 ${isAnimating ? '' : 'spin'}`} onClick={handleLogoClick} />
-                <div className={`content ${isAnimating ? 'center-content' : ''}`}>1</div>
+        <nav className={`navbar fixed bottom-5 left-0 rounded-full right-0 z-50 ${isAnimating ? '' : 'navbar-close'}`}>
+            <div className="px-10 flex items-center h-14 navbar-wrapper">
+                <div className={`content ${activeContent === 'content1' ? 'selected' : ''}`}  onClick={() => handleContentClick('content1')}>1</div>
+                <div className={`content ${activeContent === 'content2' ? 'selected' : ''}`}  onClick={() => handleContentClick('content2')}>1</div>
+                <img src={gemlogo} alt="logo" className={` logo w-20 ${isAnimating ? '' : 'spin'}`} onClick={handleLogoClick} />
+                <div className={`content  ${activeContent === 'route1' ? 'selected' : ''} `}  onClick={() => handleContentClick('route1')}>1</div>
+                <div className={`content  ${activeContent === 'route2' ? 'selected' : ''}`}  onClick={() => handleContentClick('route2')}>2</div>
             </div>
         </nav>
     );
