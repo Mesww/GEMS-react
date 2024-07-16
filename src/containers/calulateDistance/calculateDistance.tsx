@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
 
-interface BusInfo {
+ interface BusInfo {
   direction: number;
   position: string;
   server_time: string;
   speed: number;
   tracker_time: string;
 }
-
-interface BusData {
+ interface BusData {
   [key: string]: BusInfo;
 }
 
-interface ClosestBusResult {
+export interface ClosestBusResult {
   busId: string | null;
   distance: number | null;
   busInfo: BusInfo | null;
@@ -38,6 +37,7 @@ const useClosestBus = (
       let eta = null;
 
       for (const [busId, busInfo] of Object.entries(busData)) {
+       
         const [busLat, busLng] = busInfo.position.split(',').map(Number);
         const distance = calculateDistance(
           userLocation.lat,
@@ -73,15 +73,16 @@ const useClosestBus = (
 
   return closestBus;
 };
+
 // find bus that closest station ==================================================================================================
-interface StationData {
+export interface StationData {
   lat: number;
   lng: number;
 }
 
-const useCloseststation = (
-  busData: BusData | null,
-  stationData: StationData | null
+export const useCloseststation = (
+  stationLocation: StationData | null,
+  busData: BusData | null
 ): ClosestBusResult => {
   const [closestBus, setClosestBus] = useState<ClosestBusResult>({
     busId: null,
@@ -91,29 +92,29 @@ const useCloseststation = (
   });
 
   useEffect(() => {
-    if (busData && stationData) {
+    if (stationLocation && busData) {
       let minDistance = Infinity;
-      let closestStationId = null;
-      let closestStationInfo = null;
+      let closestBusId = null;
+      let closestBusInfo = null;
       let eta = null;
 
-      for (const [stationId, stationInfo] of Object.entries(stationData)) {
-        const [stationLat, stationLng] = stationInfo.position.split(',').map(Number);
+      for (const [busId, busInfo] of Object.entries(busData)) {
+        const [busLat, busLng] = busInfo.position.split(',').map(Number);
         const distance = calculateDistance(
-          stationData.lat,
-          stationData.lng,
-          stationLat,
-          stationLng
+          stationLocation.lat,
+          stationLocation.lng,
+          busLat,
+          busLng
         );
-        if (distance < minDistance) {
+        if (distance < minDistance && busInfo.speed > 0) {
           minDistance = distance;
-          closestStationId = stationId;
-          closestStationInfo = stationInfo;
+          closestBusId = busId;
+          closestBusInfo = busInfo;
           
           // Calculate ETA
-          if (stationInfo.speed > 0) {
+          if (busInfo.speed > 0) {
             // Convert speed from km/h to km/min
-            const speedKmPerMin = stationInfo.speed / 60;
+            const speedKmPerMin = busInfo.speed / 60;
             // Calculate ETA in minutes
             eta = distance / speedKmPerMin;
           } else {
@@ -122,17 +123,18 @@ const useCloseststation = (
         }
       }
 
-      setClosestStation({
-        stationId: closestStationId,
+      setClosestBus({
+        busId: closestBusId,
         distance: minDistance,
-        stationInfo: closestStationInfo,
+        busInfo: closestBusInfo,
         eta: eta,
       });
     }
-  }, [userLocation, stationData]);
+  }, [stationLocation, busData]);
 
-  return closestStation;
-}
+  return closestBus;
+};
+
 
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
