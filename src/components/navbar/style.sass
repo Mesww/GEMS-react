@@ -1,8 +1,8 @@
 @import '../../App'
 $animationlogoTime: 1.75s
 $animationlogoDegree: rotate(360deg)
-
 $animationcontentTime: 1.75s
+
 .navbar
   transition: $animationcontentTime
   background-color: $primaryColorLight
@@ -24,6 +24,8 @@ $animationcontentTime: 1.75s
    -webkit-user-select: none
    font-weight: bold
    transition: opacity $animationcontentTime
+  .spin
+    animation: spin $animationlogoTime  
   .content:hover
     cursor: pointer
     background-color: $primaryColorDark
@@ -48,15 +50,19 @@ $animationcontentTime: 1.75s
       pointer-events: none
       // display: none
     .logo
-      transition: $animationcontentTime
-      transform: $animationlogoDegree
-      margin:0 auto 0 auto
+      animation: spininvert $animationlogoTime
+      margin: 0 auto 0 auto
 
 @keyframes spin 
   from 
     transform: $animationlogoDegree
   to 
     transform: rotate(0deg)
+
+@keyframes spininvert
+  from
+    transform: rotate(0deg)   
+  to
+    transform: $animationlogoDegree
   
-.logo.spin 
-  animation: spin $animationlogoTime   
+

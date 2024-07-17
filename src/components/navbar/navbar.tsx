@@ -20,7 +20,7 @@ const Navbar = () => {
             <div className="px-10 flex items-center h-14 navbar-wrapper">
                 <div className={`content ${activeContent === 'content1' ? 'selected' : ''}`}  onClick={() => handleContentClick('content1')}>1</div>
                 <div className={`content ${activeContent === 'content2' ? 'selected' : ''}`}  onClick={() => handleContentClick('content2')}>1</div>
-                <img src={gemlogo} alt="logo" className={` logo w-20 ${isAnimating ? '' : 'spin'}`} onClick={handleLogoClick} />
+                <img src={gemlogo} alt="logo" className={` logo w-20 `} onClick={handleLogoClick} />
                 <div className={`content  ${activeContent === 'route1' ? 'selected' : ''} `}  onClick={() => handleContentClick('route1')}>1</div>
                 <div className={`content  ${activeContent === 'route2' ? 'selected' : ''}`}  onClick={() => handleContentClick('route2')}>2</div>
             </div>
