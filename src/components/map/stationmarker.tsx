@@ -88,9 +88,9 @@ const StationMarker: React.FC<{
                   <InfoWindow
                     position={{ lat, lng }}
                     onCloseClick={handleInfoWindowClose}
+                    headerContent={`ป้ายหมายเลข ${key}`}
                   >
                     <div>
-                      <h3>{`ป้ายหมายเลข ${key}`}</h3>
                       <p>รถ GEMS หมายเลข {closestBus.busId} จะถึงภายในอีก { closestBus.eta !== null ? closestBus.eta.toFixed(2) : "?" } นาที</p>
                     </div>
                   </InfoWindow>
