@@ -67,10 +67,10 @@ const StationMarker: React.FC<{
 
   return (
     <>
-      {Object.entries(position.data).map(([key, value]) => {
+     {Object.entries(position.data).map(([key, value]) => {
         if (value && value.position) {
           const [lat, lng] = value.position.split(",").map(Number);
-          if (!isNaN(lat) && !isNaN(lng)) {
+          if (!isNaN(lat) && !isNaN(lng) && window.google && window.google.maps) {
             return (
               <React.Fragment key={key}>
                 <Marker
@@ -79,18 +79,18 @@ const StationMarker: React.FC<{
                   onClick={() => handleMarkerClick(key, value)}
                   icon={{
                     url: "src/assets/busStopYellow.png",
-                    scaledSize: new window.google.maps.Size(32, 36), // Adjusted size as needed
-                    origin: new window.google.maps.Point(0, 0), // The origin point of the icon image (usually top-left)
-                    anchor: new window.google.maps.Point(16, 18), // The anchor point of the icon image (center bottom for 64x36)
+                    scaledSize: window.google.maps.Size ? new window.google.maps.Size(32, 36) : null,
+                    origin: window.google.maps.Point ? new window.google.maps.Point(0, 0) : null,
+                    anchor: window.google.maps.Point ? new window.google.maps.Point(16, 18) : null,
                   }}
                 />
                 {closestBus && selectedMarker && selectedMarker.key === key && (
                   <InfoWindow
                     position={{ lat, lng }}
                     onCloseClick={handleInfoWindowClose}
-                    headerContent={`ป้ายหมายเลข ${key}`}
                   >
                     <div>
+                      <h3>{`ป้ายหมายเลข ${key}`}</h3>
                       <p>รถ GEMS หมายเลข {closestBus.busId} จะถึงภายในอีก { closestBus.eta !== null ? closestBus.eta.toFixed(2) : "?" } นาที</p>
                     </div>
                   </InfoWindow>

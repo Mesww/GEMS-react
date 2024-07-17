@@ -47,8 +47,44 @@ const MapComponant = () => {
     return messages && messages.status === "ok" ? messages.data : null;
   }, [messages]);
 
+
+
   // ตำแหน่งของผู้ใช้งาน  ================================================
+  const [isOpen, setIsOpen] = useState(true);
   const location = useUserLocation();
+  const userMarker = useMemo(() => {
+    if (location && location.lat && location.lng && window.google && window.google.maps) {
+      return (
+        <>
+          <Marker
+            key="user-location"
+            position={{ lat: location.lat, lng: location.lng }}
+            title="Your Location"
+            onClick={() =>{ setIsOpen(true);
+              
+            }}
+            icon={{
+              url: "src/assets/userIcon.png",
+              scaledSize: window.google.maps.Size ? new window.google.maps.Size(22, 20) : null,
+              origin: window.google.maps.Point ? new window.google.maps.Point(0, 0) : null,
+              anchor: window.google.maps.Point ? new window.google.maps.Point(11, 10) : null,
+            }}
+          />
+          {isOpen && (
+            <InfoWindow
+              position={{ lat: location.lat, lng: location.lng }}
+              onCloseClick={() => setIsOpen(false)}
+              headerContent={`คุณอยู่ตรงนี้`}
+            >
+            </InfoWindow>
+          )}
+        </>
+      );
+    }
+    return null;
+  }, [location, isOpen]);
+
+
 
   // markers รถเจม ==================================================================================================
   // เซ็ท marker ที่เลือก
@@ -109,6 +145,8 @@ const MapComponant = () => {
     });
   }, [data, handleMarkerClick, selectedMarker, handleInfoWindowClose]);
 
+
+
   // station markers mock ==================================================================================================
   const stationmarkers1 = {
     status: "ok",
@@ -168,6 +206,9 @@ const MapComponant = () => {
         />
         {/* markerรถเจม */}
         {markers}
+
+        {/* marker ผู้ใช้งาน */}
+        {userMarker}
 
         {/* station markers */}
         <StationMarker
