@@ -8,7 +8,7 @@ import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsW
 import { useCallback, useMemo, useState } from "react";
 import React from "react";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
-import StationMarker from "./stationMarker";
+import StationMarker from "./stationmarker";
 
 const MAPID = import.meta.env.VITE_MAPID;
 
