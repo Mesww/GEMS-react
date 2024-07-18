@@ -88,9 +88,9 @@ const StationMarker: React.FC<{
                   onClick={() => handleMarkerClick(key, value)}
                   icon={{
                     url: urlMarker,
-                    scaledSize: window.google.maps.Size ? new window.google.maps.Size(32, 36) : null,
+                    scaledSize: window.google.maps.Size ? new window.google.maps.Size(54, 54) : null,
                     origin: window.google.maps.Point ? new window.google.maps.Point(0, 0) : null,
-                    anchor: window.google.maps.Point ? new window.google.maps.Point(16, 18) : null,
+                    anchor: window.google.maps.Point ? new window.google.maps.Point(27, 27) : null,
                   }}
                   // icon={iconMarker}
                 />

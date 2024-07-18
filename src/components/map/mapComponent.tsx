@@ -175,7 +175,7 @@ const MapComponant: React.FC<{
       "21": { position: "20.058966957817436, 99.8995173298247" }
     },
   };
-  const urlMarker1 = "src/assets/busStopYellow.png";
+  const urlMarker1 = "src/assets/station1.png";
   const stationmarkers2 = {
     status: "ok",
     data: {
@@ -201,7 +201,7 @@ const MapComponant: React.FC<{
       "20": { position: "20.058966957817436, 99.8995173298247" }
     },
   };
-  const urlMarker2 = "src/assets/busStopRed.png";
+  const urlMarker2 = "src/assets/station2.png";
 
   // ==================================================================================================
 
