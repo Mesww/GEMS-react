@@ -82,7 +82,7 @@ const MapComponant: React.FC<{
 
   
   // ตำแหน่งของผู้ใช้งาน  ================================================
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const location = useUserLocation();
   const userMarker = useMemo(() => {
     if (location && location.lat && location.lng && window.google && window.google.maps) {
@@ -467,7 +467,7 @@ const MapComponant: React.FC<{
 
         <PolylineComponent
           path={polylinePath}
-          color={selectedRoute === "route1" ? "#FFD700" : "#FF0000"} 
+          color={selectedRoute === "route1" ? "#8b090c" : "#e2b644"} 
         />
       </APIProvider>
     </>
