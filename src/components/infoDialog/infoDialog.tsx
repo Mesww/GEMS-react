@@ -3,6 +3,7 @@ import useClosestBus from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import gemlogo from "../../assets/Screenshot_2567-07-10_at_12.04.25-removebg.png";
+import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -36,9 +37,42 @@ const InfoDialog = () => {
     return messages && messages.status === "ok" ? messages.data : null;
   }, [messages]);
 
-  const closestBusData = useClosestBus(location, data);
   
+  
+  // ClostestStation =========================================================
+  // station markers mock ==================================================================================================
+  const stationmarkers1 = {
+    status: "ok",
+    data: {
+      "1": { position: "20.058752, 99.898396" },
+      "2": { position: "20.057039, 99.896930" },
+      "3": { position: "20.054683, 99.894515" },
+      "4": { position: "20.052544, 99.892316" },
+      "5": { position: "20.050816843021277, 99.89121969349162" },
+      "6": { position: "20.049137353450433, 99.891250485570452" },
+      "7": { position: "20.048193, 99.893221" },
+      "8": { position: "20.047264832318994, 99.89314563095694" },
+      "9": { position: "20.045503, 99.891442" },
+      "10": { position: "20.043881444753783, 99.89348617576454" },
+      "11": { position: "20.043919609786567, 99.89490923095694" },
+      "12": { position: "20.043311336533844, 99.89529707515575" },
+      "13": { position: "20.043845538331563, 99.8934754469289" },
+      "14": { position: "20.045659393241642, 99.89133178188165" },
+      "15": { position: "20.049391118491396, 99.89111283095696" },
+      "16": { position: "20.05083048583872, 99.89115650886787" },
+      "17": { position: "20.052689636083315, 99.89234180090831" },
+      "18": { position: "20.05473222049373, 99.89448019896511" },
+      "19": { position: "20.056897650552507, 99.89711855304603" },
+      "20": { position: "20.05806378447924, 99.89787541746388" },
+      "21": { position: "20.058966957817436, 99.8995173298247" }
+    },
+  };
 
+  
+  const closestBusData = useClosestBus(location, data);
+  const closestStation = useNearestStation(stationmarkers1.data, location); 
+  
+  
   return (
     <>
       {/* Show button */}
@@ -98,8 +132,8 @@ const InfoDialog = () => {
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              <span className="text-white font-semibold pl-9">
-                ตำแหน่งของคุณ
+              <span className="text-white font-semibold pl-2">
+                <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.id} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p>
               </span>
             </div>
           </div>
