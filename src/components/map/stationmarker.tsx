@@ -20,6 +20,13 @@ interface SelectedMarker {
   value: TrackerData;
 }
 
+// export interface IconMarker {
+//   url: string;
+//   scaledSize?: google.maps.Size;
+//   origin?: google.maps.Point;
+//   anchor?: google.maps.Point;
+// }
+
 const StationMarker: React.FC<{
   position: FetchData;
   selectedMarker: SelectedMarker | null;
@@ -29,8 +36,10 @@ const StationMarker: React.FC<{
       lat: number;
       lng: number;
     }>
+  
   >;
-}> = ({ position, selectedMarker, setSelectedMarker, setCenter }) => {
+  urlMarker: string;
+}> = ({ position, selectedMarker, setSelectedMarker, setCenter,urlMarker }) => {
   const [stationLocation, setStationLocation] = useState<StationData | null>(null);
 
   // Receive data from websocket
@@ -78,11 +87,12 @@ const StationMarker: React.FC<{
                   title={`ป้ายหมายเลข: ${key}`}
                   onClick={() => handleMarkerClick(key, value)}
                   icon={{
-                    url: "src/assets/busStopYellow.png",
+                    url: urlMarker,
                     scaledSize: window.google.maps.Size ? new window.google.maps.Size(32, 36) : null,
                     origin: window.google.maps.Point ? new window.google.maps.Point(0, 0) : null,
                     anchor: window.google.maps.Point ? new window.google.maps.Point(16, 18) : null,
                   }}
+                  // icon={iconMarker}
                 />
                 {closestBus && selectedMarker && selectedMarker.key === key && (
                   <InfoWindow
@@ -97,6 +107,8 @@ const StationMarker: React.FC<{
                 )}
               </React.Fragment>
             );
+          }else{
+            console.log("window.google.maps not found...");
           }
         }
         return null;
