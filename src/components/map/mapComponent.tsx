@@ -323,8 +323,12 @@ const MapComponant: React.FC<{
     if (!data) return null;
     let filteredData = Object.entries(data);
 
+    if (selectedRoute === 'route1') {
+      filteredData = filteredData.filter(([key]) => key === "01" || key === "02" || key === "03" || key === "04" || key === "05" || key === "07" || key === "09" || key === "10" || key === "11" || key === "12" || key === "13" || key === "14" || key === "15");
+    }
+
     if (selectedRoute === 'route2') {
-      filteredData = filteredData.filter(([key]) => key === "05" || key === "06");
+      filteredData = filteredData.filter(([key]) => key === "06" || key === "08" || key === "16");
     }
 
     return filteredData.map(([key, value]) => {
