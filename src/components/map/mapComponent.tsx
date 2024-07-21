@@ -362,7 +362,7 @@ const MapComponant: React.FC<{
       }
       return null;
     });
-  }, [data, handleMarkerClick, selectedMarker, handleInfoWindowClose]);
+  }, [data, handleMarkerClick, selectedMarker, handleInfoWindowClose, selectedRoute]);
 
 
 
