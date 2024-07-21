@@ -321,7 +321,13 @@ const MapComponant: React.FC<{
   // Keep this useMemo for other markers ตำแหน่งรถเจม
   const markers = useMemo(() => {
     if (!data) return null;
-    return Object.entries(data).map(([key, value]) => {
+    let filteredData = Object.entries(data);
+
+    if (selectedRoute === 'route2') {
+      filteredData = filteredData.filter(([key]) => key === "05" || key === "06");
+    }
+
+    return filteredData.map(([key, value]) => {
       if (value && value.position) {
         const [lat, lng] = value.position.split(",").map(Number);
         if (!isNaN(lat) && !isNaN(lng)) {
