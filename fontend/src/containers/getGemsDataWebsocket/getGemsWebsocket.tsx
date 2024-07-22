@@ -20,7 +20,7 @@ interface WebSocketMessage {
 export function useWebSocketData() {
   const [messages, setMessages] = useState<WebSocketMessage | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const url = `${VITE_WSURL}`;
+  const url = `${VITE_WSURL}` || 'ws://localhost:80/api';
 
   useEffect(() => {
     const ws = new WebSocket(url);

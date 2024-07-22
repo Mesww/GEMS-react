@@ -56,7 +56,7 @@ const BEARER_TOKEN = 'k3wbpy57L4pVQC';
 // กำหนด WebSocket logic
 wss.on('connection', (ws: WebSocket) => {
   console.log('Client connected')
-
+  
   const fetchAndSendData = async () => {
     try {
       // เปลี่ยน URL นี้เป็น API ที่คุณต้องการ fetch

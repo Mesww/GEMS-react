@@ -1,6 +1,6 @@
 import { useCookies } from 'react-cookie';
 import React, { useEffect, useState } from 'react';
-import {  Navigate } from 'react-router-dom';
+import {  Navigate} from 'react-router-dom';
 import { getUserinfo } from '../../containers/login/Login';
 
 interface ProtectRouteProps {
@@ -9,14 +9,14 @@ interface ProtectRouteProps {
 }
 
 const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles = [] }) => {
-  const [cookies] = useCookies(['token']);
+  const [cookies, ] = useCookies(['token']);
   const [userRole, setUserRole] = useState<{ email: string; name: string; role: string } | null>(null);
   const [isAuthen, setIsAuthen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserRole = async () => {
-      if (cookies.token || cookies.token !== undefined || cookies.token !== null || cookies.token !== '' || cookies.token !== "undefined" ) {
+      if (cookies.token) {
         try {
           const userInfo = await getUserinfo(cookies.token);
           if (userInfo && userInfo.role) {
@@ -38,6 +38,9 @@ const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles =
     fetchUserRole();
   }, [cookies.token]);
 
+  if (isLoading) {
+    return <div>Loading...</div>; // Or any other loading indicator
+  }
 
   if (!isAuthen) {
     return <Navigate to="/" replace />;
@@ -46,11 +49,6 @@ const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles =
   if (!userRole || !userRole.role) {
     return <Navigate to="/" replace />;
   }
-
-  if (isLoading) {
-    return <div>Loading...</div>; // Or any other loading indicator
-  }
-
 
   const matchRoles = !requireRoles.length || requireRoles.includes(userRole.role);
   if (!matchRoles) {

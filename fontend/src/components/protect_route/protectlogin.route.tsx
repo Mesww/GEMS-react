@@ -8,7 +8,7 @@ interface ProtectRouteProps {
 }
 
 const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children = [] }) => {
-  const [cookies] = useCookies(['token']);
+  const [cookies,] = useCookies(['token']);
   const [isAuthen, setIsAuthen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 

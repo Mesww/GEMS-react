@@ -8,14 +8,10 @@ import {  useGoogleLogin} from '@react-oauth/google';
 import { useCookies } from "react-cookie";
 // import { Button,TouchableHighlight,View,Icon,Text } from "react-native";
 const Login = () => { 
-    const [ ,setCookie ] = useCookies(['token']);
+    const [, setCookie] = useCookies(['token']);
     const navigate = useNavigate();
-
     const login = async (codeResponse: { code: string; })=>{
-        const token: string = await sencodetobackend(codeResponse.code);
-        if (token === null) {
-            return console.error("Login failed");
-        }
+       const token = await sencodetobackend(codeResponse.code);
         setCookie("token",token);
         // get role from user info 
         const userInfo = await getUserinfo(token);
