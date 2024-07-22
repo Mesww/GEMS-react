@@ -17,13 +17,19 @@ const Mappage = () => {
   };
   // set select route
   const [selectRotue, setselectRotue] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   return (
     <>
-      <InfoDialog/>
+      <InfoDialog isVisible={isVisible}
+      setinfoIsVisible={setIsVisible}
+      />
       <Navbar 
       activeContent={selectRotue}
-      setActiveContent={setselectRotue} />
+      setActiveContent={setselectRotue} 
+      setCookie={setCookie}
+      setinfoIsVisible={setIsVisible}
+      />
       <MapComponant selectedRoute={selectRotue} />
     </>
   );

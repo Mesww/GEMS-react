@@ -18,13 +18,16 @@ interface WebSocketMessage {
   };
 }
 
-const InfoDialog = () => {
-  const [isVisible, setIsVisible] = useState(false);
+const InfoDialog : React.FC<{
+  isVisible:boolean;
+  setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}>  = ({isVisible,setinfoIsVisible}) => {
 
   const toggleVisibility = () => {
-    setIsVisible(!isVisible);
+    setinfoIsVisible((prev) => !prev);
   };
 
+ 
   // ตำแหน่งของผู้ใช้งาน  ================================================
   const location = useUserLocation();
 
@@ -42,14 +45,14 @@ const InfoDialog = () => {
   return (
     <>
       {/* Show button */}
-      <button
+      {/* <button
         className={`fixed bottom-24 right-4 z-50 bg-blue-500 text-white rounded-full p-2 transition-all duration-300 ease-in-out ${
           isVisible ? "scale-0" : "scale-100"
         }`}
         onClick={toggleVisibility}
       >
         แสดงข้อมูลรถ
-      </button>
+      </button> */}
 
       {/* Dialog */}
       <div
