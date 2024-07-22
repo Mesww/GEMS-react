@@ -16,7 +16,7 @@ services:
   api:
     build: ./Server-api-temp
     ports:
-      - '${PORT}:${PORT}'
+      - '8886:8886'
     environment:
       - MONGODB_URL = mongodb://root:1234@database:27017/finalpj?authSource=admin
     networks:

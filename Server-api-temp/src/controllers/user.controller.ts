@@ -7,7 +7,7 @@ import { parseJwt } from "../service/auth.service";
 
 export const userRolecontroller = async function (req: Request, res: Response) {
   const token = req.header("x-auth-token");
-  const key = process.env.FONTENDURL || "kimandfamily";
+  const key = process.env.TOKENKEY || "kimandfamily";
   if (!token)
     return res.status(401).json({ msg: "No auth token, access denied" });
 
