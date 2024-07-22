@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+  database:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+    volumes:
+      - ./db:/data/db
+    networks:
+      - finalpjnet
+    restart: unless-stopped
+  
+  api:
+    build: ./Server-api-temp
+    ports:
+      - '${PORT}:${PORT}'
+    environment:
+      - MONGODB_URL = mongodb://root:1234@database:27017/finalpj?authSource=admin
+
+    networks:
+      - finalpjnet
+    depends_on:
+      - database
+    restart: unless-stopped
+
+networks:
+  finalpjnet:
+    driver: bridge
