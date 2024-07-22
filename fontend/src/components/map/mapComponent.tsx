@@ -48,8 +48,10 @@ const MapComponant = () => {
         }
       );
     } else {
-      console.error("Geolocation is not supporte./mapComponent");
-      }});
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
   useEffect(() => {
     console.log("User location state:", userLocation);
     if (userLocation) {

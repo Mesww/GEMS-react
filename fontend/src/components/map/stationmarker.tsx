@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
-import {   StationData, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
+import {  StationData, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
 import { WebSocketMessage } from "./mapComponent";
 
 interface TrackerData {
