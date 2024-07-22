@@ -1,6 +1,6 @@
 import { useCookies } from 'react-cookie';
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Navigate, Route } from 'react-router-dom';
+import {  Navigate } from 'react-router-dom';
 import { getUserinfo } from '../../containers/login/Login';
 
 interface ProtectRouteProps {
@@ -9,7 +9,7 @@ interface ProtectRouteProps {
 }
 
 const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles = [] }) => {
-  const [cookies, setCookie] = useCookies(['token']);
+  const [cookies] = useCookies(['token']);
   const [userRole, setUserRole] = useState<{ email: string; name: string; role: string } | null>(null);
   const [isAuthen, setIsAuthen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

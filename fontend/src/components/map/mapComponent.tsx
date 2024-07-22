@@ -20,7 +20,7 @@ interface WebSocketMessage {
 
 
 const MapComponant = () => {
-  const [center, setCenter] = useState({
+  const [ ,setCenter] = useState({
     lat: 20.058851,
     lng: 99.899769,
   });

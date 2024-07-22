@@ -1,15 +1,14 @@
 import { useCookies } from 'react-cookie';
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Navigate, Route } from 'react-router-dom';
-import { getUserinfo } from '../../containers/login/Login';
+import {  Navigate } from 'react-router-dom';
 
 interface ProtectRouteProps {
   children: React.ReactNode;
   requireRoles?: string[];
 }
 
-const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles = [] }) => {
-  const [cookies, setCookie] = useCookies(['token']);
+const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children = [] }) => {
+  const [cookies] = useCookies(['token']);
   const [isAuthen, setIsAuthen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 

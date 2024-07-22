@@ -19,11 +19,30 @@ services:
       - '${PORT}:${PORT}'
     environment:
       - MONGODB_URL = mongodb://root:1234@database:27017/finalpj?authSource=admin
-
     networks:
       - finalpjnet
     depends_on:
       - database
+    restart: unless-stopped
+
+  fontend:
+    build: ./fontend
+    ports:
+      - 3000:80
+    depends_on:
+      - api
+    networks:
+      - finalpjnet
+    restart: unless-stopped
+  nginx:
+    build: ./nginx
+    image: nginx:alpine
+    ports:
+      - 80:80
+    depends_on:
+      - fontend
+    networks:
+      - finalpjnet
     restart: unless-stopped
 
 networks:

@@ -3,15 +3,19 @@ import mfulogo from '../../assets/Mae-Fah-Luang-University-2-768x779.png';
 import googlelogo from "../../assets/googlelogo.png";
 import "./style.sass";
 import { getUserinfo, sencodetobackend } from '../../containers/login/Login';
-import { Link ,Navigate,useNavigate} from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import {  useGoogleLogin} from '@react-oauth/google';
 import { useCookies } from "react-cookie";
 // import { Button,TouchableHighlight,View,Icon,Text } from "react-native";
 const Login = () => { 
-    const [cookies, setCookie] = useCookies(['token']);
+    const [ ,setCookie ] = useCookies(['token']);
     const navigate = useNavigate();
+
     const login = async (codeResponse: { code: string; })=>{
-       const token = await sencodetobackend(codeResponse.code);
+        const token: string = await sencodetobackend(codeResponse.code);
+        if (token === null) {
+            return console.error("Login failed");
+        }
         setCookie("token",token);
         // get role from user info 
         const userInfo = await getUserinfo(token);
