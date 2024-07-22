@@ -70,6 +70,8 @@ const InfoDialog = () => {
 
   
   const closestBusData = useClosestBus(location, data);
+
+  // show the closest Station
   const closestStation = useNearestStation(stationmarkers1.data, location); 
   
   
@@ -133,6 +135,7 @@ const InfoDialog = () => {
                 />
               </svg>
               <span className="text-white font-semibold pl-2">
+                {/* station ======================================================================================= */}
                 <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.id} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p>
               </span>
             </div>
