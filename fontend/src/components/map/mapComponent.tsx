@@ -10,7 +10,7 @@ interface TrackerData {
   speed: number;
 }
 
-interface WebSocketMessage {
+export interface WebSocketMessage {
   status: string;
   data: {
     [key: string]: TrackerData;
@@ -48,10 +48,8 @@ const MapComponant = () => {
         }
       );
     } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  }, []);
-
+      console.error("Geolocation is not supporte./mapComponent");
+      }});
   useEffect(() => {
     console.log("User location state:", userLocation);
     if (userLocation) {

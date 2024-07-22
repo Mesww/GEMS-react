@@ -1,0 +1,37 @@
+import { useState, useEffect } from 'react';
+
+interface UserLocation {
+  lat: number;
+  lng: number;
+}
+
+const useUserLocation = (): UserLocation | null => {
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          console.log("User location updated:", position.coords);
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting user location:", error);
+        }
+      );
+
+      return () => {
+        navigator.geolocation.clearWatch(watchId); // หยุดการติดตามตำแหน่งเมื่อคอมโพเนนท์ถูกถอดออก
+      };
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
+  return userLocation;
+};
+
+export default useUserLocation;
