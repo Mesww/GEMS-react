@@ -14,4 +14,7 @@ export default defineConfig({
       'react-native': 'react-native-web',
     },
   },
+  server:{
+    host: "0.0.0.0"
+  }
 })

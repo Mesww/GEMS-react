@@ -35,7 +35,7 @@ interface SelectedMarker {
 
 const MapComponant: React.FC<{
   selectedRoute?: string | null;
-}> = ({selectedRoute}) => {
+}> = ({ selectedRoute }) => {
   // set center
   const [center, setCenter] = useState({
     lat: 20.045116568504863,
@@ -43,9 +43,12 @@ const MapComponant: React.FC<{
   });
 
   ///////////// test polyline component ///////////////////////
-  const PolylineComponent: React.FC<{ path: google.maps.LatLngLiteral[], color: string }> = ({ path, color }) => {
+  const PolylineComponent: React.FC<{
+    path: google.maps.LatLngLiteral[];
+    color: string;
+  }> = ({ path, color }) => {
     const map = useMap();
-    
+
     useEffect(() => {
       if (map && window.google) {
         const polyline = new window.google.maps.Polyline({
@@ -53,17 +56,17 @@ const MapComponant: React.FC<{
           geodesic: true,
           strokeColor: color,
           strokeOpacity: 1.0,
-          strokeWeight: 2
+          strokeWeight: 2,
         });
-        
+
         polyline.setMap(map);
-        
+
         return () => {
           polyline.setMap(null);
         };
       }
     }, [map, path, color]);
-  
+
     return null;
   };
   //////////////////////////////////////////////////////////////
@@ -77,29 +80,42 @@ const MapComponant: React.FC<{
   }, [messages]);
 
   ////////// test polyline state ///////////////////////
-  const [polylinePath, setPolylinePath] = useState<google.maps.LatLngLiteral[]>([]);
+  const [polylinePath, setPolylinePath] = useState<google.maps.LatLngLiteral[]>(
+    []
+  );
   //////////////////////////////////////////////////////
 
-  
   // ตำแหน่งของผู้ใช้งาน  ================================================
   const [isOpen, setIsOpen] = useState(false);
   const location = useUserLocation();
   const userMarker = useMemo(() => {
-    if (location && location.lat && location.lng && window.google && window.google.maps) {
+    if (
+      location &&
+      location.lat &&
+      location.lng &&
+      window.google &&
+      window.google.maps
+    ) {
       return (
         <>
           <Marker
             key="user-location"
             position={{ lat: location.lat, lng: location.lng }}
             title="Your Location"
-            onClick={() =>{ setIsOpen(true);
-              
+            onClick={() => {
+              setIsOpen(true);
             }}
             icon={{
               url: "src/assets/userIcon.png",
-              scaledSize: window.google.maps.Size ? new window.google.maps.Size(22, 20) : null,
-              origin: window.google.maps.Point ? new window.google.maps.Point(0, 0) : null,
-              anchor: window.google.maps.Point ? new window.google.maps.Point(11, 10) : null,
+              scaledSize: window.google.maps.Size
+                ? new window.google.maps.Size(22, 20)
+                : null,
+              origin: window.google.maps.Point
+                ? new window.google.maps.Point(0, 0)
+                : null,
+              anchor: window.google.maps.Point
+                ? new window.google.maps.Point(11, 10)
+                : null,
             }}
           />
           {isOpen && (
@@ -107,16 +123,13 @@ const MapComponant: React.FC<{
               position={{ lat: location.lat, lng: location.lng }}
               onCloseClick={() => setIsOpen(false)}
               headerContent={`คุณอยู่ตรงนี้`}
-            >
-            </InfoWindow>
+            ></InfoWindow>
           )}
         </>
       );
     }
     return null;
   }, [location, isOpen]);
-
-
 
   // markers รถเจม ==================================================================================================
   // เซ็ท marker ที่เลือก
@@ -125,10 +138,10 @@ const MapComponant: React.FC<{
   );
 
   // handle คลิก markers
-  const handleMarkerClick = useCallback((key: string, value: TrackerData,) => {
+  const handleMarkerClick = useCallback((key: string, value: TrackerData) => {
     const [lat, lng] = value.position.split(",").map(Number);
     console.log(`Marker ${key} clicked`, value);
-    setSelectedMarker({ key, value});
+    setSelectedMarker({ key, value });
     setCenter({ lat, lng });
   }, []);
 
@@ -216,7 +229,7 @@ const MapComponant: React.FC<{
         { lat: 20.04495083265439, lng: 99.8911682902627 },
         { lat: 20.045640357194614, lng: 99.89134278070324 },
         { lat: 20.045981314951963, lng: 99.89149531219658 },
-        { lat: 20.046503354062022, lng: 99.89191825691869 }
+        { lat: 20.046503354062022, lng: 99.89191825691869 },
       ]);
     } else if (route === "route2") {
       setPolylinePath([
@@ -304,7 +317,7 @@ const MapComponant: React.FC<{
         { lat: 20.045205878896144, lng: 99.89121428041935 },
         { lat: 20.045659431356, lng: 99.8913510747675 },
         { lat: 20.045974393650344, lng: 99.89150395945991 },
-        { lat: 20.04648589681255, lng: 99.89191165978927 }
+        { lat: 20.04648589681255, lng: 99.89191165978927 },
       ]);
     } else {
       setPolylinePath([]);
@@ -323,14 +336,29 @@ const MapComponant: React.FC<{
     if (!data) return null;
     let filteredData = Object.entries(data);
 
-    if (selectedRoute === 'route1') {
-      filteredData = filteredData.filter(([key]) => key === "01" || key === "02" || key === "03" || key === "04" || key === "05" || key === "07" || key === "09" || key === "10" || key === "11" || key === "12" || key === "13" || key === "14" || key === "15");
+    if (selectedRoute === "route1") {
+      filteredData = filteredData.filter(
+        ([key]) =>
+          key === "01" ||
+          key === "02" ||
+          key === "03" ||
+          key === "04" ||
+          key === "05" ||
+          key === "07" ||
+          key === "09" ||
+          key === "10" ||
+          key === "11" ||
+          key === "12" ||
+          key === "13" ||
+          key === "14" ||
+          key === "15"
+      );
     }
-
-    if (selectedRoute === 'route2') {
-      filteredData = filteredData.filter(([key]) => key === "06" || key === "08" || key === "16");
+    if (selectedRoute === "route2") {
+      filteredData = filteredData.filter(
+        ([key]) => key === "06" || key === "08" || key === "16"
+      );
     }
-
     return filteredData.map(([key, value]) => {
       if (value && value.position) {
         const [lat, lng] = value.position.split(",").map(Number);
@@ -356,7 +384,6 @@ const MapComponant: React.FC<{
                   headerContent={`รถเจมหมายเลข ${key}`}
                 >
                   <div>
-                    
                     <p>ความเร็ว: {value.speed} km/h</p>
                   </div>
                 </InfoWindow>
@@ -367,22 +394,27 @@ const MapComponant: React.FC<{
       }
       return null;
     });
-  }, [data, handleMarkerClick, selectedMarker, handleInfoWindowClose, selectedRoute]);
-
+  }, [
+    data,
+    handleMarkerClick,
+    selectedMarker,
+    handleInfoWindowClose,
+    selectedRoute,
+  ]);
 
 
   // station markers==================================================================================================
-  
+
   const { stations } = useStations();
   const filteredStations = useMemo(() => {
     if (!stations || !stations.data) return [];
-    return stations.data.filter(station => {
-      if (selectedRoute === 'route1') {
-        return station.route === 'route 1';
-      } else if (selectedRoute === 'route2') {
-        return station.route === 'route 2';
+    return stations.data.filter((station) => {
+      if (selectedRoute === "route1") {
+        return station.route === "route 1";
+      } else if (selectedRoute === "route2") {
+        return station.route === "route 2";
       } else {
-        return stations
+        return stations;
       }
       return false;
     });
@@ -391,6 +423,8 @@ const MapComponant: React.FC<{
   const urlMarker2 = "src/assets/station2.png";
 
   // ==================================================================================================
+
+
 
   // interface SelectedMarker ==================================================================================================
   interface SelectedstationMarker {
@@ -402,11 +436,11 @@ const MapComponant: React.FC<{
     position: string;
   }
   // ==================================================================================================
-
   // set selected station markers=================================================================================================
   const [selectedstationMarker, setselectedstationMarker] =
     useState<SelectedstationMarker | null>(null);
   // ==================================================================================================
+
 
 
   return (
@@ -427,23 +461,27 @@ const MapComponant: React.FC<{
         {userMarker}
 
         {/* station markers */}
-        {selectedRoute === "route1" ?
-         <StationMarker
-          position={filteredStations}
-          selectedMarker={selectedstationMarker}
-          setSelectedMarker={setselectedstationMarker}
-          setCenter={setCenter} 
-          urlMarker={urlMarker1}        />:
-        <StationMarker
-          position={filteredStations}
-          selectedMarker={selectedstationMarker}
-          setSelectedMarker={setselectedstationMarker}
-          setCenter={setCenter} 
-          urlMarker={urlMarker2}        />}
+        {selectedRoute === "route1" ? (
+          <StationMarker
+            position={filteredStations}
+            selectedMarker={selectedstationMarker}
+            setSelectedMarker={setselectedstationMarker}
+            setCenter={setCenter}
+            urlMarker={urlMarker1}
+          />
+        ) : (
+          <StationMarker
+            position={filteredStations}
+            selectedMarker={selectedstationMarker}
+            setSelectedMarker={setselectedstationMarker}
+            setCenter={setCenter}
+            urlMarker={urlMarker2}
+          />
+        )}
 
         <PolylineComponent
           path={polylinePath}
-          color={selectedRoute === "route1" ? "#8b090c" : "#e2b644"} 
+          color={selectedRoute === "route1" ? "#8b090c" : "#e2b644"}
         />
       </APIProvider>
     </>
