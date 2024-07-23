@@ -4,7 +4,10 @@ import axios from "axios"; // Import axios
 const api = import.meta.env.VITE_API;
 
 interface StationData {
+  _id: string;
+  id:string;
   position: string;
+  waiting: number;
 }
 
 interface Station {
@@ -19,6 +22,8 @@ interface Location {
 }
 
 interface ClosestStation extends Station {
+  _id: string;
+  id:string;
   distance: number; // in meters
 }
 
@@ -69,16 +74,20 @@ function useNearestStation(
 
       Object.entries(stationData).forEach(([id, data]) => {
         const [lat, lng] = parsePosition(data.position);
+        const stationId = data._id;
+        const stationNameId = data.id;
+        const waitingCount = data.waiting;
         const distance = calculateDistance(
           userLocation.lat,
           userLocation.lng,
           lat,
-          lng
+          lng,
+          
         );
 
         if (distance < minDistance) {
           minDistance = distance;
-          closest = { id, lat, lng, distance };
+          closest = { id, lat, lng, distance, stationId, stationNameId, waitingCount};
         }
       });
 
@@ -90,12 +99,13 @@ function useNearestStation(
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
   useEffect(() => {
     if (closestStation && closestStation.distance <= 900) {
+      let dateTime = new Date();
       axios
         .post(`${api}/activity`, {
           studentid: "test",
           location: `${closestStation.lat}, ${closestStation.lng}`,
-          marker: closestStation.id,
-          time: "test",
+          marker: closestStation.stationNameId,
+          time: dateTime,
           route: "test",
         })
         .then((response) => {
@@ -104,6 +114,15 @@ function useNearestStation(
         .catch((error) => {
           console.error("Error posting activity:", error);
         });
+        
+      axios.patch(`${api}/updateWaiting/${closestStation.stationId}`,{
+        waiting: closestStation.waitingCount++
+      }).then((response) => {
+        console.log('Updated' + response.data);
+      }).catch((error) => {
+        console.log("Error updating" + error);
+      })
+        
     }
   }, [closestStation]);
 
