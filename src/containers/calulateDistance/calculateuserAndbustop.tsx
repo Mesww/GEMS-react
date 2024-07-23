@@ -65,6 +65,8 @@ function useNearestStation(
   useEffect(() => {
     if (
       userLocation &&
+      stationData && // Add this check
+      Object.keys(stationData).length > 0 && // Ensure stationData is not empty
       (!prevLocationRef.current ||
         userLocation.lat !== prevLocationRef.current.lat ||
         userLocation.lng !== prevLocationRef.current.lng)
@@ -116,9 +118,9 @@ function useNearestStation(
         });
         
       axios.patch(`${api}/updateWaiting/${closestStation.stationId}`,{
-        waiting: closestStation.waitingCount++
+        waiting: closestStation.waitingCount + 1
       }).then((response) => {
-        console.log('Updated' + response.data);
+        console.log('Updated' , response.data);
       }).catch((error) => {
         console.log("Error updating" + error);
       })
