@@ -103,7 +103,7 @@ function useNearestStation(
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
   useEffect(() => {
     if (closestStation && closestStation.distance <= 900) {
-      let dateTime = new Date();
+      let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
           studentid: "test",
