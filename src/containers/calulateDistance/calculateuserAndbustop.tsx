@@ -22,9 +22,11 @@ interface Location {
 }
 
 interface ClosestStation extends Station {
-  _id: string;
-  id:string;
+  id: string;
   distance: number; // in meters
+  stationId: string;
+  stationNameId: string;
+  waitingCount: number;
 }
 
 function parsePosition(position: string): [number, number] {
@@ -65,8 +67,8 @@ function useNearestStation(
   useEffect(() => {
     if (
       userLocation &&
-      stationData && // Add this check
-      Object.keys(stationData).length > 0 && // Ensure stationData is not empty
+      stationData &&
+      Object.keys(stationData).length > 0 &&
       (!prevLocationRef.current ||
         userLocation.lat !== prevLocationRef.current.lat ||
         userLocation.lng !== prevLocationRef.current.lng)
