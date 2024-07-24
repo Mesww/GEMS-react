@@ -17,7 +17,7 @@ const FONTENDURL = process.env.FONTENDURL || "http://localhost:5173";
 console.log("Fontendurl : "+FONTENDURL);
 // Configure CORS to allow requests from your frontend origin
 app.use(cors({
-  origin: FONTENDURL,
+  origin: [FONTENDURL,"http://localhost:5173"],
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
    // Allow cookies to be sent
