@@ -1,0 +1,16 @@
+# this comand to build docker ( Must delete nodemodule ) 
+    docker compose --env-file ./Server-api-temp/.env up --build -d
+
+# .env need
+   PORT = 8886
+    ## for conect to database    
+    MONGODB_URL 
+    ## for conect to google login    
+    CLIENT_ID 
+    SECRET_ID 
+    REDIRECTURL
+    ## for decrypt token     
+    TOKEN_KEY 
+    ## for define superadmin     
+    SUPERADMIN 
+
