@@ -88,6 +88,7 @@ const StationMarker: React.FC<{
                 position={{ lat, lng }}
                 title={`ป้ายหมายเลข: ${station.id}`}
                 onClick={() => handleMarkerClick(station.id, station)}
+                label={station.id}
                 icon={{
                   url: urlMarker,
                   scaledSize: window.google.maps.Size ? new window.google.maps.Size(54, 54) : null,
@@ -100,6 +101,7 @@ const StationMarker: React.FC<{
                     position={{ lat, lng }}
                     onCloseClick={handleInfoWindowClose}
                     headerContent={`ป้ายหมายเลข ${station.id}`}
+                   
                   >
                     <div>
                       <p>คนที่รอในขณะนี้: {station.waiting} คน</p>
