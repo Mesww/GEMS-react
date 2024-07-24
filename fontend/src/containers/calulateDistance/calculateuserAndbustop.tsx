@@ -99,8 +99,28 @@ function useNearestStation(
   }, [userLocation, stationData]);
 
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
+  const [userWaiting, setUserWaiting] = useState(false);
   useEffect(() => {
-    if (closestStation && closestStation.distance <= 900) {
+    // Function to decrement waiting count
+    const decrementWaitingCount = () => {
+      if (userWaiting && closestStation) {
+        axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
+          waiting: closestStation.waitingCount - 1
+        })
+          .then((response) => {
+            console.log("Updated before unload", response.data);
+          })
+          .catch((error) => {
+            console.error("Error updating before unload:", error);
+          });
+      }
+    };
+
+    // Add event listener for beforeunload
+    window.addEventListener('beforeunload', decrementWaitingCount);
+
+    // Your existing effect logic
+    if (closestStation && closestStation.distance <= 900 && !userWaiting) {
       let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
@@ -112,21 +132,37 @@ function useNearestStation(
         })
         .then((response) => {
           console.log("Activity posted successfully:", response.data);
+          return axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
+            waiting: closestStation.waitingCount + 1
+          });
+        })
+        .then((response) => {
+          console.log('Updated', response.data);
+          setUserWaiting(true);
         })
         .catch((error) => {
-          console.error("Error posting activity:", error);
+          console.error("Error:", error);
         });
-        
-      axios.patch(`${api}/updateWaiting/${closestStation.stationId}`,{
-        waiting: closestStation.waitingCount + 1
-      }).then((response) => {
-        console.log('Updated' , response.data);
-      }).catch((error) => {
-        console.log("Error updating" + error);
-      })
-        
     }
-  }, [closestStation]);
+    else if (closestStation && userWaiting && closestStation.distance >= 900) {
+      axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
+        waiting: closestStation.waitingCount - 1
+      })
+        .then((response) => {
+          console.log("Updated", response.data);
+          setUserWaiting(false);
+        })
+        .catch((error) => {
+          console.error("Error updating:", error);
+        });
+    }
+    // Cleanup function
+    return () => {
+      window.removeEventListener('beforeunload', decrementWaitingCount);
+      // Also decrement count when component unmounts if user is still waiting
+      decrementWaitingCount();
+    };
+  }, [closestStation, userWaiting]);
 
   return closestStation;
 }
