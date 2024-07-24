@@ -32,7 +32,7 @@ export const getUserinfo = async function (token?:string) {
             name: string;
             role: string;
         }>(response.data);
-        console.log(user);
+        console.log( new Date().getMilliseconds() ,user);
         if (!user) {
             return {"role":null}
         }

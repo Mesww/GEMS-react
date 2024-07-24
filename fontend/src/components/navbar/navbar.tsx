@@ -1,4 +1,4 @@
-import gemlogo from "../../assets/Screenshot_2567-07-10_at_12.04.25-removebg.png";
+import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
 import "./style.sass";
 import { useState } from "react";
 import Swal from 'sweetalert2'

@@ -1,6 +1,6 @@
-import logo from "../../assets/Screenshot_2567-07-10_at_12.04.25-removebg.png";
-import mfulogo from '../../assets/Mae-Fah-Luang-University-2-768x779.png';
-import googlelogo from "../../assets/googlelogo.png";
+import logo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
+import mfulogo from '/Mae-Fah-Luang-University-2-768x779.png';
+import googlelogo from "/googlelogo.png";
 import "./style.sass";
 import { getUserinfo, sencodetobackend } from '../../containers/login/Login';
 import { useNavigate} from 'react-router-dom';

@@ -3,7 +3,9 @@ import {
   InfoWindow,
   Map,
   Marker,
-  useMap,
+  useMap
+  // ,
+  // AdvancedMarker
 } from "@vis.gl/react-google-maps";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import { useCallback, useMemo, useState, useEffect } from "react";
@@ -11,8 +13,13 @@ import React from "react";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import StationMarker from "./stationmarker";
 
-const MAPID = import.meta.env.VITE_MAPID;
+const MAPID = import.meta.env.VITE_MAPID || "";
+const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+const busIcon = "/Bus.svg";
+const userIcon = "/userIcon.png";
 
+
+console.log(MAPAPIKEY);
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -96,7 +103,7 @@ const MapComponant: React.FC<{
               
             }}
             icon={{
-              url: "src/assets/userIcon.png",
+              url: userIcon,
               scaledSize: window.google.maps.Size ? new window.google.maps.Size(22, 20) : null,
               origin: window.google.maps.Point ? new window.google.maps.Point(0, 0) : null,
               anchor: window.google.maps.Point ? new window.google.maps.Point(11, 10) : null,
@@ -320,9 +327,9 @@ const MapComponant: React.FC<{
 
   // Keep this useMemo for other markers ตำแหน่งรถเจม
   const markers = useMemo(() => {
+
     if (!data) return null;
     let filteredData = Object.entries(data);
-
     if (selectedRoute === 'route1') {
       filteredData = filteredData.filter(([key]) => key === "01" || key === "02" || key === "03" || key === "04" || key === "05" || key === "07" || key === "09" || key === "10" || key === "11" || key === "12" || key === "13" || key === "14" || key === "15");
     }
@@ -342,7 +349,7 @@ const MapComponant: React.FC<{
                 title={`รถเจมหมายเลข: ${key}`}
                 onClick={() => handleMarkerClick(key, value)}
                 icon={{
-                  url: "src/assets/Bus.svg",
+                  url: busIcon,
                   scaledSize: new window.google.maps.Size(64, 36), // Adjusted size as needed
                   origin: new window.google.maps.Point(0, 0), // The origin point of the icon image (usually top-left)
                   anchor: new window.google.maps.Point(32, 18), // The anchor point of the icon image (center bottom for 64x36)
@@ -397,7 +404,8 @@ const MapComponant: React.FC<{
       "21": { position: "20.058966957817436, 99.8995173298247" }
     },
   };
-  const urlMarker1 = "src/assets/station1.png";
+  const urlMarker1 = "/station1.png";
+  
   const stationmarkers2 = {
     status: "ok",
     data: {
@@ -423,7 +431,7 @@ const MapComponant: React.FC<{
       "20": { position: "20.058966957817436, 99.8995173298247" }
     },
   };
-  const urlMarker2 = "src/assets/station2.png";
+  const urlMarker2 = "/station2.png";
 
   // ==================================================================================================
 
@@ -445,7 +453,7 @@ const MapComponant: React.FC<{
 
   return (
     <>
-      <APIProvider apiKey={""}>
+      <APIProvider apiKey={MAPAPIKEY} libraries={["places"]}>
         <Map
           style={{ width: "100%", height: "100vh" }}
           defaultZoom={15}

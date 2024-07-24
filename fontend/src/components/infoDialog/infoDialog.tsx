@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import useClosestBus from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
-import gemlogo from "../../assets/Screenshot_2567-07-10_at_12.04.25-removebg.png";
+import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
