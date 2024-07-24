@@ -4,7 +4,8 @@ import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
 import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
-import useStations from "../../containers/station/getStation";
+import { AxiosResponse } from "axios";
+import { Stations } from "../../containers/station/getStation";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -23,7 +24,8 @@ interface WebSocketMessage {
 const InfoDialog : React.FC<{
   isVisible:boolean;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}>  = ({isVisible,setinfoIsVisible}) => {
+  stations:AxiosResponse<Stations[], any> | null
+}>  = ({isVisible,setinfoIsVisible,stations}) => {
 
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);
@@ -45,14 +47,17 @@ const InfoDialog : React.FC<{
   
   // ClostestStation =========================================================
   // station markers mock ==================================================================================================
- const { stations } = useStations();
-//  console.log(stations?.data);
-// show the closest Station
-const closestStation = useNearestStation(stations?.data, location); 
-console.log(closestStation);
-  
 
-  const closestBusData = useClosestBus(location, data);
+
+
+// if (stations?.data === undefined) {
+//   throw new Error("stations is undefined");
+// }
+
+// const closestStation = useNearestStation(stations?.data, location); 
+// console.log(closestStation);
+  
+const closestBusData = useClosestBus(location, data);
 
   
   
@@ -117,7 +122,7 @@ console.log(closestStation);
               </svg>
               <span className="text-white font-semibold pl-2">
                 {/* station ======================================================================================= */}
-                <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.stationNameId} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p>
+                {/* <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.stationNameId} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p> */}
               </span>
             </div>
           </div>

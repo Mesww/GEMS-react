@@ -10,7 +10,9 @@ export async function auth(code: string) {
     const CLIENT_ID = process.env.CLIENT_ID;
     const SECRET_ID = process.env.SECRET_ID;
     const REDIRECTURL = process.env.REDIRECTURL;
-  console.log("Authorization Code : ", code);
+    
+  // console.log("Authorization Code : ", code);
+
   const response = await axios.post("https://oauth2.googleapis.com/token", {
     code,
     client_id: CLIENT_ID,

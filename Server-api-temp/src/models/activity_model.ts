@@ -4,7 +4,7 @@ interface activities {
     studentid: string;
     location: string;
     marker: string;
-    time: string;
+    time: Date;
     route: string;
   }
 
@@ -13,7 +13,7 @@ const activitySchema = new mongoose.Schema(
       studentid: { type: String, required: false},
       location: { type: String, required: true },
       marker: { type: String, required: true },
-      time: { type: String, required: false },
+      time: { type: Date, required: false },
       route: { type: String, required: true },
     },
     { collection: "activities" }
@@ -23,7 +23,7 @@ const activitySchema = new mongoose.Schema(
     studentid: string;
     location: string;
     marker: string;
-    time: string;
+    time: Date;
     route: string;
     set(x: activities): this; // Define `set` as an instance method
   }

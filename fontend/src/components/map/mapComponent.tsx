@@ -11,7 +11,9 @@ import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsW
 import { useCallback, useMemo, useState, useEffect } from "react";
 import React from "react";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
-import StationMarker from "./stationmarker";
+import StationMarker, { SelectedMarker } from "./stationmarker";
+import { fetchStations, Stations } from "../../containers/station/getStation";
+import { AxiosResponse } from "axios";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
@@ -21,6 +23,7 @@ const userIcon = "/userIcon.png";
 
 console.log(MAPAPIKEY);
 interface TrackerData {
+  _id: string;
   server_time: string;
   tracker_time: string;
   direction: number;
@@ -35,14 +38,11 @@ export interface WebSocketMessage {
   };
 }
 
-interface SelectedMarker {
-  key: string;
-  value: TrackerData;
-}
 
 const MapComponant: React.FC<{
+  stations: AxiosResponse<Stations[], any> | null;
   selectedRoute?: string | null;
-}> = ({selectedRoute}) => {
+}> = ({selectedRoute,stations}) => {
   // set center
   const [center, setCenter] = useState({
     lat: 20.045116568504863,
@@ -91,6 +91,7 @@ const MapComponant: React.FC<{
   // ตำแหน่งของผู้ใช้งาน  ================================================
   const [isOpen, setIsOpen] = useState(false);
   const location = useUserLocation();
+
   const userMarker = useMemo(() => {
     if (location && location.lat && location.lng && window.google && window.google.maps) {
       return (
@@ -986,83 +987,42 @@ const MapComponant: React.FC<{
 
 
 
-  // station markers mock ==================================================================================================
-  const stationmarkers1 = {
-    status: "ok",
-    data: {
-      "1": { position: "20.058752, 99.898396" },
-      "2": { position: "20.057039, 99.896930" },
-      "3": { position: "20.054683, 99.894515" },
-      "4": { position: "20.052544, 99.892316" },
-      "5": { position: "20.050816843021277, 99.89121969349162" },
-      "6": { position: "20.049137353450433, 99.891250485570452" },
-      "7": { position: "20.048193, 99.893221" },
-      "8": { position: "20.047264832318994, 99.89314563095694" },
-      "9": { position: "20.045503, 99.891442" },
-      "10": { position: "20.043881444753783, 99.89348617576454" },
-      "11": { position: "20.043919609786567, 99.89490923095694" },
-      "12": { position: "20.043311336533844, 99.89529707515575" },
-      "13": { position: "20.043845538331563, 99.8934754469289" },
-      "14": { position: "20.045659393241642, 99.89133178188165" },
-      "15": { position: "20.049391118491396, 99.89111283095696" },
-      "16": { position: "20.05083048583872, 99.89115650886787" },
-      "17": { position: "20.052689636083315, 99.89234180090831" },
-      "18": { position: "20.05473222049373, 99.89448019896511" },
-      "19": { position: "20.056897650552507, 99.89711855304603" },
-      "20": { position: "20.05806378447924, 99.89787541746388" },
-      "21": { position: "20.058966957817436, 99.8995173298247" }
-    },
-  };
+
+
+  const filteredStations = useMemo(() => {
+    if (!stations || !stations.data) return [];
+    return stations.data.filter((station: { route: string; }) => {
+      if (selectedRoute === "route1") {
+        return station.route === "route 1";
+      } else if (selectedRoute === "route2") {
+        return station.route === "route 2";
+      } else {
+        return stations;
+      }
+      return false;
+    });
+  }, [stations, selectedRoute]);
+
   const urlMarker1 = "/station1.png";
-  
-  const stationmarkers2 = {
-    status: "ok",
-    data: {
-      "1": { position: "20.058752, 99.898396" },
-      "2": { position: "20.057039, 99.896930" },
-      "3": { position: "20.054683, 99.894515" },
-      "4": { position: "20.052544, 99.892316" },
-      "5": { position: "20.050816843021277, 99.89121969349162" },
-      "6": { position: "20.049137353450433, 99.891250485570452" },
-      "7": { position: "20.048193, 99.893221" },
-      "8": { position: "20.047264832318994, 99.89314563095694" },
-      "9": { position: "20.045503, 99.891442" },
-      "10": { position: "20.043881444753783, 99.89348617576454" },
-      "11": { position: "20.043845538331563, 99.8934754469289" },
-      "12": { position: "20.041244, 99.894427" },
-      "13": { position: "20.045659393241642, 99.89133178188165" },
-      "14": { position: "20.049391118491396, 99.89111283095696" },
-      "15": { position: "20.05083048583872, 99.89115650886787" },
-      "16": { position: "20.052689636083315, 99.89234180090831" },
-      "17": { position: "20.05473222049373, 99.89448019896511" },
-      "18": { position: "20.056897650552507, 99.89711855304603" },
-      "19": { position: "20.05806378447924, 99.89787541746388" },
-      "20": { position: "20.058966957817436, 99.8995173298247" }
-    },
-  };
+
   const urlMarker2 = "/station2.png";
 
   // ==================================================================================================
 
   // interface SelectedMarker ==================================================================================================
-  interface SelectedstationMarker {
-    key: string;
-    value: TrackerstatioData;
-  }
-  interface TrackerstatioData {
-    position: string;
-  }
+
   // ==================================================================================================
 
   // set selected station markers=================================================================================================
   const [selectedstationMarker, setselectedstationMarker] =
-    useState<SelectedstationMarker | null>(null);
+    useState<SelectedMarker | null>(null);
   // ==================================================================================================
 
 
   return (
     <>
       <APIProvider apiKey={MAPAPIKEY} libraries={["places"]}>
+       
         <Map
           style={{ width: "100%", height: "100vh" }}
           defaultZoom={15}
@@ -1071,6 +1031,8 @@ const MapComponant: React.FC<{
           gestureHandling={"greedy"}
           disableDefaultUI={true}
         />
+        
+
         {/* markerรถเจม */}
         {markers}
 
@@ -1078,24 +1040,29 @@ const MapComponant: React.FC<{
         {userMarker}
 
         {/* station markers */}
-        {selectedRoute === "route1" ?
-         <StationMarker
-          position={stationmarkers1}
-          selectedMarker={selectedstationMarker}
-          setSelectedMarker={setselectedstationMarker}
-          setCenter={setCenter} 
-          urlMarker={urlMarker1}        />:
-        <StationMarker
-          position={stationmarkers2}
-          selectedMarker={selectedstationMarker}
-          setSelectedMarker={setselectedstationMarker}
-          setCenter={setCenter} 
-          urlMarker={urlMarker2}        />}
 
+        {selectedRoute === "route1" ? (
+          <StationMarker
+            position={filteredStations}
+            selectedMarker={selectedstationMarker}
+            setSelectedMarker={setselectedstationMarker}
+            setCenter={setCenter}
+            urlMarker={urlMarker1}
+          />
+        ) : (
+          <StationMarker
+            position={filteredStations}
+            selectedMarker={selectedstationMarker}
+            setSelectedMarker={setselectedstationMarker}
+            setCenter={setCenter}
+            urlMarker={urlMarker2}
+          />
+        )}
         <PolylineComponent
           path={polylinePath}
           color={selectedRoute === "route1" ? "#8b090c" : "#e2b644"} 
         />
+       
       </APIProvider>
     </>
   );

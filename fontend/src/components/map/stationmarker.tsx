@@ -3,9 +3,9 @@ import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import {  StationData, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
 import { WebSocketMessage } from "./mapComponent";
-import { Station } from "../../containers/station/getStation";
+import { Stations } from "../../containers/station/getStation.tsx";
 
-interface TrackerData {
+export interface TrackerData {
   _id: string;
   position: string;
 }
@@ -17,7 +17,7 @@ interface TrackerData {
 //   };
 // }
 
-interface SelectedMarker {
+export interface SelectedMarker {
   key: string;
   value: TrackerData;
 }
@@ -30,7 +30,7 @@ interface SelectedMarker {
 // }
 
 const StationMarker: React.FC<{
-  position: Station[]; 
+  position: Stations[]; 
   selectedMarker: SelectedMarker | null;
   setSelectedMarker?: (marker: SelectedMarker | null) => void;
   setCenter: React.Dispatch<

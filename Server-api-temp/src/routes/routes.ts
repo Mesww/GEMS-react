@@ -1,29 +1,13 @@
+import StationModel, { Station } from './../models/station_model';
 import express, { Request, Response } from "express";
-import { Todo } from "../models/user_model"; // Assuming "user_model" is your file with the Todo model
 import Activity from "../models/activity_model";
+import { getStations } from "../controllers/station_controllers";
+import { getPolylines } from "../controllers/polyline_controller";
+import { ObjectId } from 'mongodb';
+
 
 const router = express.Router();
 
-// Post request to add a todo
-router.post("/add", async (req: Request, res: Response) => {
-  try {
-    // Validate incoming data (optional but recommended)
-    const { title, description } = req.body; // Destructure body properties
-
-    if (!title || !description) {
-      return res.status(400).json({ error: "Title and description are required." });
-    }
-    // Create a new Todo instance using the validated data
-    const newTodo = new Todo({ title, description  });
-    // Save the new Todo to the database
-    await newTodo.save();
-    // Respond with success and the created Todo
-    return res.status(201).json({ data: newTodo }); // Use status 201 for created entities
-  } catch (error) {
-    console.error("Error adding todo:", error);
-    return res.status(500).json({ error: "Internal server error." }); // Handle errors gracefully
-  }
-});
 
 // Post request to add a Activity
 router.post("/activity", async (req: Request, res: Response) => {
@@ -45,68 +29,62 @@ router.post("/activity", async (req: Request, res: Response) => {
 
 
 
-
 //Get request
-
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const dataItem = await Todo.find({});
-
+   
     res.status(200).json({
-      data: dataItem,
+      data: "Hello",
     });
-
   } catch (err) {
     console.log("Error something" + err)
   }
 });
 
 
-//Delete Request
-router.delete("/delete", async (req: Request, res: Response) => {
-
-  const filter = {
-    _id: req.body._id,
-  }
-  const dataItem = await Todo.deleteOne(filter).then((data: any) => res.json({
-    data: data
-  })
-  ).catch((error: any) => {
-    return res.send(error);
-  });
+// get station
+router.get('/getStation', getStations);
 
 
-});
+// get polyline
+router.get('/getPolyline', getPolylines);
 
 
-//Update Request
-router.put("/update", async (req: Request, res: Response) => {
 
-  const filter = {
-    _id: req.body._id,
-  }
-
-  const updatedData = {
-    $set: {
-      title: req.body.title
-      , description: req.body.description
-    }
+interface UpdateWaitingRequest extends Request {
+  params: {
+    id: string;
   };
-
-  const dataItem = await Todo.updateOne(filter, updatedData, {
-    new: true
-  }).then((data: any) => res.json({
-    data: data
-  })
-  ).catch((error: any) => {
-    return res.send(error);
-  });
+  body: {
+    waiting: number;
+  };
+}
 
 
-})
+router.patch('/updateWaiting/:id', async (req: UpdateWaitingRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { waiting } = req.body;
 
+    if (waiting === undefined) {
+      return res.status(400).json({ message: 'Waiting value is required' });
+    }
 
+    const updatedStation: Station | null = await StationModel.findByIdAndUpdate(
+      new ObjectId(id),
+      { waiting },
+      { new: true, runValidators: true }
+    );
 
+    if (!updatedStation) {
+      return res.status(404).json({ message: 'Station not found' });
+    }
+
+    res.json(updatedStation);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: (error as Error).message });
+  }
+});
 
 
 export default router;

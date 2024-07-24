@@ -17,7 +17,7 @@ const FONTENDURL = process.env.FONTENDURL || "http://localhost:5173";
 console.log("Fontendurl : "+FONTENDURL);
 // Configure CORS to allow requests from your frontend origin
 app.use(cors({
-  origin: [FONTENDURL, 'http://localhost:5173'],
+  origin: FONTENDURL,
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
    // Allow cookies to be sent
@@ -56,7 +56,7 @@ const BEARER_TOKEN = 'k3wbpy57L4pVQC';
 // กำหนด WebSocket logic
 wss.on('connection', (ws: WebSocket) => {
   console.log('Client connected')
-  
+
   const fetchAndSendData = async () => {
     try {
       // เปลี่ยน URL นี้เป็น API ที่คุณต้องการ fetch

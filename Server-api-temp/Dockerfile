@@ -2,7 +2,7 @@
 FROM node:20.0.0
 
 # Set working directory
-WORKDIR /app/api
+WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
