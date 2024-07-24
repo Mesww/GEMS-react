@@ -3,7 +3,6 @@ import useClosestBus from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
-import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
 import { AxiosResponse } from "axios";
 import { Stations } from "../../containers/station/getStation";
 interface TrackerData {
@@ -25,7 +24,9 @@ const InfoDialog : React.FC<{
   isVisible:boolean;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   stations:AxiosResponse<Stations[], any> | null
-}>  = ({isVisible,setinfoIsVisible,stations}) => {
+}>  = ({isVisible,setinfoIsVisible
+  // ,stations
+}) => {
 
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);

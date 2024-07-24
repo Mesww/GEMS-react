@@ -1,5 +1,4 @@
 // src/hooks/useStations.js
-import { useState, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 
 const API_URL = import.meta.env.VITE_API // Adjust this URL to match your server

@@ -2,7 +2,7 @@ import { useCookies } from "react-cookie";
 import MapComponant from "./mapComponent";
 import Navbar from "../navbar/navbar";
 import InfoDialog from "../infoDialog/infoDialog";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fetchStations, Stations } from "../../containers/station/getStation";
 import { AxiosResponse } from "axios";
 const Mappage = () => {

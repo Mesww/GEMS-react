@@ -12,7 +12,7 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import React from "react";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import StationMarker, { SelectedMarker } from "./stationmarker";
-import { fetchStations, Stations } from "../../containers/station/getStation";
+import {  Stations } from "../../containers/station/getStation";
 import { AxiosResponse } from "axios";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
