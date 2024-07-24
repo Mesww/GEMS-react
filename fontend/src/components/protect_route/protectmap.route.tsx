@@ -2,6 +2,7 @@ import { useCookies } from 'react-cookie';
 import React, { useEffect, useState } from 'react';
 import {  Navigate} from 'react-router-dom';
 import { getUserinfo } from '../../containers/login/Login';
+import Loading from '../loading/loading';
 
 interface ProtectRouteProps {
   children: React.ReactNode;
@@ -39,7 +40,7 @@ const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles =
   }, [cookies.token]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Or any other loading indicator
+    return <Loading/>; // Or any other loading indicator
   }
 
   if (!isAuthen) {

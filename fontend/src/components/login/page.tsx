@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
 import { useState } from "react";
+import Loading from '../loading/loading';
 // import { Button,TouchableHighlight,View,Icon,Text } from "react-native";
 const Login = () => {
   const [, setCookie] = useCookies(["token"]);
@@ -48,15 +49,7 @@ const Login = () => {
   return (
     <>
         {/* loading */}
-      {loading && (
-        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-50 flex justify-center items-center">
-          <div className="loader">
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </div>
-      )}
+      {loading && <Loading />}
       <div className=" grid md:grid-cols-3 grid-rows-3  w-screen h-screen ">
         <div className="flex ml-5 mt-5 items-center h-14">
           <img src={mfulogo} alt="mfulogo" className="w-14 h-14" />
