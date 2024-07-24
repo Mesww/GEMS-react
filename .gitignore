@@ -129,3 +129,4 @@ dist
 db
 db/*
 
+/db
