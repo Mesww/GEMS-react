@@ -129,4 +129,6 @@ dist
 db
 db/*
 
-/db
+/db/*
+# db folder
+db/
