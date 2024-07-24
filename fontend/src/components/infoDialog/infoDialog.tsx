@@ -3,6 +3,8 @@ import useClosestBus from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
+import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
+import useStations from "../../containers/station/getStation";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -39,9 +41,21 @@ const InfoDialog : React.FC<{
     return messages && messages.status === "ok" ? messages.data : null;
   }, [messages]);
 
-  const closestBusData = useClosestBus(location, data);
+  
+  
+  // ClostestStation =========================================================
+  // station markers mock ==================================================================================================
+ const { stations } = useStations();
+//  console.log(stations?.data);
+// show the closest Station
+const closestStation = useNearestStation(stations?.data, location); 
+console.log(closestStation);
   
 
+  const closestBusData = useClosestBus(location, data);
+
+  
+  
   return (
     <>
       {/* Show button */}
@@ -101,8 +115,9 @@ const InfoDialog : React.FC<{
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              <span className="text-white font-semibold pl-9">
-                ตำแหน่งของคุณ
+              <span className="text-white font-semibold pl-2">
+                {/* station ======================================================================================= */}
+                <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.stationNameId} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p>
               </span>
             </div>
           </div>

@@ -3,17 +3,19 @@ import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import {  StationData, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
 import { WebSocketMessage } from "./mapComponent";
+import { Station } from "../../containers/station/getStation";
 
 interface TrackerData {
+  _id: string;
   position: string;
 }
 
-interface FetchData {
-  status: string;
-  data: {
-    [key: string]: TrackerData;
-  };
-}
+// interface FetchData {
+//   status: string;
+//   data: {
+//     [key: string]: TrackerData;
+//   };
+// }
 
 interface SelectedMarker {
   key: string;
@@ -28,7 +30,7 @@ interface SelectedMarker {
 // }
 
 const StationMarker: React.FC<{
-  position: FetchData;
+  position: Station[]; 
   selectedMarker: SelectedMarker | null;
   setSelectedMarker?: (marker: SelectedMarker | null) => void;
   setCenter: React.Dispatch<
@@ -72,35 +74,35 @@ const StationMarker: React.FC<{
     }
   }, [setSelectedMarker]);
 
-  if (!position.data) return null;
+  if (!position) return null;
 
   return (
     <>
-     {Object.entries(position.data).map(([key, value]) => {
-        if (value && value.position) {
-          const [lat, lng] = value.position.split(",").map(Number);
-          if (!isNaN(lat) && !isNaN(lng) && window.google && window.google.maps) {
-            return (
-              <React.Fragment key={key}>
-                <Marker
-                  position={{ lat, lng }}
-                  title={`ป้ายหมายเลข: ${key}`}
-                  onClick={() => handleMarkerClick(key, value)}
-                  icon={{
-                    url: urlMarker,
-                    scaledSize: window.google.maps.Size ? new window.google.maps.Size(54, 54) : null,
-                    origin: window.google.maps.Point ? new window.google.maps.Point(0, 0) : null,
-                    anchor: window.google.maps.Point ? new window.google.maps.Point(27, 27) : null,
-                  }}
-                  // icon={iconMarker}
-                />
-                {closestBus && selectedMarker && selectedMarker.key === key && (
+    {position.map((station, index) => {
+      if (station && station.position) {
+        const [lat, lng] = station.position.split(",").map(Number);
+        if (!isNaN(lat) && !isNaN(lng) && window.google && window.google.maps) {
+          return (
+            <React.Fragment key={index}>
+              <Marker
+                position={{ lat, lng }}
+                title={`ป้ายหมายเลข: ${station.id}`}
+                onClick={() => handleMarkerClick(station.id, station)}
+                icon={{
+                  url: urlMarker,
+                  scaledSize: window.google.maps.Size ? new window.google.maps.Size(54, 54) : null,
+                  origin: window.google.maps.Point ? new window.google.maps.Point(0, 0) : null,
+                  anchor: window.google.maps.Point ? new window.google.maps.Point(27, 27) : null,
+                }}
+              />
+                {closestBus && selectedMarker && selectedMarker.value._id === station._id && (
                   <InfoWindow
                     position={{ lat, lng }}
                     onCloseClick={handleInfoWindowClose}
-                    headerContent={`ป้ายหมายเลข ${key}`}
+                    headerContent={`ป้ายหมายเลข ${station.id}`}
                   >
                     <div>
+                      <p>คนที่รอในขณะนี้: {station.waiting} คน</p>
                       <p>รถ GEMS หมายเลข {closestBus.busId} จะถึงภายในอีก { closestBus.eta !== null ? closestBus.eta.toFixed(2) : "?" } นาที</p>
                     </div>
                   </InfoWindow>
