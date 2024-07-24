@@ -12,7 +12,6 @@ services:
     networks:
       - finalpjnet
     restart: unless-stopped
-  
   api:
     build: ./Server-api-temp
     ports:
@@ -24,7 +23,6 @@ services:
     depends_on:
       - database
     restart: unless-stopped
-
   fontend:
     build: ./fontend
     ports:
