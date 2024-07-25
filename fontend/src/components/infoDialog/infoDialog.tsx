@@ -5,6 +5,8 @@ import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsW
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
 import { AxiosResponse } from "axios";
 import { Stations } from "../../containers/station/getStation";
+import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
+import Loading from "../loading/loading";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -25,13 +27,14 @@ const InfoDialog : React.FC<{
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   stations:AxiosResponse<Stations[], any> | null
 }>  = ({isVisible,setinfoIsVisible
-  // ,stations
+  ,stations
 }) => {
 
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);
   };
 
+  let stationMarkers:Stations[] = [];
  
   // ตำแหน่งของผู้ใช้งาน  ================================================
   const location = useUserLocation();
@@ -51,12 +54,12 @@ const InfoDialog : React.FC<{
 
 
 
-// if (stations?.data === undefined) {
-//   throw new Error("stations is undefined");
-// }
+if (stations?.data !== undefined) {
+  stationMarkers = stations?.data;
+}
 
-// const closestStation = useNearestStation(stations?.data, location); 
-// console.log(closestStation);
+const closestStation = useNearestStation(stationMarkers, location); 
+console.log(closestStation);
   
 const closestBusData = useClosestBus(location, data);
 
@@ -123,7 +126,7 @@ const closestBusData = useClosestBus(location, data);
               </svg>
               <span className="text-white font-semibold pl-2">
                 {/* station ======================================================================================= */}
-                {/* <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.stationNameId} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p> */}
+                <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.stationNameId} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p>
               </span>
             </div>
           </div>
