@@ -1,9 +1,10 @@
-import StationModel, { Station } from './../models/station_model';
+import StationModel from './../models/station_model';
 import express, { Request, Response } from "express";
 import Activity from "../models/activity_model";
 import { addUserToStationscontoller, getStations } from "../controllers/station_controllers";
 import { getPolylines } from "../controllers/polyline_controller";
 import { ObjectId } from 'mongodb';
+import { Station } from '../interface/station.interface';
 
 
 const router = express.Router();

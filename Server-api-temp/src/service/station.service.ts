@@ -1,5 +1,5 @@
+import { interface_User } from '../interface/user.interface';
 import Station from '../models/station_model';
-import { interface_User } from '../models/users.model';
 export async function addUserToStation(stationId: string, user: interface_User) {
     try {
       const station = await Station.findById(stationId);

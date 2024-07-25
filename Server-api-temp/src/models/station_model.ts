@@ -1,12 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { interface_User, userSchema } from './users.model';
-
-export interface Station extends Document {
-  id: string;
-  position: string;
-  waiting: interface_User[];
-  route: string;
-}
+import {  userSchema } from './users.model';
+import { Station } from '../interface/station.interface';
 
 const StationSchema: Schema = new Schema({
   id: { type: String, required: true },

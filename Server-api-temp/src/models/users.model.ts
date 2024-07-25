@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface interface_User  {
-  email:string,
-  name:string,
-  role:string
-} 
+
 
 export const userSchema = new mongoose.Schema({
   email: {
