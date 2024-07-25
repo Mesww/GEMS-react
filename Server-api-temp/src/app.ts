@@ -88,11 +88,11 @@ wss.on('connection', (ws: WebSocket) => {
 // ======================================================
 
 
-cron.schedule('*/5 * * * *', async () => {
+// Schedule the task to run every 1 minute
+cron.schedule('* * * * *', async () => {
   console.log('Running station waiting list cleanup');
   await cleanStationWaitingLists();
 });
-
 
 // ใช้ server.listen แทน app.listen
 server.listen(PORT, () => {
