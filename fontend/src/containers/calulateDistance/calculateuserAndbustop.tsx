@@ -78,7 +78,7 @@ function useNearestStation(
         const [lat, lng] = parsePosition(data.position);
         const stationId = data._id;
         const stationNameId = data.id;
-        const waitingCount = data.waiting;
+        const waitingCount = data.waitingLength;
         const distance = calculateDistance(
           userLocation.lat,
           userLocation.lng,
@@ -99,28 +99,9 @@ function useNearestStation(
   }, [userLocation, stationData]);
 
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
-  const [userWaiting, setUserWaiting] = useState(false);
+
   useEffect(() => {
-    // Function to decrement waiting count
-    const decrementWaitingCount = () => {
-      if (userWaiting && closestStation && closestStation.waitingCount != 0 ) {
-        axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
-          waiting: closestStation.waitingCount - 1
-        })
-          .then((response) => {
-            console.log("Updated before unload", response.data);
-          })
-          .catch((error) => {
-            console.error("Error updating before unload:", error);
-          });
-      }
-    };
-
-    // Add event listener for beforeunload
-    window.addEventListener('beforeunload', decrementWaitingCount);
-
-    // Your existing effect logic
-    if (closestStation && closestStation.distance <= 900 && !userWaiting) {
+    if (closestStation && closestStation.distance <= 25) {
       let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
@@ -132,37 +113,23 @@ function useNearestStation(
         })
         .then((response) => {
           console.log("Activity posted successfully:", response.data);
-          return axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
-            waiting: closestStation.waitingCount + 1
+          // add user to station
+          return axios.post(`${api}/addusertoStaion`, {
+            id: closestStation.stationId,
+            name: "test",
+            email: "email@asd.com",
+            role: "USER"
           });
         })
         .then((response) => {
-          console.log('Updated', response.data);
-          setUserWaiting(true);
+          console.log('addusertoStaion', response.data);
         })
         .catch((error) => {
           console.error("Error:", error);
         });
     }
-    else if (closestStation && userWaiting && closestStation.waitingCount != 0 && closestStation.distance >= 900) {
-      axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
-        waiting: closestStation.waitingCount - 1
-      })
-        .then((response) => {
-          console.log("Updated", response.data);
-          setUserWaiting(false);
-        })
-        .catch((error) => {
-          console.error("Error updating:", error);
-        });
-    }
-    // Cleanup function
-    return () => {
-      window.removeEventListener('beforeunload', decrementWaitingCount);
-      // Also decrement count when component unmounts if user is still waiting
-      decrementWaitingCount();
-    };
-  }, [closestStation, userWaiting]);
+  
+  }, [closestStation]);
 
   return closestStation;
 }

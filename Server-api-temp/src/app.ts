@@ -8,6 +8,8 @@ import http from 'http';
 import WebSocket from 'ws';
 import axios from 'axios';
 import cors from 'cors'; 
+import cron from 'node-cron';
+import { cleanStationWaitingLists } from "./service/cleanStation";
 dotenv.config();
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -84,6 +86,12 @@ wss.on('connection', (ws: WebSocket) => {
   });
 });
 // ======================================================
+
+
+cron.schedule('*/5 * * * *', async () => {
+  console.log('Running station waiting list cleanup');
+  await cleanStationWaitingLists();
+});
 
 
 // ใช้ server.listen แทน app.listen
