@@ -6,4 +6,8 @@ export interface Station extends Document {
     position: string;
     waiting: interface_User[];
     route: string;
+    direction: Stationdirection;
   }
+export interface Stationdirection {
+    arrival: number[];
+}

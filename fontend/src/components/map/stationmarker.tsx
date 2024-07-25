@@ -11,24 +11,13 @@ export interface TrackerData {
   
 }
 
-// interface FetchData {
-//   status: string;
-//   data: {
-//     [key: string]: TrackerData;
-//   };
-// }
 
 export interface SelectedMarker {
   key: string;
   value: TrackerData;
 }
 
-// export interface IconMarker {
-//   url: string;
-//   scaledSize?: google.maps.Size;
-//   origin?: google.maps.Point;
-//   anchor?: google.maps.Point;
-// }
+
 
 const StationMarker: React.FC<{
   position: Stations[]; 

@@ -65,6 +65,7 @@ wss.on('connection', (ws: WebSocket) => {
           Authorization: `Bearer ${BEARER_TOKEN}`
         }
       });
+    
       ws.send(JSON.stringify(response.data));
     } catch (error) {
       console.error('Error fetching data:', error);
