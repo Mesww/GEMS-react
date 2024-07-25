@@ -54,10 +54,12 @@ if (stations?.data !== undefined) {
   stationMarkers = stations?.data;
 0}
 
+//ป้ายที่ใกล้กับเราที่สุด
 const closestStation = useNearestStation(stationMarkers, location); 
-// console.log(closestStation);
-  
-const closestBusData = useClosestBus(location, data);
+
+//นำป้ายใกล้กับเรามาหา รถบัสที่ใกล้ที่สุด
+const closestBusData = useClosestBus(closestStation, data);
+ 
 
   
   
@@ -87,10 +89,10 @@ const closestBusData = useClosestBus(location, data);
             </p>
             {closestBusData.eta && closestBusData.eta > 0 ? (
               <span className="pl-8">
-                รถจะถึงในอีก {closestBusData.eta.toFixed(2)} นาที
+                รถจะถึงป้ายในอีก {closestBusData.eta.toFixed(2)} นาที
               </span>
             ) : (
-              <span className="pl-4">รถจะถึงในอีก ? นาที</span>
+              <span className="pl-4">รถจะถึงป้ายในอีก ? นาที</span>
             )}
           </div>
 
@@ -98,7 +100,7 @@ const closestBusData = useClosestBus(location, data);
             <div className="border-t border-gray-300"></div>
           </div>
 
-          <div className="currentLocation flex justify-center item-center">
+          <div className="currentLocation flex justify-center item-center pt-2">
             <div className="w-60 h-10 mt-2 shadow-lg bg-stone-400 flex items-center justify-start pl-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
