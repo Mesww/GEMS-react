@@ -1,12 +1,8 @@
 import mongoose from 'mongoose';
 
-export interface interface_User  {
-  email:string,
-  name:string,
-  role:string
-} 
 
-const userSchema = new mongoose.Schema({
+
+export const userSchema = new mongoose.Schema({
   email: {
     required: true,
     type: String,

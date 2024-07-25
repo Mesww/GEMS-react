@@ -1,6 +1,7 @@
-import User, { interface_User } from "../models/users.model";
+import User from "../models/users.model";
 import jwt from 'jsonwebtoken';
 import RoleModel from '../models/roles.model'; // Adjust the path as per your file structure
+import { interface_User } from "../interface/user.interface";
 
 export const regis_user = async (payload:interface_User)=>{
     try {

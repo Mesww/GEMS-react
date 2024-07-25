@@ -14,14 +14,18 @@ export interface Stations {
 
 export const fetchStations = async (setStations:React.Dispatch<React.SetStateAction<AxiosResponse<Stations[], any> | null>>,setLoading:React.Dispatch<React.SetStateAction<boolean>>) => {
       try {
+        setLoading(true);
         const response = await axios.get(`${API_URL}/getStation`);
-        // console.log(response);
+        console.log(response);
         if (response.status !== 200) {
           throw new Error('Error! Fetching stations');
         }
+        if (response.data.length === 0) {
+          throw new Error('Error! No stations found');
+        }
+        setLoading(false);
         setStations(response);
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
+        setLoading(true);
       }
 };

@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 import { auth } from '../service/auth.service';
 import jwt from "jsonwebtoken";
-import {interface_User} from "../models/users.model";
 import { regis_user } from "../service/user.service";
+import { interface_User } from "../interface/user.interface";
 
 export const auth_controller = async (req:Request,res:Response)=>{
     
