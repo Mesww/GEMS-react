@@ -218,7 +218,7 @@ const MapComponant: React.FC<{
     return filteredData.map(([key, value]) => {
       if (value && value.position && window.google.maps) {
         const [lat, lng] = value.position.split(",").map(Number);
-        if (!isNaN(lat) && !isNaN(lng)) {
+        if (!isNaN(lat) && !isNaN(lng) && window.google.maps.Size) {
           return (
             <React.Fragment key={key}>
               <Marker

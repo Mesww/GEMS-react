@@ -7,7 +7,17 @@ export const getStations = async (req: Request, res: Response): Promise<void> =>
     console.log('Fetching stations...');
     const stations = await Station.find();
     console.log(`Found ${stations.length} stations`);
-    res.status(200).json(stations);
+
+    // Map over the stations to include the waiting length and exclude the waiting array
+    const stationsWithoutWaiting = stations.map(station => {
+      const { waiting, ...stationWithoutWaiting } = station.toObject();
+      return {
+        ...stationWithoutWaiting,
+        waitingLength: waiting && waiting.length ? waiting.length : 0 
+      };
+    });
+
+    res.status(200).json(stationsWithoutWaiting);
   } catch (error: unknown) {
     console.error('Error fetching stations:', error);
     if (error instanceof Error) {

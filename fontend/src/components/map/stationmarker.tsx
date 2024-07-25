@@ -80,7 +80,7 @@ const StationMarker: React.FC<{
   return (
     <>
     {position.map((station, index) => {
-      if (station && station.position) {
+      if (station && station.position && window.google) {
         const [lat, lng] = station.position.split(",").map(Number);
         if (!isNaN(lat) && !isNaN(lng) && window.google && window.google.maps) {
           return (
@@ -102,10 +102,9 @@ const StationMarker: React.FC<{
                     position={{ lat, lng }}
                     onCloseClick={handleInfoWindowClose}
                     headerContent={`ป้ายหมายเลข ${station.id}`}
-                   
                   >
                     <div>
-                      <p>คนที่รอในขณะนี้: {station.waiting.length} คน</p>
+                      <p>คนที่รอในขณะนี้: {station.waitingLength} คน</p>
                       <p>รถ GEMS หมายเลข {closestBus.busId} จะถึงภายในอีก { closestBus.eta !== null ? closestBus.eta.toFixed(2) : "?" } นาที</p>
                     </div>
                   </InfoWindow>
