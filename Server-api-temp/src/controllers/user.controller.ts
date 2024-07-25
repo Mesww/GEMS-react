@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { auth } from "../service/auth.service";
 import jwt from "jsonwebtoken";
-import { interface_User } from "../models/users.model";
 import { findUserById } from "../service/user.service";
 import { parseJwt } from "../service/auth.service";
 

@@ -132,3 +132,5 @@ db/*
 /db/*
 # db folder
 db/
+
+public/
