@@ -8,7 +8,7 @@ export interface Stations {
   _id: string;
   id: string;
   position: string;
-  waiting: number;
+  waiting: Array<any>;
   route: string;
 }
 

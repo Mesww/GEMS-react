@@ -105,7 +105,7 @@ const StationMarker: React.FC<{
                    
                   >
                     <div>
-                      <p>คนที่รอในขณะนี้: {station.waiting} คน</p>
+                      <p>คนที่รอในขณะนี้: {station.waiting.length} คน</p>
                       <p>รถ GEMS หมายเลข {closestBus.busId} จะถึงภายในอีก { closestBus.eta !== null ? closestBus.eta.toFixed(2) : "?" } นาที</p>
                     </div>
                   </InfoWindow>

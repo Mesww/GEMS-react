@@ -216,7 +216,7 @@ const MapComponant: React.FC<{
     }
 
     return filteredData.map(([key, value]) => {
-      if (value && value.position) {
+      if (value && value.position && window.google.maps) {
         const [lat, lng] = value.position.split(",").map(Number);
         if (!isNaN(lat) && !isNaN(lng)) {
           return (
