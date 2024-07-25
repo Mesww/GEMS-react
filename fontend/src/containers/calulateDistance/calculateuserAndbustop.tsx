@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios"; // Import axios
 import { Stations } from "../station/getStation";
+import { getUserinfo } from "../login/Login";
+import { useCookies } from "react-cookie";
 
 
 
@@ -17,6 +19,15 @@ interface Station {
 interface Location {
   lat: number;
   lng: number;
+}
+
+interface UserInfo {
+  // Define the structure of your user info here
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  // Add other relevant fields
 }
 
 interface ClosestStation extends Station {
@@ -62,6 +73,33 @@ function useNearestStation(
   );
   const prevLocationRef = useRef<Location | null>(null);
 
+  // get user info ===================================
+  const [cookie] = useCookies(["token"]);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  useEffect(() => {
+    console.log("useEffect for fetching user info is running");
+  
+    const fetchUserInfo = async () => {
+      console.log("fetchUserInfo function started");
+      try {
+        console.log("Attempting to fetch user info with token:", cookie.token);
+        const info:any = await getUserinfo(cookie.token);
+        console.log("User info fetched successfully:", info);
+        setUserInfo(info);
+        console.log("User info set in state");
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+    fetchUserInfo(); 
+    console.log("useEffect cleanup");
+    return () => {
+      console.log("useEffect cleanup function called");
+    };
+  }, [cookie.token]);
+  // =======================================================
+
+
   useEffect(() => {
     if (
       userLocation &&
@@ -105,7 +143,7 @@ function useNearestStation(
       let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
-          studentid: "test",
+          email: userInfo?.email,
           location: `${closestStation.lat}, ${closestStation.lng}`,
           marker: closestStation.stationNameId,
           time: dateTime,
@@ -116,9 +154,9 @@ function useNearestStation(
           // add user to station
           return axios.post(`${api}/addusertoStaion`, {
             id: closestStation.stationId,
-            name: "test",
-            email: "email@asd.com",
-            role: "USER"
+            name: userInfo?.name,
+            email: userInfo?.email,
+            role: userInfo?.role
           });
         })
         .then((response) => {

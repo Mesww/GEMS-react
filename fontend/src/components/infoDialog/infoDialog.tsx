@@ -131,7 +131,7 @@ const closestBusData = useClosestBus(closestStation, data);
                       ? `ป้ายที่ใกล้คุณ ${
                           closestStation.stationNameId
                         } ${closestStation.distance.toFixed(0)} เมตร`
-                      : ""}{" "}
+                      : "กำลังหาตำแหน่งของคุณ"}
                   </p>
                 }
               </span>
