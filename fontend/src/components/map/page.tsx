@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCookies } from "react-cookie";
 import MapComponent from "./mapComponent";
 import Navbar from "../navbar/navbar";
