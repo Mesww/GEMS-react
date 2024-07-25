@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { interface_User } from './users.model';
+import { interface_User, userSchema } from './users.model';
 
 export interface Station extends Document {
   id: string;
@@ -11,7 +11,7 @@ export interface Station extends Document {
 const StationSchema: Schema = new Schema({
   id: { type: String, required: true },
   position: { type: String, required: true },
-  waiting: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  waiting:{ type: [userSchema], default: []},
   route: { type: String, required: true }
 });
 

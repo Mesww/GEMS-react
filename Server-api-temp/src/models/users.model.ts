@@ -6,7 +6,7 @@ export interface interface_User  {
   role:string
 } 
 
-const userSchema = new mongoose.Schema({
+export const userSchema = new mongoose.Schema({
   email: {
     required: true,
     type: String,
