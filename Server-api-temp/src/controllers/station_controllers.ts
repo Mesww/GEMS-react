@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Station from '../models/station_model';
+import { addUserToStation } from '../service/station.service';
 
 export const getStations = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -16,3 +17,17 @@ export const getStations = async (req: Request, res: Response): Promise<void> =>
     }
   }
 };
+
+export const addUserToStationscontoller = async (req: Request, res: Response): Promise<void> => {
+    console.log('Updating station...');
+    const user = {
+      name: req.body.name,
+      email: req.body.email,
+      role:req.body.role
+    };
+     const message =  await addUserToStation(req.params.id, user);
+    if (message.status === 'Error') {
+      res.status(404).json({ message: message.message});
+    }
+    res.status(200).json({ message: message.message });
+  };

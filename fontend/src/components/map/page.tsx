@@ -49,6 +49,7 @@ const Mappage = () => {
         stations={stations}
         selectedstationMarker={selectedstationMarker}
         setselectedstationMarker={setselectedstationMarker}
+        polylines={polylines}
       />
     </>
   );

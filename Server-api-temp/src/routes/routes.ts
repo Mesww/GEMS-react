@@ -1,7 +1,7 @@
 import StationModel, { Station } from './../models/station_model';
 import express, { Request, Response } from "express";
 import Activity from "../models/activity_model";
-import { getStations } from "../controllers/station_controllers";
+import { addUserToStationscontoller, getStations } from "../controllers/station_controllers";
 import { getPolylines } from "../controllers/polyline_controller";
 import { ObjectId } from 'mongodb';
 
@@ -44,6 +44,9 @@ router.get("/", async (req: Request, res: Response) => {
 
 // get station
 router.get('/getStation', getStations);
+
+// post station
+router.post('/addusertoStaion', addUserToStationscontoller);
 
 
 // get polyline
