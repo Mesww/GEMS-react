@@ -6,6 +6,7 @@ import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
 import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
 import { AxiosResponse } from "axios";
 import { Stations } from "../../containers/station/getStation";
+import { SelectedMarker } from "../map/stationmarker";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -21,17 +22,16 @@ interface WebSocketMessage {
   };
 }
 
-const InfoDialog : React.FC<{
-  isVisible:boolean;
+const InfoDialog: React.FC<{
+  isVisible: boolean;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  stations:AxiosResponse<Stations[], any> | null
-}>  = ({isVisible,setinfoIsVisible,stations}) => {
-
+  stations: AxiosResponse<Stations[], any> | null;
+  selectedMarker: SelectedMarker | null;
+}> = ({ isVisible, setinfoIsVisible, stations, selectedMarker }) => {
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);
   };
 
- 
   // ตำแหน่งของผู้ใช้งาน  ================================================
   const location = useUserLocation();
 
@@ -43,24 +43,18 @@ const InfoDialog : React.FC<{
     return messages && messages.status === "ok" ? messages.data : null;
   }, [messages]);
 
-  
-  
   // ClostestStation =========================================================
   // station markers mock ==================================================================================================
 
+  // if (stations?.data === undefined) {
+  //   throw new Error("stations is undefined");
+  // }
 
+  const closestStation = useNearestStation(stations?.data, location);
+  // console.log(closestStation);
 
-// if (stations?.data === undefined) {
-//   throw new Error("stations is undefined");
-// }
+  const closestBusData = useClosestBus(location, data);
 
-// const closestStation = useNearestStation(stations?.data, location); 
-// console.log(closestStation);
-  
-const closestBusData = useClosestBus(location, data);
-
-  
-  
   return (
     <>
       {/* Show button */}
@@ -122,7 +116,16 @@ const closestBusData = useClosestBus(location, data);
               </svg>
               <span className="text-white font-semibold pl-2">
                 {/* station ======================================================================================= */}
-                {/* <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.stationNameId} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p> */}
+                {
+                  <p>
+                    {" "}
+                    {closestStation
+                      ? `ป้ายที่ใกล้คุณ ${
+                          closestStation.stationNameId
+                        } ${closestStation.distance.toFixed(0)} เมตร`
+                      : ""}{" "}
+                  </p>
+                }
               </span>
             </div>
           </div>
@@ -147,7 +150,13 @@ const closestBusData = useClosestBus(location, data);
                   d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"
                 />
               </svg>
-              <span className="text-white font-semibold pl-8">Destination</span>
+              {selectedMarker ? (
+                <span className="text-white font-semibold pl-2">
+                 ป้ายหมายเลข {selectedMarker.key}
+                </span>
+              ) : (
+                <span className="text-white font-semibold pl-2">โปรดเลือกป้ายที่จะไป</span>
+              )}
             </div>
           </div>
 

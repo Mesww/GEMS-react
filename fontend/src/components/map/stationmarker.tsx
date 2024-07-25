@@ -8,6 +8,7 @@ import { Stations } from "../../containers/station/getStation.tsx";
 export interface TrackerData {
   _id: string;
   position: string;
+  
 }
 
 // interface FetchData {
@@ -32,7 +33,7 @@ export interface SelectedMarker {
 const StationMarker: React.FC<{
   position: Stations[]; 
   selectedMarker: SelectedMarker | null;
-  setSelectedMarker?: (marker: SelectedMarker | null) => void;
+  setSelectedMarker: (marker: SelectedMarker | null) => void;
   setCenter: React.Dispatch<
     React.SetStateAction<{
       lat: number;

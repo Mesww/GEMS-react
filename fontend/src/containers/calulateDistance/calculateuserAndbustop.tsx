@@ -103,7 +103,7 @@ function useNearestStation(
   useEffect(() => {
     // Function to decrement waiting count
     const decrementWaitingCount = () => {
-      if (userWaiting && closestStation) {
+      if (userWaiting && closestStation && closestStation.waitingCount != 0 ) {
         axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
           waiting: closestStation.waitingCount - 1
         })
@@ -144,7 +144,7 @@ function useNearestStation(
           console.error("Error:", error);
         });
     }
-    else if (closestStation && userWaiting && closestStation.distance >= 900) {
+    else if (closestStation && userWaiting && closestStation.waitingCount != 0 && closestStation.distance >= 900) {
       axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
         waiting: closestStation.waitingCount - 1
       })
