@@ -6,7 +6,7 @@ import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
 import { AxiosResponse } from "axios";
 import { Stations } from "../../containers/station/getStation";
 import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
-import Loading from "../loading/loading";
+import { SelectedMarker } from "../map/stationmarker";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -22,14 +22,12 @@ interface WebSocketMessage {
   };
 }
 
-const InfoDialog : React.FC<{
-  isVisible:boolean;
+const InfoDialog: React.FC<{
+  isVisible: boolean;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  stations:AxiosResponse<Stations[], any> | null
-}>  = ({isVisible,setinfoIsVisible
-  ,stations
-}) => {
-
+  stations: AxiosResponse<Stations[], any> | null;
+  selectedMarker: SelectedMarker | null;
+}> = ({ isVisible, setinfoIsVisible, stations, selectedMarker }) => {
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);
   };
@@ -47,8 +45,6 @@ const InfoDialog : React.FC<{
     return messages && messages.status === "ok" ? messages.data : null;
   }, [messages]);
 
-  
-  
   // ClostestStation =========================================================
   // station markers mock ==================================================================================================
 
@@ -56,10 +52,10 @@ const InfoDialog : React.FC<{
 
 if (stations?.data !== undefined) {
   stationMarkers = stations?.data;
-}
+0}
 
 const closestStation = useNearestStation(stationMarkers, location); 
-console.log(closestStation);
+// console.log(closestStation);
   
 const closestBusData = useClosestBus(location, data);
 
@@ -84,7 +80,7 @@ const closestBusData = useClosestBus(location, data);
         }`}
       >
         <div className="bg-white rounded-xl shadow-lg py-6 px-10 h-60 w-96 relative">
-          <div className="title flex justify-between justify-center item-center">
+          <div className="title flex justify-between item-center">
             <p className="flex ">
               <img src={gemlogo} alt="logo" className="w-10" />
               Gem {closestBusData.busId}
@@ -126,7 +122,16 @@ const closestBusData = useClosestBus(location, data);
               </svg>
               <span className="text-white font-semibold pl-2">
                 {/* station ======================================================================================= */}
-                <p> {closestStation ? `ป้ายที่ใกล้คุณ ${closestStation.stationNameId} ${closestStation.distance.toFixed(0)} เมตร` : ''} </p>
+                {
+                  <p>
+                    {" "}
+                    {closestStation
+                      ? `ป้ายที่ใกล้คุณ ${
+                          closestStation.stationNameId
+                        } ${closestStation.distance.toFixed(0)} เมตร`
+                      : ""}{" "}
+                  </p>
+                }
               </span>
             </div>
           </div>
@@ -151,7 +156,13 @@ const closestBusData = useClosestBus(location, data);
                   d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"
                 />
               </svg>
-              <span className="text-white font-semibold pl-8">Destination</span>
+              {selectedMarker ? (
+                <span className="text-white font-semibold pl-2">
+                 ป้ายหมายเลข {selectedMarker.key}
+                </span>
+              ) : (
+                <span className="text-white font-semibold pl-2">โปรดเลือกป้ายที่จะไป</span>
+              )}
             </div>
           </div>
 
