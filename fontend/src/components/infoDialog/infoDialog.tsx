@@ -4,9 +4,9 @@ import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
 import { AxiosResponse } from "axios";
-import { Stations } from "../../containers/station/getStation";
 import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
 import { SelectedMarker } from "../map/stationmarker";
+import { Stations } from "../../interfaces/station.interface";
 interface TrackerData {
   server_time: string;
   tracker_time: string;

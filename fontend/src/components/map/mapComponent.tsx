@@ -12,9 +12,9 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import React from "react";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import StationMarker, { SelectedMarker } from "./stationmarker";
-import {  Stations } from "../../containers/station/getStation";
 import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
+import { Stations } from "../../interfaces/station.interface";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";

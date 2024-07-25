@@ -3,12 +3,13 @@ import { useCookies } from "react-cookie";
 import MapComponent from "./mapComponent";
 import Navbar from "../navbar/navbar";
 import InfoDialog from "../infoDialog/infoDialog";
-import { fetchStations, Stations } from "../../containers/station/getStation";
+import { fetchStations } from "../../containers/station/getStation";
 import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
 import { fetchPolylines } from "../../containers/polyline/getPolyline";
 import Loading from "../loading/loading";
 import { SelectedMarker } from "./stationmarker";
+import { Stations } from "../../interfaces/station.interface";
 
 const Mappage = () => {
   const [, setCookie] = useCookies(["token"]);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { StationData } from '../../interfaces/station.interface';
 
  interface BusInfo {
   direction: number;
@@ -28,7 +29,6 @@ const useClosestBus = (
     busInfo: null,
     eta: null,
   });
-
   useEffect(() => {
     if (userLocation && busData) {
       let minDistance = Infinity;
@@ -75,14 +75,12 @@ const useClosestBus = (
 };
 
 // find bus that closest station ==================================================================================================
-export interface StationData {
-  lat: number;
-  lng: number;
-}
+
 
 export const useCloseststation = (
   stationLocation: StationData | null,
-  busData: BusData | null
+  busData: BusData | null,
+  stationDiarction: number[] 
 ): ClosestBusResult => {
   const [closestBus, setClosestBus] = useState<ClosestBusResult>({
     busId: null,
@@ -106,7 +104,7 @@ export const useCloseststation = (
           busLat,
           busLng
         );
-        if (distance < minDistance && busInfo.speed > 0) {
+        if (distance < minDistance && busInfo.speed > 0 && busInfo.direction <= stationDiarction[1] && busInfo.direction >= stationDiarction[0]) {
           minDistance = distance;
           closestBusId = busId;
           closestBusInfo = busInfo;

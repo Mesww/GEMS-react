@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios"; // Import axios
-import { Stations } from "../station/getStation";
+import { Stations } from "../../interfaces/station.interface";
 
 
 
