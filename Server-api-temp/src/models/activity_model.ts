@@ -1,7 +1,7 @@
 import mongoose, { Collection } from "mongoose";
 
 interface activities {
-    studentid: string;
+    email: string;
     location: string;
     marker: string;
     time: Date;
@@ -10,7 +10,7 @@ interface activities {
 
 const activitySchema = new mongoose.Schema(
     {
-      studentid: { type: String, required: false},
+      email: { type: String, required: false},
       location: { type: String, required: true },
       marker: { type: String, required: true },
       time: { type: Date, required: false },
@@ -20,7 +20,7 @@ const activitySchema = new mongoose.Schema(
   );
 
   interface activityDocument extends mongoose.Document {
-    studentid: string;
+    email: string;
     location: string;
     marker: string;
     time: Date;
@@ -32,7 +32,7 @@ const activitySchema = new mongoose.Schema(
 
   // Extend the model with the `set` method
 Activity.prototype.set = function (x: activities) {
-    this.studentid = x.studentid;
+    this.studentid = x.email;
     this.location = x.location;
     this.marker = x.marker;
     this.time = x.time;
