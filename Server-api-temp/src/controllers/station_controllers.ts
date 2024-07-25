@@ -25,7 +25,7 @@ export const addUserToStationscontoller = async (req: Request, res: Response): P
       email: req.body.email,
       role:req.body.role
     };
-     const message =  await addUserToStation(req.params.id, user);
+     const message =  await addUserToStation(req.body.id, user);
     if (message.status === 'Error') {
       res.status(404).json({ message: message.message});
     }

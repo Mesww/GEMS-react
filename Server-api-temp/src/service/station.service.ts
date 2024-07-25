@@ -4,7 +4,10 @@ export async function addUserToStation(stationId: string, user: interface_User) 
     try {
       const station = await Station.findById(stationId);
       if (station) {
-        station.waiting.push(user);
+        if (!station.waiting) {
+            station.waiting = [];
+          }
+        // station.waiting.push(user);
         await station.save();
         console.log('User added to the waiting list successfully.');
         return { "status":"Success","message":"User added to the waiting list successfully."};
