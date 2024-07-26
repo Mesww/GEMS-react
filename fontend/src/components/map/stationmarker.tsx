@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
-import { useCloseststation } from "../../containers/calulateDistance/calculateDistance";
+import { BusData, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
 import { WebSocketMessage } from "./mapComponent";
 import { StationData, Stations } from "../../interfaces/station.interface";
 
@@ -17,6 +17,7 @@ export interface SelectedMarker {
 
 const StationMarker: React.FC<{
   position: Stations[];
+  busData: BusData | null;
   selectedMarker: SelectedMarker | null;
   setSelectedMarker: (marker: SelectedMarker | null) => void;
   setCenter: React.Dispatch<
@@ -32,6 +33,7 @@ const StationMarker: React.FC<{
   setSelectedMarker,
   setCenter,
   urlMarker,
+  busData
 }) => {
   const [stationLocation, setStationLocation] = useState<StationData | null>(
     null
@@ -43,12 +45,14 @@ const StationMarker: React.FC<{
     messages: WebSocketMessage | null;
   };
 
-  const data = useMemo(() => {
-    return messages && messages.status === "ok" ? messages.data : null;
-  }, [messages]);
+  // const data = useMemo(() => {
+  //   return messages && messages.status === "ok" ? messages.data : null;
+  // }, [messages]);
+
+  
 
   // Call useCloseststation hook with the station location
-  const closestBus = useCloseststation(stationLocation, data,stationDiarction);
+  const closestBus = useCloseststation(stationLocation, busData,stationDiarction);
 
   // handle marker click
   const handleMarkerClick = useCallback(
@@ -122,7 +126,7 @@ const StationMarker: React.FC<{
                             : "?"}{" "}
                           นาที
                         </p>
-                        <p>รถ GEMS หมายเลข {closestBus.busId} จะถึงภายใน {closestBus.distance?.toFixed(0)}</p>
+                        <p>รถ GEMS หมายเลข {closestBus.busId} จะถึงภายใน {closestBus.distance?.toFixed(0)} เมตร</p>
                          {station.direction.arrival!== undefined ? <p>รถจะมาถึงในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
                       </div>
                     </InfoWindow>

@@ -15,6 +15,7 @@ import StationMarker, { SelectedMarker } from "./stationmarker";
 import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
 import { Stations } from "../../interfaces/station.interface";
+import { BusData } from "../../containers/calulateDistance/calculateDistance";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
@@ -26,18 +27,18 @@ const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 //   anchor: new window.google.maps.Point(32, 18), // The anchor point of the icon image (center bottom for 64x36)
 //   rotation: direction, // Set the rotation based on direction
 // }};
-const busIcon = (direction:number) => {
-  return {
-    path: "M10 20 L15 0 L20 20 L10 20 Z", // Example path, replace with your icon's path
-    fillColor: "red",
-    fillOpacity: 1,
-    scale: 1,
-    strokeColor: "red",
-    strokeWeight: 1,
-    rotation: direction,
-    anchor: new window.google.maps.Point(15, 30) // Adjust anchor point as needed
-  };
-};
+// const busIcon = (direction:number) => {
+//   return {
+//     path: "M10 20 L15 0 L20 20 L10 20 Z", // Example path, replace with your icon's path
+//     fillColor: "red",
+//     fillOpacity: 1,
+//     scale: 1,
+//     strokeColor: "red",
+//     strokeWeight: 1,
+//     rotation: direction,
+//     anchor: new window.google.maps.Point(15, 30) // Adjust anchor point as needed
+//   };
+// };
 const userIcon = "/userIcon.png";
 
 console.log(MAPAPIKEY);
@@ -105,9 +106,62 @@ const MapComponant: React.FC<{
   const { messages } = useWebSocketData() as {
     messages: WebSocketMessage | null;
   };
-  const data = useMemo(() => {
-    return messages && messages.status === "ok" ? messages.data : null;
-  }, [messages]);
+  // const data = useMemo(() => {
+  //   return messages && messages.status === "ok" ? messages.data : null;
+  // }, [messages]);
+
+  // test data ==================================================================================================
+
+  const data : BusData = {
+    // "01": {
+    // _id:"bus01",
+    //   direction: 45,
+    //   position: "20.045659393241642, 99.89133178188165",
+    //   server_time: "2024-07-26T10:00:00Z",
+    //   speed: 0, // in km/h
+    //   tracker_time: "2024-07-26T10:00:00Z"
+    // },
+    "01": {
+    _id:"bus01",
+      direction: 45,
+      position: "20.045700, 99.891400",
+      server_time: "2024-07-26T10:00:00Z",
+      speed: 0, // in km/h
+      tracker_time: "2024-07-26T10:00:00Z"
+    },
+    // "01": {
+    // _id:"bus01",
+    //   direction: 45,
+    //   position: "20.045668, 99.891346",
+    //   server_time: "2024-07-26T10:00:00Z",
+    //   speed: 0, // in km/h
+    //   tracker_time: "2024-07-26T10:00:00Z"
+    // },
+    // "01": {
+    // _id:"bus01",
+    //   direction: 45,
+    //   position: "20.045600, 99.891300",
+    //   server_time: "2024-07-26T10:00:00Z",
+    //   speed: 0, // in km/h
+    //   tracker_time: "2024-07-26T10:00:00Z"
+    // },
+    "02": {
+      _id:"bus2",
+      direction: 50,
+      position: "20.045600, 99.891300",
+      server_time: "2024-07-26T10:00:00Z",
+      speed: 35,
+      tracker_time: "2024-07-26T10:00:00Z"
+    },
+    "03": {
+      _id:"bus3",
+      direction: 30,
+      position: "20.045800, 99.891500",
+      server_time: "2024-07-26T10:00:00Z",
+      speed: 20,
+      tracker_time: "2024-07-26T10:00:00Z"
+    }
+  };
 
   ////////// test polyline state ///////////////////////
   const [polylinePath, setPolylinePath] = useState<google.maps.LatLngLiteral[]>(
@@ -244,7 +298,7 @@ const MapComponant: React.FC<{
                 position={{ lat, lng }}
                 title={`รถเจมหมายเลข: ${key}`}
                 onClick={() => handleMarkerClick(key, value)}
-                icon={busIcon(value.direction)}
+                // icon={busIcon(value.direction)}
               />
               {selectedMarker && selectedMarker.key === key && (
                 <InfoWindow
@@ -328,6 +382,7 @@ const MapComponant: React.FC<{
             setSelectedMarker={setselectedstationMarker}
             setCenter={setCenter}
             urlMarker={urlMarker1}
+            busData={data}
           />
         ) : (
           <StationMarker
@@ -336,6 +391,7 @@ const MapComponant: React.FC<{
             setSelectedMarker={setselectedstationMarker}
             setCenter={setCenter}
             urlMarker={urlMarker2}
+            busData={data}
           />
         )}
         <PolylineComponent
