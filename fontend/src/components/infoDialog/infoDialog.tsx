@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useClosestBus from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
@@ -7,6 +7,7 @@ import { AxiosResponse } from "axios";
 import { Stations } from "../../containers/station/getStation";
 import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
 import { SelectedMarker } from "../map/stationmarker";
+import StationToStationComponent from "../../containers/calulateDistance/calStationToStation";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -57,12 +58,25 @@ if (stations?.data !== undefined) {
 //ป้ายที่ใกล้กับเราที่สุด
 const closestStation = useNearestStation(stationMarkers, location); 
 
+
 //นำป้ายใกล้กับเรามาหา รถบัสที่ใกล้ที่สุด
 const closestBusData = useClosestBus(closestStation, data);
  
 
+// ระยะห่างระหว่างป้ายที่เราเลือกกับป้ายที่ใกล้เราที่สุด
+const [stationToStation, setStationToStation] = useState(0);
+useEffect(() => {
+  if (selectedMarker) {
+    const result = StationToStationComponent({ selectedMarker, closestStation });
+    if (typeof result === 'number') {
+      setStationToStation(result);
+      console.log("StationToStation", result);
+    }
+  }
+}, [selectedMarker, closestStation]);
+
   
-  
+
   return (
     <>
       {/* Show button */}
@@ -140,6 +154,15 @@ const closestBusData = useClosestBus(closestStation, data);
 
           <div className="between flex items-center pl-8">
             <div className="h-10 border-l border-black"></div>
+            <div>
+            {selectedMarker ? (
+                <span className="text-black font-semibold pl-2">
+                 ห่างประมาณ {stationToStation.toFixed(0)} เมตร
+                </span>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
 
           <div className="destination subtitle flex justify-center items-center">
