@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { StationData } from "../../interfaces/station.interface";
+import {  Stations } from "../../interfaces/station.interface";
 import haversine from "haversine-distance";
-interface BusInfo {
+export interface BusInfo {
   _id: string;
   direction: number;
   position: string;
@@ -77,9 +77,9 @@ const useClosestBus = (
 // find bus that closest station ==================================================================================================
 
 export const useCloseststation = (
-  stationLocation: StationData | null,
+  stationSelected:Stations | null,
   busData: BusData | null,
-  stationDiarction: number[]
+ 
 ): ClosestBusResult => {
   const [closestBus, setClosestBus] = useState<ClosestBusResult>({
     busId: null,
@@ -87,14 +87,18 @@ export const useCloseststation = (
     busInfo: null,
     eta: null,
   });
-
+  
   useEffect(() => {
+    if (!stationSelected || !busData) {
+      return;
+    }
+    const [lat, lng] = stationSelected.position.split(",").map(Number);
+    const stationLocation = { lat, lng };
     if (stationLocation && busData) {
       let minDistance = Infinity;
       let closestBusId = null;
       let closestBusInfo = null;
       let eta = null;
-
       for (const [busId, busInfo] of Object.entries(busData)) {
         const [busLat, busLng] = busInfo.position.split(",").map(Number);
         console.log(`busLocation : ${busLat} ${busLng}`);
@@ -106,8 +110,8 @@ export const useCloseststation = (
         console.log(`busid:${busId} \t busLocation : ${busLat} ${busLng} \t distance : ${distance} m`);
         if (
           distance < minDistance &&
-          busInfo.direction >= stationDiarction[0] &&
-          busInfo.direction <= stationDiarction[1]
+          busInfo.direction >= stationSelected.direction.arrival[0] &&
+          busInfo.direction <= stationSelected.direction.arrival[1]
         ) {
           minDistance = distance;
           closestBusId = busId;
@@ -130,7 +134,6 @@ export const useCloseststation = (
         return;
       }
       
-      let hasLeftStation = false;
 
 
       // console.log(Object.entries(busData)[0][1].position);
@@ -138,28 +141,52 @@ export const useCloseststation = (
       console.log(`minDistance : ${minDistance} m`);
 
       // bearing is calulated degree from station to bus 
-        const bearing = calculateBearing(stationLocation.lat, stationLocation.lng, busLat,busLng);
-        if (bearing >0 &&  bearing <= stationDiarction[1]) {
-          console.log(`bearing : ${bearing}`);
-           hasLeftStation = closestBusInfo 
-      ? hasBusLeftStation(closestBusInfo, stationLocation)
-      : false;
-        }
-    
-      console.log(`hasLeft: ${hasLeftStation}`);
+      const bearing = calculateBearing(stationLocation.lat, stationLocation.lng, busLat,busLng);
+      console.log(`bearing : ${bearing}`);
+      console.log(`closestBusInfo.direction : ${closestBusInfo.direction}`);
+      console.log("isApproaching : "+isBusApproaching(closestBusInfo.direction, bearing));
 
+      
+      
       setClosestBus({
         busId: closestBusId,
         distance: minDistance,
         busInfo: closestBusInfo,
         eta: eta,
       });
+
+     
     }
-  }, [stationLocation, busData]);
+  }, [busData]);
 
   return closestBus;
 };
 
+export function findApproaching(data:{stationSelected:Stations | null,closestBus:ClosestBusResult | null}):ClosestBusResult | null{
+  if (data.stationSelected === null || data.closestBus === null || data.closestBus.busInfo === null) {
+    return null;
+  }
+  const [stationlat, stationlng] = data.stationSelected.position.split(",").map(Number);
+  const [busLat, busLng] = data.closestBus.busInfo.position.split(",").map(Number);
+  const bearing = calculateBearing(stationlat, stationlng, busLat,busLng);
+  if (data.stationSelected.direction.approaching !== undefined && bearing <= data.stationSelected.direction.approaching[1] && bearing >= data.stationSelected.direction.approaching[0]) {
+    return data.closestBus;
+  }
+  return null;
+}
+
+ export function findLeft(data:{stationSelected:Stations | null,closestBus:ClosestBusResult | null}):ClosestBusResult | null{
+  if (data.stationSelected === null || data.closestBus === null || data.closestBus.busInfo === null) {
+    return null;
+  }
+  const [stationlat, stationlng] = data.stationSelected.position.split(",").map(Number);
+  const [busLat, busLng] = data.closestBus.busInfo.position.split(",").map(Number);
+  const bearing = calculateBearing(stationlat, stationlng, busLat,busLng);
+  if (data.stationSelected.direction.departure !== undefined && bearing <= data.stationSelected.direction.departure[1] && bearing >= data.stationSelected.direction.departure[0]) {
+    return data.closestBus;
+  }
+  return null;
+ }
 function calculateDistance(
   lat1: number,
   lon1: number,
@@ -178,19 +205,7 @@ function calculateDistance(
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in kilometers
 }
-const DISTANCE_THRESHOLD = 0.5;
-const hasBusLeftStation = (
-  busLocation: BusInfo,
-  stationLocation: { lat: number; lng: number }
-): boolean => {
-  const [busLat, busLng] = busLocation.position.split(",").map(Number);
-  const distance = haversine(
-   {"lat": busLat,
-    "lng":busLng,},
-    stationLocation
-  );
-  return distance > DISTANCE_THRESHOLD;
-};
+
 
 const calculateBearing = (lat1: number, lng1: number, lat2: number, lng2: number) => {
   const φ1 = lat1 * Math.PI / 180;
@@ -203,5 +218,11 @@ const calculateBearing = (lat1: number, lng1: number, lat2: number, lng2: number
 
   return (θ * 180 / Math.PI + 360) % 360;
 };
+
+function isBusApproaching(busHeading: number, bearing: number) {
+  const difference = Math.abs(busHeading - bearing);
+  return difference < 30 || difference > 330; // Adjust the threshold as needed
+}
+
 
 export default useClosestBus;

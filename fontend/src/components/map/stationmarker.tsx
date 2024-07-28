@@ -1,9 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
-import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
-import { BusData, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
-import { WebSocketMessage } from "./mapComponent";
-import { StationData, Stations } from "../../interfaces/station.interface";
+import { BusData,findApproaching, findLeft, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
+import {  Stations } from "../../interfaces/station.interface";
 
 export interface TrackerData {
   _id: string;
@@ -35,24 +33,11 @@ const StationMarker: React.FC<{
   urlMarker,
   busData
 }) => {
-  const [stationLocation, setStationLocation] = useState<StationData | null>(
-    null
-  );
-  const [stationDiarction, setStationDirection] = useState<number[]>([]);
 
-  // Receive data from websocket
-  const { messages } = useWebSocketData() as {
-    messages: WebSocketMessage | null;
-  };
 
-  // const data = useMemo(() => {
-  //   return messages && messages.status === "ok" ? messages.data : null;
-  // }, [messages]);
-
+  const [stationSelected, setStationSelected] = useState<Stations | null >(null);
   
-
-  // Call useCloseststation hook with the station location
-  const closestBus = useCloseststation(stationLocation, busData,stationDiarction);
+  const closestBus = useCloseststation(stationSelected, busData);
 
   // handle marker click
   const handleMarkerClick = useCallback(
@@ -63,8 +48,7 @@ const StationMarker: React.FC<{
         setSelectedMarker({ key, value });
       }
       setCenter({ lat, lng });
-      setStationLocation({ lat, lng }); // Update station location
-      setStationDirection(value.direction.arrival); // Update station direction
+      setStationSelected(value); // Update selected station
     },
     [setSelectedMarker, setCenter]
   );
@@ -77,6 +61,8 @@ const StationMarker: React.FC<{
   }, [setSelectedMarker]);
 
   if (!position) return null;
+
+
 
   return (
     <>
@@ -119,15 +105,11 @@ const StationMarker: React.FC<{
                     >
                       <div>
                         <p>คนที่รอในขณะนี้: {station.waiting} คน</p>
-                        <p>
-                          รถ GEMS หมายเลข {closestBus.busId} จะถึงภายในอีก{" "}
-                          {closestBus.eta !== null
-                            ? closestBus.eta.toFixed(2)
-                            : "?"}{" "}
-                          นาที
-                        </p>
-                        <p>รถ GEMS หมายเลข {closestBus.busId} จะถึงภายใน {closestBus.distance?.toFixed(0)} เมตร</p>
-                         {station.direction.arrival!== undefined ? <p>รถจะมาถึงในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
+                        {findApproaching({stationSelected:station,closestBus:closestBus}) !== null ? <p>รถหมายเลข {findApproaching({stationSelected:station,closestBus:closestBus})?.busId } กำลังจะมาถึงจะถึงภายใน {findApproaching({stationSelected:station,closestBus:closestBus})?.eta } นาที </p> : findLeft({stationSelected:station,closestBus:closestBus}) !== null ? <p>รถหมายเลข : {findLeft({stationSelected:station,closestBus:closestBus})?.busId} กำลังออก</p> : <p>ยังไม่มีรถที่จะเข้าหรือออกจากป้าย</p>}
+                        {findApproaching({stationSelected:station,closestBus:closestBus}) !== null ?<p>รถ GEMS จะถึงภายใน  {findApproaching({stationSelected:station,closestBus:closestBus})?.distance } เมตร</p>:null}
+                         {station.direction.arrival!== undefined ? <p>(for Debugging)รถจะหันมาในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
+                         {station.direction.approaching!== undefined ? <p>(for Debugging)รถจะมาถึงในทิศ {station.direction.approaching[0]} , {station.direction.approaching[1]}  </p> : null}
+                         {station.direction.departure!== undefined ? <p>(for Debugging)รถจะออกจากป้ายในทิศ {station.direction.departure[0]} , {station.direction.departure[1]}  </p> : null}
                       </div>
                     </InfoWindow>
                   )}

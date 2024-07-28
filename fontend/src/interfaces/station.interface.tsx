@@ -8,6 +8,8 @@ export interface Stations {
   }
   export interface Stationdirection {
     arrival: number[];
+    approaching?:  number[];
+    departure?: number[];
   }
 
   export interface StationData {
