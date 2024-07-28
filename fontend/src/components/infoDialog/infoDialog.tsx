@@ -61,19 +61,25 @@ const closestStation = useNearestStation(stationMarkers, location);
 
 //นำป้ายใกล้กับเรามาหา รถบัสที่ใกล้ที่สุด
 const closestBusData = useClosestBus(closestStation, data);
- 
+
+
 
 // ระยะห่างระหว่างป้ายที่เราเลือกกับป้ายที่ใกล้เราที่สุด
-const [stationToStation, setStationToStation] = useState(0);
+// Calculate distances and ETA
+const [stationToStation, setStationToStation] = useState<{
+  stationToStationDistance: number;
+  busToBusStopDistance: number;
+  etaTime: number;
+} | null>(null);
 useEffect(() => {
   if (selectedMarker) {
-    const result = StationToStationComponent({ selectedMarker, closestStation });
-    if (typeof result === 'number') {
+    const result = StationToStationComponent({ selectedMarker, closestStation, closestBusData });
+    if (result) {
       setStationToStation(result);
-      console.log("StationToStation", result);
+      // console.log("StationToStation", result);
     }
   }
-}, [selectedMarker, closestStation]);
+}, [selectedMarker, closestStation, closestBusData]);
 
   
 
@@ -102,11 +108,11 @@ useEffect(() => {
               Gem {closestBusData.busId}
             </p>
             {closestBusData.eta && closestBusData.eta > 0 ? (
-              <span className="pl-8">
+              <span >
                 รถจะถึงป้ายในอีก {closestBusData.eta.toFixed(2)} นาที
               </span>
             ) : (
-              <span className="pl-4">รถจะถึงป้ายในอีก ? นาที</span>
+              <span >รถจะถึงป้ายในอีก ? นาที</span>
             )}
           </div>
 
@@ -154,10 +160,10 @@ useEffect(() => {
 
           <div className="between flex items-center pl-8">
             <div className="h-10 border-l border-black"></div>
-            <div>
+            <div className="pl-2">
             {selectedMarker ? (
-                <span className="text-black font-semibold pl-2">
-                 ห่างประมาณ {stationToStation.toFixed(0)} เมตร
+                <span className="text-black">
+                 ห่างประมาณ {stationToStation?.stationToStationDistance.toFixed(0)} เมตร จะถึงป้ายที่คุณเลือกอีกประมาณ {stationToStation?.etaTime.toFixed(2)} นาที
                 </span>
               ) : (
                 ""

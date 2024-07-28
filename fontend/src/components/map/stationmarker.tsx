@@ -89,7 +89,7 @@ const StationMarker: React.FC<{
                 position={{ lat, lng }}
                 title={`ป้ายหมายเลข: ${station.id}`}
                 onClick={() => handleMarkerClick(station.id, station)}
-                label={station.id}
+                label={{ text: station.id,  className:'marker-label' }}
                 icon={{
                   url: urlMarker,
                   scaledSize: window.google.maps.Size ? new window.google.maps.Size(54, 54) : null,
