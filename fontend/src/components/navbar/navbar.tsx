@@ -11,7 +11,7 @@ const Navbar: React.FC<{
   setCookie: any;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ activeContent, setActiveContent, setCookie,setinfoIsVisible }) => {
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(true);
 
 
   const handleLogoClick = () => {
