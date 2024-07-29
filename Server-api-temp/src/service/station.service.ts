@@ -39,8 +39,7 @@ export async function findClosestStation(busData: BusData) {
       console.log("No stations found.");
       throw new Error("No stations found.");
     }
-    console.log(busData);
-    
+    // console.log(busData);
     if (!busData) {
       console.log("No bus data found.");
       throw new Error("No bus data found.");
@@ -85,7 +84,7 @@ export async function findClosestStation(busData: BusData) {
       }
 
       
-      if (minDistance !== Infinity && closestBusId !== null && closestBusInfo !== null && eta !== null) {
+      if (minDistance !== Infinity && closestBusId !== null && closestBusInfo !== null && eta !== null && minDistance < maxDistance) {
         const [busLat, busLng] = closestBusInfo.position.split(",").map(Number);
         const bearing = calculateBearing(lat, lng, busLat ,busLng);
         let isApproaching = station.direction.arrival[0] <= bearing && bearing <= station.direction.arrival[1];
