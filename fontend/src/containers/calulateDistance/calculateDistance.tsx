@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {  Stations } from "../../interfaces/station.interface";
 import haversine from "haversine-distance";
 export interface BusInfo {
+  _id:string;
   direction: number;
   position: string;
   server_time: string;
