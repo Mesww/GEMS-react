@@ -64,37 +64,50 @@ const closestBusData = useClosestBus(closestStation, data);
 
 
 
+
 // ระยะห่างระหว่างป้ายที่เราเลือกกับป้ายที่ใกล้เราที่สุด
-// Calculate distances and ETA
-const [stationToStation, setStationToStation] = useState<{
-  stationToStationDistance: number;
-  busToBusStopDistance: number;
-  etaTime: number;
-} | null>(null);
+const [stationToStation, setStationToStation] = useState(0);
+const [eta, setEta] = useState('');
 useEffect(() => {
-  if (selectedMarker) {
-    const result = StationToStationComponent({ selectedMarker, closestStation, closestBusData });
-    if (result) {
-      setStationToStation(result);
-      // console.log("StationToStation", result);
-    }
+  const calETA = () => {
+    const speedMeterPerSecond = 30 * 1000 / 3600; // Convert 30 km/h to m/s
+    const timeInSeconds = stationToStation / speedMeterPerSecond;
+    const timeInMinutes = timeInSeconds / 60;
+     // Round to nearest 0.5 minute
+     const roundedMinutes = Math.round(timeInMinutes * 2) / 2;
+     // Format the time
+     const minutes = Math.floor(roundedMinutes);
+     const seconds = Math.round((roundedMinutes % 1) * 60);
+     
+     // Create the formatted string
+     const formattedEta = `${minutes}:${seconds.toString().padStart(2, '0')} นาที`;
+     setEta(formattedEta);
+
   }
-}, [selectedMarker, closestStation, closestBusData]);
+  if (selectedMarker) {
+    const result = StationToStationComponent({ selectedMarker, closestStation });
+    if (typeof result === 'number') {
+      setStationToStation(result);
+      console.log("StationToStation", result);
+    }
+   if(stationToStation != 0){
+    calETA();
+   }
+   else
+  {
+    const formattedEta = `? นาที`;
+    setEta(formattedEta);
+    setTimeout(() => {
+      calETA();
+    }, 1000);
+  }
+  }
+}, [selectedMarker, closestStation]);
 
   
 
   return (
     <>
-      {/* Show button */}
-      {/* <button
-        className={`fixed bottom-24 right-4 z-50 bg-blue-500 text-white rounded-full p-2 transition-all duration-300 ease-in-out ${
-          isVisible ? "scale-0" : "scale-100"
-        }`}
-        onClick={toggleVisibility}
-      >
-        แสดงข้อมูลรถ
-      </button> */}
-
       {/* Dialog */}
       <div
         className={`fixed bottom-24 left-0 right-0 z-50 flex justify-center transition-all duration-300 ease-in-out ${
@@ -159,12 +172,21 @@ useEffect(() => {
           </div>
 
           <div className="between flex items-center pl-8">
-            <div className="h-10 border-l border-black"></div>
+            <div className="h-16 border-l border-black"></div>
             <div className="pl-2">
             {selectedMarker ? (
-                <span className="text-black">
-                 ห่างประมาณ {stationToStation?.stationToStationDistance.toFixed(0)} เมตร จะถึงป้ายที่คุณเลือกอีกประมาณ {stationToStation?.etaTime.toFixed(2)} นาที
+              <div className="flex-col">
+               <div>
+               <span className="text-black">
+                 ห่างประมาณ {stationToStation.toFixed(0)} เมตร
                 </span>
+               </div>
+              <div>
+              <span>
+                ใช้เวลาประมาณ {eta}
+                </span>
+              </div>
+              </div>
               ) : (
                 ""
               )}
@@ -223,3 +245,4 @@ useEffect(() => {
 };
 
 export default InfoDialog;
+
