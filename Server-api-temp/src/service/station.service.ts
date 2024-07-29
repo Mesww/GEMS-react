@@ -32,102 +32,64 @@ export async function addUserToStation(
     };
   }
 }
-export async function findClosestStation(busData: BusData) {
+export async function findClosestStation(busData:BusData) {
   try {
     const stations = await Station.find();
-    if (!stations) {
-      console.log("No stations found.");
+    if (!stations.length) {
       throw new Error("No stations found.");
     }
-    // console.log(busData);
     if (!busData) {
-      console.log("No bus data found.");
       throw new Error("No bus data found.");
     }
-    stations.forEach(async (station) => {
-      const approaching:ClosestBusResult ={
-        busId: null,
-        distance: null,
-        busInfo: null,
-        eta: null,
-      };
-      const departure:ClosestBusResult ={
-        busId: null,
-        distance: null,
-        busInfo: null,
-        eta: null,
-      };
+
+    for (const station of stations) {
       const [lat, lng] = station.position.split(",").map(Number);
       const stationLocation = { lat, lng };
+
+      let approaching = null;
+      let departure = null;
+
       let minDistance = Infinity;
       const maxDistance = 50;
-      let closestBusId = null;
-      let closestBusInfo = null;
-      let eta = null;
+
       for (const [busId, busInfo] of Object.entries(busData)) {
         const [busLat, busLng] = busInfo.position.split(",").map(Number);
         const busLocation = { lat: busLat, lng: busLng };
         const distance = haversine(stationLocation, busLocation);
-        if (
-          (distance < maxDistance &&
-            distance < minDistance &&
-            busInfo.direction >= station.direction.arrival[0]) ||
-          busInfo.direction <= station.direction.arrival[1]
-            && busInfo.speed > 0 
-        ) {
-          minDistance = distance;
-          closestBusId = busId;
-          closestBusInfo = busInfo;
-          const speed = busInfo.speed/60;
-          eta = (distance/1000) / speed;
+
+        if (distance < maxDistance && distance < minDistance && busInfo.speed > 0) {
+          const speed = busInfo.speed / 60;
+          const eta = (distance / 1000) / speed;
+          const bearing = calculateBearing(lat, lng, busLat, busLng);
+
+          const isApproaching = station.direction.arrival[0] <= bearing && bearing <= station.direction.arrival[1];
+          const isDeparture = station.direction.departure[0] <= bearing && bearing <= station.direction.departure[1];
+
+          if (isApproaching) {
+            approaching = { busId, distance, busInfo, eta };
+            departure = null;
+            minDistance = distance;
+          } else if (isDeparture) {
+            departure = { busId, distance, busInfo, eta };
+            approaching = null;
+            minDistance = distance;
+          }
         }
       }
 
-      
-      if (minDistance !== Infinity && closestBusId !== null && closestBusInfo !== null && eta !== null && minDistance < maxDistance) {
-        const [busLat, busLng] = closestBusInfo.position.split(",").map(Number);
-        const bearing = calculateBearing(lat, lng, busLat ,busLng);
-        let isApproaching = station.direction.arrival[0] <= bearing && bearing <= station.direction.arrival[1];
-        let isDeparture = station.direction.departure[0] <= bearing && bearing <= station.direction.departure[1];
-        
-        if (isApproaching) {
-          isDeparture = false;
-          departure.busId = null;
-          departure.distance = null;
-          departure.busInfo = null;
-          departure.eta = null;
-          approaching.busId = closestBusId;
-          approaching.distance = minDistance;
-          approaching.busInfo = closestBusInfo;
-          approaching.eta = eta;
-          console.log(`Station ${station.id} Bearing: ${bearing}`);
-        console.log(`Station ${station.id} - isApproaching: ${isApproaching}, isDeparture: ${isDeparture}`);
-
-          console.log(`closestBusId : ${approaching.busId} Distance : ${approaching.distance.toFixed(0)} ETA : ${approaching.eta}`);
-          console.log(busStatus.approaching);
-          station.statusBus = {busStatus:busStatus.approaching,busInfo: approaching};
-        }else if(isDeparture){
-          isApproaching = false;
-          approaching.busId = null;
-          approaching.distance = null;
-          approaching.busInfo = null;
-          approaching.eta = null;
-          departure.busId = closestBusId;
-          departure.distance = minDistance;
-          departure.busInfo = closestBusInfo;
-          departure.eta = eta;
-          console.log(`Station ${station.id} Bearing: ${bearing}`);
-          console.log(`Station ${station.id} - isApproaching: ${isApproaching}, isDeparture: ${isDeparture}`);
-          console.log(busStatus.departure);
-          console.log(`closestBusId : ${approaching.busId} Distance : ${approaching.distance} ETA : ${approaching.eta}`);
-          station.statusBus = {busStatus:busStatus.departure,busInfo: departure};
-        }else{
-          station.statusBus = null;
-        }
-        await station.save();
+      if (approaching) {
+        station.statusBus = { busStatus: busStatus.approaching, busInfo: approaching };
+        console.log(`Station ${station.id} - closest approaching busId: ${approaching.busId}, distance: ${approaching.distance.toFixed(0)}, eta: ${approaching.eta}`);
+      } else if (departure) {
+        station.statusBus = { busStatus: busStatus.departure, busInfo: departure };
+        console.log(`Station ${station.id} - closest departing busId: ${departure.busId}, distance: ${departure.distance.toFixed(0)}, eta: ${departure.eta}`);
+      } else {
+        station.statusBus = null;
+        console.log(`Station ${station.id} - No approaching or departing buses within range.`);
       }
-    
-    });
+
+      await station.save();
+    }
   } catch (error) {
     console.error("Error finding closest station:", error);
   }
