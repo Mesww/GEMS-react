@@ -16,29 +16,30 @@ import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
 import { Stations } from "../../interfaces/station.interface";
 import { BusData, BusInfo } from "../../containers/calulateDistance/calculateDistance";
+import bus from "/Bus.svg";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
-// const busIcon = (direction:number)=>  {
-//   return{
-//   url: "/Bus.svg",
-//   scaledSize: new window.google.maps.Size(64, 36), // Adjusted size as needed
-//   origin: new window.google.maps.Point(0, 0), // The origin point of the icon image (usually top-left)
-//   anchor: new window.google.maps.Point(32, 18), // The anchor point of the icon image (center bottom for 64x36)
-//   rotation: direction, // Set the rotation based on direction
-// }};
-const busIcon = (direction:number) => {
-  return {
-    path: "M10 20 L15 0 L20 20 L10 20 Z", // Example path, replace with your icon's path
-    fillColor: "red",
-    fillOpacity: 1,
-    scale: 1,
-    strokeColor: "red",
-    strokeWeight: 1,
-    rotation: direction,
-    // anchor: new window.google.maps.Point(15, 30) // Adjust anchor point as needed
-  };
-};
+const busIcon = (direction:number)=>  {
+  return{
+  url: "/Bus.svg",
+  scaledSize: new window.google.maps.Size(64, 36), // Adjusted size as needed
+  origin: new window.google.maps.Point(0, 0), // The origin point of the icon image (usually top-left)
+  anchor: new window.google.maps.Point(32, 18), // The anchor point of the icon image (center bottom for 64x36)
+  rotation: direction, // Set the rotation based on direction
+}};
+// const busIcon = (direction:number) => {
+//   return {
+//     path: "M10 20 L15 0 L20 20 L10 20 Z", // Example path, replace with your icon's path
+//     fillColor: "red",
+//     fillOpacity: 1,
+//     scale: 1,
+//     strokeColor: "red",
+//     strokeWeight: 1,
+//     rotation: direction,
+//     // anchor: new window.google.maps.Point(15, 30) // Adjust anchor point as needed
+//   };
+// };
 const userIcon = "/userIcon.png";
 
 console.log(MAPAPIKEY);
