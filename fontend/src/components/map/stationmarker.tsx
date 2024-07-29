@@ -4,6 +4,7 @@ import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsW
 import {  StationData, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
 import { WebSocketMessage } from "./mapComponent";
 import { Stations } from "../../containers/station/getStation.tsx";
+import "./style.sass";
 
 export interface TrackerData {
   _id: string;
@@ -89,7 +90,11 @@ const StationMarker: React.FC<{
                 position={{ lat, lng }}
                 title={`ป้ายหมายเลข: ${station.id}`}
                 onClick={() => handleMarkerClick(station.id, station)}
-                label={{ text: station.id,  className:'marker-label' }}
+                label={{
+                  text: station.id,
+                  className: 'marker-label',
+                  color: 'white',
+                }}
                 icon={{
                   url: urlMarker,
                   scaledSize: window.google.maps.Size ? new window.google.maps.Size(54, 54) : null,

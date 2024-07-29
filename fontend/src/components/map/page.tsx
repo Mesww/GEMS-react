@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState} from "react";
 import { useCookies } from "react-cookie";
 import MapComponent from "./mapComponent";
 import Navbar from "../navbar/navbar";
@@ -12,7 +12,7 @@ import { SelectedMarker } from "./stationmarker";
 
 const Mappage = () => {
   const [, setCookie] = useCookies(["token"]);
-  const [selectRoute, setSelectRoute] = useState(null);
+  const [selectRoute, setSelectRoute] = useState<string | null>("route1");
   const [isVisible, setIsVisible] = useState(false);
   const [stations, setStations] = useState<AxiosResponse<Stations[]> | null>(null);
   const [loading, setLoading] = useState(true);

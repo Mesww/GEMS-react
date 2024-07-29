@@ -262,11 +262,11 @@ const MapComponant: React.FC<{
     if (!stations || !stations.data) return [];
     return stations.data.filter((station: { route: string }) => {
       if (selectedRoute === "route1") {
-        return station.route === "route 1";
+        return station.route === "route 1&2" || station.route === "route 1";
       } else if (selectedRoute === "route2") {
-        return station.route === "route 2";
+        return station.route === "route 2" || station.route === "route 1&2";
       } else {
-        return stations;
+        return true; // This will include all stations if no route is selected
       }
     });
   }, [stations, selectedRoute]);

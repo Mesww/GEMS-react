@@ -7,7 +7,7 @@ import * as React from 'react';
 // export const [activeContent, setActiveContent] = useState(null);
 const Navbar: React.FC<{
   activeContent: any;
-  setActiveContent: React.Dispatch<React.SetStateAction<null>>;
+  setActiveContent: React.Dispatch<React.SetStateAction<string | null>>;
   setCookie: any;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ activeContent, setActiveContent, setCookie,setinfoIsVisible }) => {
