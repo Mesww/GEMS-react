@@ -26,13 +26,13 @@ const Navbar: React.FC<{
 
   const handleSignout = async () =>  {
     const { isConfirmed}= await  Swal.fire({
-        title: 'Logout!',
-        text: 'Are you sure?',
+        title: 'ออกจากระบบ!',
+        text: 'คุณแน่ใจใช่ไหม?',
         icon: 'warning',
-        confirmButtonText: 'Confirmed',
+        confirmButtonText: 'ยืนยัน',
         confirmButtonColor: '#8b090c',
         showCancelButton: true,
-        cancelButtonText: 'Cancel',
+        cancelButtonText: 'ยกเลิก',
         cancelButtonColor: '#e2b644',
         background: '#f9f4d4',
         reverseButtons: true,
@@ -98,13 +98,13 @@ const Navbar: React.FC<{
           } `}
           onClick={() => handleContentClick("route1")}
         >
-          1
+          สาย 1
         </div>
         <div
-          className={`content  ${activeContent === "route2" ? "selected" : ""}`}
+          className={`content  ${activeContent === "route2" ? "selected" : ""} `}
           onClick={() => handleContentClick("route2")}
         >
-          2
+          สาย 2
         </div>
       </div>
 
