@@ -47,6 +47,7 @@ const Mappage = () => {
       />
       <MapComponent 
         selectedRoute={selectRoute} 
+        setStations={setStations}
         stations={stations}
         selectedstationMarker={selectedstationMarker}
         setselectedstationMarker={setselectedstationMarker}

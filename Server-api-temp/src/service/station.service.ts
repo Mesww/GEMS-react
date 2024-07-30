@@ -62,8 +62,8 @@ export async function findClosestStation(busData:BusData) {
           const eta = (distance / 1000) / speed;
           const bearing = calculateBearing(lat, lng, busLat, busLng);
 
-          const isApproaching = station.direction.arrival[0] <= bearing && bearing <= station.direction.arrival[1];
-          const isDeparture = station.direction.departure[0] <= bearing && bearing <= station.direction.departure[1];
+          const isApproaching = station.direction.arrival[0] <= bearing && bearing <= station.direction.arrival[1] && busInfo.direction >= station.direction.arrival[0] && busInfo.direction <= station.direction.arrival[1];
+          const isDeparture = station.direction.departure[0] <= bearing && bearing <= station.direction.departure[1] && busInfo.direction >= station.direction.arrival[0] && busInfo.direction <= station.direction.arrival[1];
 
           if (isApproaching) {
             approaching = { busId, distance, busInfo, eta };

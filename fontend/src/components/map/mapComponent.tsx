@@ -16,16 +16,16 @@ import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
 import { Stations } from "../../interfaces/station.interface";
 import { BusData, BusInfo } from "../../containers/calulateDistance/calculateDistance";
-import bus from "/Bus.svg";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 const busIcon = (direction:number)=>  {
+  
   return{
   url: "/Bus.svg",
-  scaledSize: new window.google.maps.Size(64, 36), // Adjusted size as needed
-  origin: new window.google.maps.Point(0, 0), // The origin point of the icon image (usually top-left)
-  anchor: new window.google.maps.Point(32, 18), // The anchor point of the icon image (center bottom for 64x36)
+  scaledSize: window.google.maps.Size ? new window.google.maps.Size(64, 36):null , // Adjusted size as needed
+  origin: window.google.maps.Point? new window.google.maps.Point(0, 0):null, // The origin point of the icon image (usually top-left)
+  anchor: window.google.maps.Point? new window.google.maps.Point(32, 18):null, // The anchor point of the icon image (center bottom for 64x36)
   rotation: direction, // Set the rotation based on direction
 }};
 // const busIcon = (direction:number) => {
@@ -61,13 +61,15 @@ export interface WebSocketMessage {
 
 const MapComponant: React.FC<{
   stations: AxiosResponse<Stations[], any> | null;
+  setStations: React.Dispatch<React.SetStateAction<AxiosResponse<Stations[], any> | null>>;
   selectedRoute?: string | null;
   polylines:AxiosResponse<Polylines[], any> | null;
   selectedstationMarker: SelectedMarker | null;
   setselectedstationMarker: React.Dispatch<
     React.SetStateAction<SelectedMarker | null>
   >;
-}> = ({ polylines,selectedRoute, stations, selectedstationMarker, setselectedstationMarker }) => {
+
+}> = ({ polylines,selectedRoute, stations, selectedstationMarker, setselectedstationMarker,setStations }) => {
   // set center
   const [center, setCenter] = useState({
     lat: 20.045116568504863,
@@ -233,6 +235,7 @@ const MapComponant: React.FC<{
   // handle ปิด infowindow
   const handleInfoWindowClose = useCallback(() => {
     setSelectedMarker(null);
+    
   }, []);
 
 
@@ -309,7 +312,6 @@ const MapComponant: React.FC<{
                   position={{ lat: lat, lng: lng }}
                   onCloseClick={handleInfoWindowClose}
                   headerContent={`รถเจมหมายเลข ${key}`}
-                  
                 >
                   <div>
                     <p>ทิศทาง: {value.direction} องศา</p>
@@ -385,6 +387,7 @@ const MapComponant: React.FC<{
             selectedMarker={selectedstationMarker}
             setSelectedMarker={setselectedstationMarker}
             setCenter={setCenter}
+            setStation={setStations}
             urlMarker={urlMarker1}
             busData={gemscarselected}
           />
@@ -394,6 +397,7 @@ const MapComponant: React.FC<{
             selectedMarker={selectedstationMarker}
             setSelectedMarker={setselectedstationMarker}
             setCenter={setCenter}
+            setStation={setStations}
             urlMarker={urlMarker2}
             busData={gemscarselected}
           />

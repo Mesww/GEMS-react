@@ -20,6 +20,6 @@ export interface StationBusstatus {
     busInfo: ClosestBusResult;
 }
 export enum busStatus{
-    approaching ,
-    departure 
+    approaching="approaching" ,
+    departure = "departure"
 }

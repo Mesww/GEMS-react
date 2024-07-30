@@ -79,10 +79,10 @@ wss.on("connection", async (ws: WebSocket) => {
 
   // เริ่ม polling ทันทีที่ client เชื่อมต่อ
   await fetchAndSendData();
-  await findClosestStation(busData);
+  // await findClosestStation(busData);
   const intervalId = setInterval(async () => {
      await fetchAndSendData();
-     await findClosestStation(busData);
+    //  await findClosestStation(busData);
   }, 5000); // ทุก 5 วินาที
 
   ws.on("message", (message: string) => {

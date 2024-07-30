@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
-import { BusData,findApproaching, findLeft, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
-import {  Stations } from "../../interfaces/station.interface";
+import { BusData,ClosestBusResult,findApproaching, findLeft, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
+import {  busStatus, Stations } from "../../interfaces/station.interface";
+import { AxiosResponse } from "axios";
 
 export interface TrackerData {
   _id: string;
@@ -24,6 +25,7 @@ const StationMarker: React.FC<{
       lng: number;
     }>
   >;
+  setStation: React.Dispatch<React.SetStateAction<AxiosResponse<Stations[], any> | null>>;
   urlMarker: string;
 }> = ({
   position,
@@ -33,12 +35,9 @@ const StationMarker: React.FC<{
   urlMarker,
   busData
 }) => {
-
-
+  const [closestBus, setClosestBus] = useState<ClosestBusResult | null>(null);
   const [stationSelected, setStationSelected] = useState<Stations | null >(null);
   
-  const closestBus = useCloseststation(stationSelected, busData);
-
   // handle marker click
   const handleMarkerClick = useCallback(
     (key: string, value: Stations) => {
@@ -48,26 +47,27 @@ const StationMarker: React.FC<{
         setSelectedMarker({ key, value });
       }
       setCenter({ lat, lng });
-      setStationSelected(value); // Update selected station
+      useCloseststation(value, busData, closestBus,setClosestBus);
+      setStationSelected(value) ;
     },
-    [setSelectedMarker, setCenter]
+    [setSelectedMarker, setCenter,setStationSelected,useCloseststation,stationSelected,busData,closestBus]
   );
 
   // handle infowindow close
   const handleInfoWindowClose = useCallback(() => {
-    if (setSelectedMarker) {
+    if (setSelectedMarker  ) {
       setSelectedMarker(null);
     }
-  }, [setSelectedMarker]);
+    setStationSelected(null);
+  }, [setSelectedMarker,setStationSelected]);
 
   if (!position) return null;
-
-
 
   return (
     <>
       {position.map((station, index) => {
         if (station && station.position) {
+          // console.log(`station: ${station.id} ${station.position} ${station.statusBus?.busInfo.busId}`);
           const [lat, lng] = station.position.split(",").map(Number);
           if (
             !isNaN(lat) &&
@@ -95,6 +95,7 @@ const StationMarker: React.FC<{
                       : null,
                   }}
                 />
+
                 {closestBus &&
                   selectedMarker &&
                   selectedMarker.value._id === station._id && (
@@ -105,11 +106,10 @@ const StationMarker: React.FC<{
                     >
                       <div>
                         <p>คนที่รอในขณะนี้: {station.waiting} คน</p>
-                        { closestBus.busId !== null && findApproaching({stationSelected:station,closestBus:closestBus}) !== null && findApproaching({stationSelected:station,closestBus:closestBus})?.eta !== null ? <p>รถหมายเลข {findApproaching({stationSelected:station,closestBus:closestBus})?.busId } กำลังจะมาถึงจะถึงภายใน {findApproaching({stationSelected:station,closestBus:closestBus})?.eta?.toFixed(2) } นาที </p> : findLeft({stationSelected:station,closestBus:closestBus}) !== null ? <p>รถหมายเลข : {findLeft({stationSelected:station,closestBus:closestBus})?.busId} กำลังออก</p> : <p>ยังไม่มีรถที่จะเข้าหรือออกจากป้าย</p>}
-                        {closestBus.busId !== null && findApproaching({stationSelected:station,closestBus:closestBus}) !== null ?<p>รถ GEMS จะถึงภายใน  {findApproaching({stationSelected:station,closestBus:closestBus})?.distance?.toFixed(0 ) } เมตร</p>:null }
-                         {station.direction.arrival!== undefined ? <p>(for Debugging)รถจะหันมาในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
+                        {closestBus.busId !== null ? <p>มีรถgemsหมายเลข {closestBus.busId} อยู่ใกล้เคียงในระยะ {closestBus.distance?.toFixed(0)} เมตร</p>:"ไม่มีรถในระยะ"}
+                         {/* {station.direction.arrival!== undefined ? <p>(for Debugging)รถจะหันมาในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
                          {station.direction.approaching!== undefined ? <p>(for Debugging)รถจะมาถึงในทิศ {station.direction.approaching[0]} , {station.direction.approaching[1]}  </p> : null}
-                         {station.direction.departure!== undefined ? <p>(for Debugging)รถจะออกจากป้ายในทิศ {station.direction.departure[0]} , {station.direction.departure[1]}  </p> : null}
+                         {station.direction.departure!== undefined ? <p>(for Debugging)รถจะออกจากป้ายในทิศ {station.direction.departure[0]} , {station.direction.departure[1]}  </p> : null} */}
                       </div>
                     </InfoWindow>
                   )}

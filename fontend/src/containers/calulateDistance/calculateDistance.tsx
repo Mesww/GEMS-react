@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import {  Stations } from "../../interfaces/station.interface";
+import {  busStatus, Stations } from "../../interfaces/station.interface";
 import haversine from "haversine-distance";
+import { AxiosResponse } from "axios";
+import App from "../../App";
 export interface BusInfo {
   _id:string;
   direction: number;
@@ -80,21 +82,20 @@ const useClosestBus = (
 export const useCloseststation = (
   stationSelected:Stations | null,
   busData: BusData | null,
-  maxDistance = 300
-): ClosestBusResult => {
-  const [closestBus, setClosestBus] = useState<ClosestBusResult>({
-    busId: null,
-    distance: null,
-    busInfo: null,
-    eta: null,
-  });
+  closestBus:ClosestBusResult | null,
+  setClosestBus:React.Dispatch<React.SetStateAction<ClosestBusResult | null>>,
+    // setStation:React.Dispatch<React.SetStateAction<AxiosResponse<Stations[], any> | null>>
+)=> {
   
-  useEffect(() => {
+    
     if (!stationSelected || !busData) {
-      return;
+      console.log(`no station selected`);
+      return ;
     }
+    console.log(`stationSelected : ${stationSelected.id} ${stationSelected.position}`);
     const [lat, lng] = stationSelected.position.split(",").map(Number);
     const stationLocation = { lat, lng };
+    
     if (stationLocation && busData) {
       let minDistance = Infinity;
       let closestBusId = null;
@@ -109,10 +110,7 @@ export const useCloseststation = (
         });
         console.log(`busid:${busId} \t busLocation : ${busLat} ${busLng} \t distance : ${distance} m`);
         if (
-          distance < maxDistance &&
-          distance < minDistance &&
-          busInfo.direction >= stationSelected.direction.arrival[0] ||
-          busInfo.direction <= stationSelected.direction.arrival[1]
+          distance < minDistance
         ) {
           minDistance = distance;
           closestBusId = busId;
@@ -124,35 +122,24 @@ export const useCloseststation = (
             // Calculate ETA in minutes
             eta = (distance / 1000) / speedKmPerMin;
           } else {
-            eta = 0; // Bus is not moving
+            eta = null; // Bus is not moving
           }
         }else{
           console.log(`not found`);
+          setClosestBus(null);
         }
       }
-      console.log(`minDistance : ${minDistance} m`);
-      if (closestBusInfo === null) {
-        return;
-      }
-      
 
-      // console.log(Object.entries(busData)[0][1].position);
-      console.log(`minDistance : ${minDistance} m`);
-
-      
-
-      
-      
       setClosestBus({
         busId: closestBusId,
         distance: minDistance,
         busInfo: closestBusInfo,
         eta: eta,
       });
-    }
-  }, [busData]);
 
-  return closestBus;
+    }
+
+
 };
 
 export function findApproaching(data:{stationSelected:Stations | null,closestBus:ClosestBusResult | null}):ClosestBusResult | null{
