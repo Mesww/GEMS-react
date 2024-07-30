@@ -61,7 +61,7 @@ const Navbar: React.FC<{
     setinfoIsVisible((prev) => !prev);
   };
   
-  
+
   return (
     <nav
       className={`navbar fixed bottom-5 left-0 rounded-full right-0 z-50 ${
