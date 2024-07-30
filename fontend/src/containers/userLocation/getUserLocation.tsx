@@ -10,6 +10,14 @@ const useUserLocation = (): UserLocation | null => {
 
   useEffect(() => {
     if (navigator.geolocation) {
+     
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 1000,
+        maximumAge: 0
+      };
+
+
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           console.log("User location updated:", position.coords);
@@ -20,7 +28,8 @@ const useUserLocation = (): UserLocation | null => {
         },
         (error) => {
           console.error("Error getting user location:", error);
-        }
+        },
+        options
       );
 
       return () => {

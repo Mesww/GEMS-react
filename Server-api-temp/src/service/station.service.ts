@@ -5,15 +5,29 @@ import Station from "../models/station_model";
 import haversine from "haversine-distance";
 export async function addUserToStation(
   stationId: string,
-  user: interface_User
+  user: interface_User,
+  addedAt: Date
 ) {
   try {
     const station = await Station.findById(stationId);
     if (station) {
       if (!station.waiting) {
         station.waiting = [];
-      }
-      station.waiting.push(user);
+    }
+    
+    // Check if a user with the same email already exists in the waiting list
+    const existingUser = station.waiting.find(waitingUser => waitingUser.email === user.email);
+    if (existingUser) {
+        console.log('User with this email already exists in the waiting list. Ignoring duplicate entry.');
+        return { "status": "Success", "message": "User already in waiting list. No action taken." };
+    }
+
+    // Create a new object that combines user data and time
+    const userWithTime = {
+        ...user,
+        addedAt: addedAt
+    };
+    station.waiting.push(userWithTime);
       await station.save();
       console.log("User added to the waiting list successfully.");
       return {

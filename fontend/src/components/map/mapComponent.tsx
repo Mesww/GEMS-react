@@ -296,9 +296,9 @@ const MapComponant: React.FC<{
     setgemscarselected(Object.fromEntries(filteredData));
 
     return filteredData.map(([key, value]) => {
-      if (value && value.position) {
+      if (value && value.position && window.google.maps) {
         const [lat, lng] = value.position.split(",").map(Number);
-        if (!isNaN(lat) && !isNaN(lng)) {
+        if (!isNaN(lat) && !isNaN(lng) && window.google.maps.Size) {
           return (
             <React.Fragment key={key}>
               <Marker
@@ -337,11 +337,11 @@ const MapComponant: React.FC<{
     if (!stations || !stations.data) return [];
     return stations.data.filter((station: { route: string }) => {
       if (selectedRoute === "route1") {
-        return station.route === "route 1";
+        return station.route === "route 1&2" || station.route === "route 1";
       } else if (selectedRoute === "route2") {
-        return station.route === "route 2";
+        return station.route === "route 2" || station.route === "route 1&2";
       } else {
-        return stations;
+        return true; // This will include all stations if no route is selected
       }
     });
   }, [stations, selectedRoute]);

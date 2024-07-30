@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios"; // Import axios
 import { Stations } from "../../interfaces/station.interface";
+import { getUserinfo } from "../login/Login";
+import Cookies from "js-cookie";
+import { useCookies } from "react-cookie";
 
 
-
+const token = Cookies.get("token");
 const api = import.meta.env.VITE_API;
 
 
@@ -17,6 +20,15 @@ interface Station {
 interface Location {
   lat: number;
   lng: number;
+}
+
+interface UserInfo {
+  // Define the structure of your user info here
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  // Add other relevant fields
 }
 
 interface ClosestStation extends Station {
@@ -62,6 +74,33 @@ function useNearestStation(
   );
   const prevLocationRef = useRef<Location | null>(null);
 
+  // get user info ===================================
+  const [cookie] = useCookies(["token"]);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  useEffect(() => {
+    console.log("useEffect for fetching user info is running");
+  
+    const fetchUserInfo = async () => {
+      console.log("fetchUserInfo function started");
+      try {
+        console.log("Attempting to fetch user info with token:", cookie.token);
+        const info:any = await getUserinfo(cookie.token);
+        console.log("User info fetched successfully:", info);
+        setUserInfo(info);
+        console.log("User info set in state");
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+    fetchUserInfo(); 
+    console.log("useEffect cleanup");
+    return () => {
+      console.log("useEffect cleanup function called");
+    };
+  }, [cookie.token]);
+  // =======================================================
+
+
   useEffect(() => {
     if (
       userLocation &&
@@ -78,7 +117,7 @@ function useNearestStation(
         const [lat, lng] = parsePosition(data.position);
         const stationId = data._id;
         const stationNameId = data.id;
-        const waitingCount = data.waiting;
+        const waitingCount = data.waitingLength;
         const distance = calculateDistance(
           userLocation.lat,
           userLocation.lng,
@@ -99,32 +138,13 @@ function useNearestStation(
   }, [userLocation, stationData]);
 
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
-  const [userWaiting, setUserWaiting] = useState(false);
+
   useEffect(() => {
-    // Function to decrement waiting count
-    const decrementWaitingCount = () => {
-      if (userWaiting && closestStation && closestStation.waitingCount != 0 ) {
-        axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
-          waiting: closestStation.waitingCount - 1
-        })
-          .then((response) => {
-            console.log("Updated before unload", response.data);
-          })
-          .catch((error) => {
-            console.error("Error updating before unload:", error);
-          });
-      }
-    };
-
-    // Add event listener for beforeunload
-    window.addEventListener('beforeunload', decrementWaitingCount);
-
-    // Your existing effect logic
-    if (closestStation && closestStation.distance <= 900 && !userWaiting) {
+    if (closestStation && closestStation.distance <= 30) {
       let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
-          studentid: "test",
+          email: userInfo?.email,
           location: `${closestStation.lat}, ${closestStation.lng}`,
           marker: closestStation.stationNameId,
           time: dateTime,
@@ -132,37 +152,25 @@ function useNearestStation(
         })
         .then((response) => {
           console.log("Activity posted successfully:", response.data);
-          return axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
-            waiting: closestStation.waitingCount + 1
+          // add user to station
+          return axios.post(`${api}/addusertoStaion`, {
+            id: closestStation.stationId,
+            name: userInfo?.name,
+            email: userInfo?.email,
+            role: userInfo?.role
+          },{
+            headers:{"x-auth-token":token}
           });
         })
         .then((response) => {
-          console.log('Updated', response.data);
-          setUserWaiting(true);
+          console.log('addusertoStaion', response.data);
         })
         .catch((error) => {
           console.error("Error:", error);
         });
     }
-    else if (closestStation && userWaiting && closestStation.waitingCount != 0 && closestStation.distance >= 900) {
-      axios.patch(`${api}/updateWaiting/${closestStation.stationId}`, {
-        waiting: closestStation.waitingCount - 1
-      })
-        .then((response) => {
-          console.log("Updated", response.data);
-          setUserWaiting(false);
-        })
-        .catch((error) => {
-          console.error("Error updating:", error);
-        });
-    }
-    // Cleanup function
-    return () => {
-      window.removeEventListener('beforeunload', decrementWaitingCount);
-      // Also decrement count when component unmounts if user is still waiting
-      decrementWaitingCount();
-    };
-  }, [closestStation, userWaiting]);
+  
+  }, [closestStation]);
 
   return closestStation;
 }

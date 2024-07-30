@@ -10,6 +10,8 @@ import axios from "axios";
 import cors from "cors";
 import { BusData } from "./interface/bus.interface";
 import { findClosestStation } from "./service/station.service";
+import cron from 'node-cron';
+import { cleanStationWaitingLists } from "./service/cleanStation";
 dotenv.config();
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -95,6 +97,13 @@ wss.on("connection", async (ws: WebSocket) => {
   });
 });
 // ======================================================
+
+
+// Schedule the task to run every 1 minute
+cron.schedule('* * * * *', async () => {
+  console.log('Running station waiting list cleanup');
+  await cleanStationWaitingLists();
+});
 
 // ใช้ server.listen แทน app.listen
 server.listen(PORT, () => {

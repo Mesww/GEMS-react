@@ -5,6 +5,9 @@ import { addUserToStationscontoller, getStations } from "../controllers/station_
 import { getPolylines } from "../controllers/polyline_controller";
 import { ObjectId } from 'mongodb';
 import { Station } from '../interface/station.interface';
+import { createFeedback, getAllFeedbacks } from '../controllers/feedback.controller';
+import { auth } from '../service/auth.service';
+import { auth_middleware } from '../middle/auth';
 
 
 const router = express.Router();
@@ -14,9 +17,9 @@ const router = express.Router();
 router.post("/activity", async (req: Request, res: Response) => {
   try {
     // Validate incoming data (optional but recommended)
-    const { studentid, location, marker, time,route } = req.body; // Destructure body properties
+    const { email, location, marker, time,route } = req.body; // Destructure body properties
     // Create a new Todo instance using the validated data
-    const newActivity = new Activity({ studentid, location, marker, time,route });
+    const newActivity = new Activity({ email, location, marker, time,route });
     // Save the new Todo to the database
     await newActivity.save();
     // Respond with success and the created Todo
@@ -43,11 +46,9 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 
-// get station
+// station
 router.get('/getStation', getStations);
-
-// post station
-router.post('/addusertoStaion', addUserToStationscontoller);
+router.post('/addusertoStaion',auth_middleware ,addUserToStationscontoller);
 
 
 // get polyline
@@ -55,40 +56,9 @@ router.get('/getPolyline', getPolylines);
 
 
 
-interface UpdateWaitingRequest extends Request {
-  params: {
-    id: string;
-  };
-  body: {
-    waiting: number;
-  };
-}
-
-
-router.patch('/updateWaiting/:id', async (req: UpdateWaitingRequest, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { waiting } = req.body;
-
-    if (waiting === undefined) {
-      return res.status(400).json({ message: 'Waiting value is required' });
-    }
-
-    const updatedStation: Station | null = await StationModel.findByIdAndUpdate(
-      new ObjectId(id),
-      { waiting },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedStation) {
-      return res.status(404).json({ message: 'Station not found' });
-    }
-
-    res.json(updatedStation);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error: (error as Error).message });
-  }
-});
+//feedback
+router.post('/createFeedback',auth_middleware ,createFeedback);
+router.get('/getFeedback', auth_middleware ,getAllFeedbacks)
 
 
 export default router;

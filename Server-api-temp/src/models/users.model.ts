@@ -29,6 +29,10 @@ export const userSchema = new mongoose.Schema({
       },
       message: (props: { value: any; }) => `${props.value} is not a valid Role name. Only capital letters are allowed.`,
   },
+  },
+  addedAt: {
+    required: false,
+    type: Date,
   }
 });
 

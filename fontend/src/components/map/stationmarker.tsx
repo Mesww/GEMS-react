@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
-import { BusData,ClosestBusResult,findApproaching, findLeft, useCloseststation } from "../../containers/calulateDistance/calculateDistance";
+import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
+import { WebSocketMessage } from "./mapComponent";
+import "./style.sass";
+import { BusData,ClosestBusResult,findApproaching, findLeft,useCloseststation } from "../../containers/calulateDistance/calculateDistance";
 import {  busStatus, Stations } from "../../interfaces/station.interface";
 import { AxiosResponse } from "axios";
 
@@ -81,7 +84,8 @@ const StationMarker: React.FC<{
                   position={{ lat, lng }}
                   title={`ป้ายหมายเลข: ${station.id}`}
                   onClick={() => handleMarkerClick(station.id, station)}
-                  label={station.id}
+                  label={{text:station.id,className: 'marker-label',
+                    color: 'white',}}
                   icon={{
                     url: urlMarker,
                     scaledSize: window.google.maps.Size
@@ -105,7 +109,7 @@ const StationMarker: React.FC<{
                       headerContent={`ป้ายหมายเลข ${station.id}`}
                     >
                       <div>
-                        <p>คนที่รอในขณะนี้: {station.waiting} คน</p>
+                        <p>คนที่รอในขณะนี้: {station.waitingLength} คน</p>
                         {closestBus.busId !== null ? <p>มีรถgemsหมายเลข {closestBus.busId} อยู่ใกล้เคียงในระยะ {closestBus.distance?.toFixed(0)} เมตร</p>:"ไม่มีรถในระยะ"}
                          {/* {station.direction.arrival!== undefined ? <p>(for Debugging)รถจะหันมาในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
                          {station.direction.approaching!== undefined ? <p>(for Debugging)รถจะมาถึงในทิศ {station.direction.approaching[0]} , {station.direction.approaching[1]}  </p> : null}

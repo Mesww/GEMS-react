@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import useClosestBus from "../../containers/calulateDistance/calculateDistance";
+import React, { useEffect, useMemo, useState } from "react";
+import useClosestBus, { BusData, BusInfo } from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
@@ -7,6 +7,7 @@ import { AxiosResponse } from "axios";
 import useNearestStation from "../../containers/calulateDistance/calculateuserAndbustop";
 import { SelectedMarker } from "../map/stationmarker";
 import { Stations } from "../../interfaces/station.interface";
+import StationToStationComponent from "../../containers/calulateDistance/calStationToStation";
 interface TrackerData {
   server_time: string;
   tracker_time: string;
@@ -18,7 +19,7 @@ interface TrackerData {
 interface WebSocketMessage {
   status: string;
   data: {
-    [key: string]: TrackerData;
+    [key: string]: BusInfo;
   };
 }
 
@@ -54,25 +55,59 @@ if (stations?.data !== undefined) {
   stationMarkers = stations?.data;
 0}
 
+//ป้ายที่ใกล้กับเราที่สุด
 const closestStation = useNearestStation(stationMarkers, location); 
-// console.log(closestStation);
-  
-const closestBusData = useClosestBus(location, data);
+
+
+//นำป้ายใกล้กับเรามาหา รถบัสที่ใกล้ที่สุด
+const closestBusData = useClosestBus(closestStation, data);
+
+
+
+
+// ระยะห่างระหว่างป้ายที่เราเลือกกับป้ายที่ใกล้เราที่สุด
+const [stationToStation, setStationToStation] = useState(0);
+const [eta, setEta] = useState('');
+useEffect(() => {
+  const calETA = () => {
+    const speedMeterPerSecond = 30 * 1000 / 3600; // Convert 30 km/h to m/s
+    const timeInSeconds = stationToStation / speedMeterPerSecond;
+    const timeInMinutes = timeInSeconds / 60;
+     // Round to nearest 0.5 minute
+     const roundedMinutes = Math.round(timeInMinutes * 2) / 2;
+     // Format the time
+     const minutes = Math.floor(roundedMinutes);
+     const seconds = Math.round((roundedMinutes % 1) * 60);
+     
+     // Create the formatted string
+     const formattedEta = `${minutes}:${seconds.toString().padStart(2, '0')} นาที`;
+     setEta(formattedEta);
+
+  }
+  if (selectedMarker) {
+    const result = StationToStationComponent({ selectedMarker, closestStation });
+    if (typeof result === 'number') {
+      setStationToStation(result);
+      console.log("StationToStation", result);
+    }
+   if(stationToStation != 0){
+    calETA();
+   }
+   else
+  {
+    const formattedEta = `? นาที`;
+    setEta(formattedEta);
+    setTimeout(() => {
+      calETA();
+    }, 1000);
+  }
+  }
+}, [selectedMarker, closestStation]);
 
   
-  
+
   return (
     <>
-      {/* Show button */}
-      {/* <button
-        className={`fixed bottom-24 right-4 z-50 bg-blue-500 text-white rounded-full p-2 transition-all duration-300 ease-in-out ${
-          isVisible ? "scale-0" : "scale-100"
-        }`}
-        onClick={toggleVisibility}
-      >
-        แสดงข้อมูลรถ
-      </button> */}
-
       {/* Dialog */}
       <div
         className={`fixed bottom-24 left-0 right-0 z-50 flex justify-center transition-all duration-300 ease-in-out ${
@@ -86,11 +121,11 @@ const closestBusData = useClosestBus(location, data);
               Gem {closestBusData.busId}
             </p>
             {closestBusData.eta && closestBusData.eta > 0 ? (
-              <span className="pl-8">
-                รถจะถึงในอีก {closestBusData.eta.toFixed(2)} นาที
+              <span >
+                รถจะถึงป้ายในอีก {closestBusData.eta.toFixed(2)} นาที
               </span>
             ) : (
-              <span className="pl-4">รถจะถึงในอีก ? นาที</span>
+              <span >รถจะถึงป้ายในอีก ? นาที</span>
             )}
           </div>
 
@@ -98,7 +133,7 @@ const closestBusData = useClosestBus(location, data);
             <div className="border-t border-gray-300"></div>
           </div>
 
-          <div className="currentLocation flex justify-center item-center">
+          <div className="currentLocation flex justify-center item-center pt-2">
             <div className="w-60 h-10 mt-2 shadow-lg bg-stone-400 flex items-center justify-start pl-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +164,7 @@ const closestBusData = useClosestBus(location, data);
                       ? `ป้ายที่ใกล้คุณ ${
                           closestStation.stationNameId
                         } ${closestStation.distance.toFixed(0)} เมตร`
-                      : ""}{" "}
+                      : "กำลังหาตำแหน่งของคุณ"}
                   </p>
                 }
               </span>
@@ -137,7 +172,25 @@ const closestBusData = useClosestBus(location, data);
           </div>
 
           <div className="between flex items-center pl-8">
-            <div className="h-10 border-l border-black"></div>
+            <div className="h-16 border-l border-black"></div>
+            <div className="pl-2">
+            {selectedMarker ? (
+              <div className="flex-col">
+               <div>
+               <span className="text-black">
+                 ห่างประมาณ {stationToStation.toFixed(0)} เมตร
+                </span>
+               </div>
+              <div>
+              <span>
+                ใช้เวลาประมาณ {eta}
+                </span>
+              </div>
+              </div>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
 
           <div className="destination subtitle flex justify-center items-center">
@@ -192,3 +245,4 @@ const closestBusData = useClosestBus(location, data);
 };
 
 export default InfoDialog;
+
