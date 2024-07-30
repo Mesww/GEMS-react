@@ -107,7 +107,7 @@ const StationMarker: React.FC<{
                       headerContent={`ป้ายหมายเลข ${station.id}`}
                     >
                       <div>
-                        <p>คนที่รอในขณะนี้: {station.waitingLength} คน</p>
+                        {/* <p>คนที่รอในขณะนี้: {station.waitingLength} คน</p> */}
                         {closestBus.busId !== null ? <p>มีรถgemsหมายเลข {closestBus.busId} อยู่ใกล้เคียงในระยะ {closestBus.distance?.toFixed(0)} เมตร</p>:"ไม่มีรถในระยะ"}
                          {/* {station.direction.arrival!== undefined ? <p>(for Debugging)รถจะหันมาในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
                          {station.direction.approaching!== undefined ? <p>(for Debugging)รถจะมาถึงในทิศ {station.direction.approaching[0]} , {station.direction.approaching[1]}  </p> : null}
