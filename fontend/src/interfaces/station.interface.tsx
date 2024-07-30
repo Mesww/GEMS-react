@@ -4,10 +4,11 @@ export interface Stations {
     _id: string;
     id: string;
     position: string;
-    waiting: number;
+    waitingLength: number;
     route: string;
     direction: Stationdirection;
     statusBus: StationBusstatus | null;
+
   }
   export interface Stationdirection {
     arrival: number[];
