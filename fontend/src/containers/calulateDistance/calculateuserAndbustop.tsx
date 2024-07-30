@@ -2,11 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios"; // Import axios
 import { Stations } from "../../interfaces/station.interface";
 import { getUserinfo } from "../login/Login";
-import Cookies from "js-cookie";
 import { useCookies } from "react-cookie";
 
-
-const token = Cookies.get("token");
 const api = import.meta.env.VITE_API;
 
 
@@ -150,16 +147,16 @@ function useNearestStation(
           time: dateTime,
           route: "test",
         })
-        .then((response) => {
+        .then(async (response) => {
           console.log("Activity posted successfully:", response.data);
           // add user to station
-          return axios.post(`${api}/addusertoStaion`, {
+          return await axios.post(`${api}/addusertoStaion`, {
             id: closestStation.stationId,
             name: userInfo?.name,
             email: userInfo?.email,
             role: userInfo?.role
           },{
-            headers:{"x-auth-token":token}
+            headers:{"x-auth-token":cookie.token}
           });
         })
         .then((response) => {
