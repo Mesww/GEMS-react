@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import useClosestBus, {  BusInfo } from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
@@ -61,42 +61,30 @@ const closestBusData = useClosestBus(closestStation, data);
 
 // ระยะห่างระหว่างป้ายที่เราเลือกกับป้ายที่ใกล้เราที่สุด
 const [stationToStation, setStationToStation] = useState(0);
-const [eta, setEta] = useState('');
-useEffect(() => {
-  const calETA = () => {
-    const speedMeterPerSecond = 30 * 1000 / 3600; // Convert 30 km/h to m/s
-    const timeInSeconds = stationToStation / speedMeterPerSecond;
-    const timeInMinutes = timeInSeconds / 60;
-     // Round to nearest 0.5 minute
-     const roundedMinutes = Math.round(timeInMinutes * 2) / 2;
-     // Format the time
-     const minutes = Math.floor(roundedMinutes);
-     const seconds = Math.round((roundedMinutes % 1) * 60);
-     
-     // Create the formatted string
-     const formattedEta = `${minutes}:${seconds.toString().padStart(2, '0')} นาที`;
-     setEta(formattedEta);
 
-  }
-  if (selectedMarker) {
-    const result = StationToStationComponent({ selectedMarker, closestStation });
-    if (typeof result === 'number') {
-      setStationToStation(result);
-      console.log("StationToStation", result);
+  const calETA = useCallback((distance: number) => {
+    const speedMeterPerSecond = 30 * 1000 / 3600;
+    const timeInSeconds = distance / speedMeterPerSecond;
+    const timeInMinutes = timeInSeconds / 60;
+    const roundedMinutes = Math.round(timeInMinutes * 2) / 2;
+    const minutes = Math.floor(roundedMinutes);
+    const seconds = Math.round((roundedMinutes % 1) * 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')} นาที`;
+  }, []);
+
+  const eta = useMemo(() => {
+    return stationToStation > 0 ? calETA(stationToStation) : '? นาที';
+  }, [stationToStation, calETA]);
+
+  useEffect(() => {
+    if (selectedMarker) {
+      const result = StationToStationComponent({ selectedMarker, closestStation });
+      if (typeof result === 'number') {
+        setStationToStation(result);
+        console.log("StationToStation", result);
+      }
     }
-   if(stationToStation != 0){
-    calETA();
-   }
-   else
-  {
-    const formattedEta = `? นาที`;
-    setEta(formattedEta);
-    setTimeout(() => {
-      calETA();
-    }, 1000);
-  }
-  }
-}, [selectedMarker, closestStation]);
+  }, [selectedMarker, closestStation]);
 
   
 
