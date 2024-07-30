@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios"; // Import axios
 import { Stations } from "../station/getStation";
 import { getUserinfo } from "../login/Login";
+import Cookies from "js-cookie";
 import { useCookies } from "react-cookie";
 
 
-
+const token = Cookies.get("token");
 const api = import.meta.env.VITE_API;
 
 
@@ -139,7 +140,7 @@ function useNearestStation(
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
 
   useEffect(() => {
-    if (closestStation && closestStation.distance <= 25) {
+    if (closestStation && closestStation.distance <= 30) {
       let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
@@ -157,6 +158,8 @@ function useNearestStation(
             name: userInfo?.name,
             email: userInfo?.email,
             role: userInfo?.role
+          },{
+            headers:{"x-auth-token":token}
           });
         })
         .then((response) => {
