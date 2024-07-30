@@ -1,10 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback,  useState } from "react";
 import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
-import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
-import { WebSocketMessage } from "./mapComponent";
 import "./style.sass";
-import { BusData,ClosestBusResult,findApproaching, findLeft,useCloseststation } from "../../containers/calulateDistance/calculateDistance";
-import {  busStatus, Stations } from "../../interfaces/station.interface";
+import { BusData,ClosestBusResult,useCloseststation } from "../../containers/calulateDistance/calculateDistance";
+import {   Stations } from "../../interfaces/station.interface";
 import { AxiosResponse } from "axios";
 
 export interface TrackerData {
@@ -50,7 +48,7 @@ const StationMarker: React.FC<{
         setSelectedMarker({ key, value });
       }
       setCenter({ lat, lng });
-      useCloseststation(value, busData, closestBus,setClosestBus);
+      useCloseststation(value, busData, setClosestBus);
       setStationSelected(value) ;
     },
     [setSelectedMarker, setCenter,setStationSelected,useCloseststation,stationSelected,busData,closestBus]

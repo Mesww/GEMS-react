@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import {  busStatus, Stations } from "../../interfaces/station.interface";
+import {  Stations } from "../../interfaces/station.interface";
 import haversine from "haversine-distance";
-import { AxiosResponse } from "axios";
-import App from "../../App";
 export interface BusInfo {
   _id:string;
   direction: number;
@@ -82,9 +80,7 @@ const useClosestBus = (
 export const useCloseststation = (
   stationSelected:Stations | null,
   busData: BusData | null,
-  closestBus:ClosestBusResult | null,
   setClosestBus:React.Dispatch<React.SetStateAction<ClosestBusResult | null>>,
-    // setStation:React.Dispatch<React.SetStateAction<AxiosResponse<Stations[], any> | null>>
 )=> {
   
     
@@ -207,10 +203,7 @@ const calculateBearing = (lat1: number, lng1: number, lat2: number, lng2: number
   return (θ * 180 / Math.PI + 360) % 360;
 };
 
-function isBusApproaching(busHeading: number, bearing: number) {
-  const difference = Math.abs(busHeading - bearing);
-  return difference < 30 || difference > 330; // Adjust the threshold as needed
-}
+
 
 
 export default useClosestBus;

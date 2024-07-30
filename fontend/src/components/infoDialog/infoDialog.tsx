@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import useClosestBus, { BusData, BusInfo } from "../../containers/calulateDistance/calculateDistance";
+import useClosestBus, {  BusInfo } from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
@@ -8,13 +8,7 @@ import useNearestStation from "../../containers/calulateDistance/calculateuserAn
 import { SelectedMarker } from "../map/stationmarker";
 import { Stations } from "../../interfaces/station.interface";
 import StationToStationComponent from "../../containers/calulateDistance/calStationToStation";
-interface TrackerData {
-  server_time: string;
-  tracker_time: string;
-  direction: number;
-  position: string;
-  speed: number;
-}
+
 
 interface WebSocketMessage {
   status: string;
