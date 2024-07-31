@@ -18,9 +18,9 @@ const InfostaionDialog: React.FC<{
         <div>
           {fillteredstation !== null && fillteredstation !== undefined
             ? [
-                <h1 key="start">ต้นทาง {fillteredstation[0].name}</h1>,
+                <div key="start" className="flex justify-center "><h1 className={`mr-2 start`} >ต้นทาง </h1> <h1> {fillteredstation[0].name}</h1></div>,
                 <h1 className="">ถึง</h1>,
-                <h1 key="end">ปลายทาง {fillteredstation[fillteredstation.length - 1].name}</h1>,
+                <div key="end" className="flex justify-center " ><h1 className={`mr-2 end`} >ปลายทาง</h1> <h1> {fillteredstation[fillteredstation.length - 1].name}</h1></div>,
               ]
             : null}
         </div>

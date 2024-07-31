@@ -24,7 +24,7 @@ const StationMarker: React.FC<{
     React.SetStateAction<{
       lat: number;
       lng: number;
-    }>
+    } |null>
   >;
   setStation: React.Dispatch<React.SetStateAction<AxiosResponse<Stations[], any> | null>>;
   urlMarker: string;
