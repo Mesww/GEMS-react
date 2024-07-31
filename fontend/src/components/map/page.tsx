@@ -20,7 +20,12 @@ const Mappage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [stations, setStations] = useState<AxiosResponse<Stations[]> | null>(null);
   const [loading, setLoading] = useState(true);
-
+    // set center
+    const [center, setCenter] = useState<{lat:number,lng:number}|null>({
+      lat: 20.045116568504863,
+      lng: 99.89429994369891,
+    });
+    const [shouldResetCenter, setShouldResetCenter] = useState(false);
     // fetch polylines ==================================================================================================
     const [polylines, setPolylines] = useState<AxiosResponse<Polylines[]> | null>(null);
     const [selectedstationMarker, setselectedstationMarker] = useState<SelectedMarker | null>(null);
@@ -75,6 +80,11 @@ const Mappage = () => {
       setinfoIsVisible={setIsVisible}
       stations={stations}
       selectedMarker={selectedstationMarker}
+      setSelectedMarker={setselectedstationMarker}
+      setCenter={setCenter}
+      setShouldResetCenter={setShouldResetCenter}
+      shouldResetCenter={shouldResetCenter}
+      center={center}
       />
 
       {!loading && <InfostaionDialog selectRoue={selectRoute} fillteredstation={filteredStations} isVisible={selectRoute !== null}/>}
@@ -92,6 +102,10 @@ const Mappage = () => {
         selectedstationMarker={selectedstationMarker}
         setselectedstationMarker={setselectedstationMarker}
         polylines={polylines}
+        center={center}
+        setCenter={setCenter}
+        setShouldResetCenter={setShouldResetCenter}
+        shouldResetCenter={shouldResetCenter}
       />
     
     </>

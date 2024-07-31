@@ -2,4 +2,38 @@
 
 .content
      background-color: white
-     
+// Variables
+$animation-duration: 0.3s
+$animation-timing: ease
+
+// Mixins
+@mixin transition($properties...) 
+  transition-property: $properties
+  transition-duration: $animation-duration
+  transition-timing-function: $animation-timing
+
+
+// Animation for the overlay background
+.search-overlay 
+  @include transition(background-color)
+  
+  &.active 
+    background-color: rgba(0, 0, 0, 0.5)
+  
+  
+  &:not(.active) 
+    background-color: rgba(0, 0, 0, 0)
+    pointer-events: none
+  
+
+
+// Animation for the search container
+.search-container 
+  @include transition(transform, opacity)
+  transform: scale(0.95)
+  opacity: 0
+  
+  &.active 
+    transform: scale(1)
+    opacity: 1
+  

@@ -16,7 +16,6 @@ import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
 import { Stations } from "../../interfaces/station.interface";
 import { BusData, BusInfo } from "../../containers/calulateDistance/calculateDistance";
-import InfostaionDialog from "../stationinfoDialog/stationinfoDialog";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
@@ -69,14 +68,15 @@ const MapComponant: React.FC<{
   setselectedstationMarker: React.Dispatch<
     React.SetStateAction<SelectedMarker | null>
   >;
-
-}> = ({ polylines,selectedRoute, stations, selectedstationMarker, setselectedstationMarker,setStations }) => {
-  // set center
-  const [center, setCenter] = useState({
-    lat: 20.045116568504863,
-    lng: 99.89429994369891,
-  });
-
+  setShouldResetCenter: React.Dispatch<React.SetStateAction<boolean>>;
+  shouldResetCenter: boolean;
+  setCenter: React.Dispatch<React.SetStateAction<{ lat: number; lng: number }|null>>;
+  center: {
+    lat: number;
+    lng: number;
+}|null;
+}> = ({ polylines,selectedRoute, stations, selectedstationMarker, setselectedstationMarker,setStations,center,setCenter,setShouldResetCenter,shouldResetCenter }) => {
+ 
   ///////////// test polyline component ///////////////////////
   const PolylineComponent: React.FC<{
     path: google.maps.LatLngLiteral[];
@@ -231,7 +231,21 @@ const MapComponant: React.FC<{
     console.log(`Marker ${key} clicked`, value);
     setSelectedMarker({ key, value });
     setCenter({ lat, lng });
-  }, []);
+    setShouldResetCenter(true);
+  }, [setShouldResetCenter,setCenter]);
+  // reset center
+  useEffect(() => {
+    if ( center) {
+      // This will run after the component has re-rendered with the new center
+      const timer = setTimeout(() => {
+        setCenter(null);
+        setShouldResetCenter(false);
+      }, 0);
+      
+      // Cleanup the timer if the component unmounts
+      return () => clearTimeout(timer);
+    }
+  }, [center, shouldResetCenter]);
 
   // handle ปิด infowindow
   const handleInfoWindowClose = useCallback(() => {
@@ -358,7 +372,8 @@ const MapComponant: React.FC<{
         <Map
           style={{ width: "100%", height: "100vh" }}
           defaultZoom={15}
-          defaultCenter={center}
+          defaultCenter={{ lat: 20.045116568504863, lng: 99.89429994369891 }}
+          center={center}
           mapId={MAPID}
           gestureHandling={"greedy"}
           disableDefaultUI={true}
