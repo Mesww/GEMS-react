@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 const API_URL = import.meta.env.VITE_API;
-const token = Cookies.get("token");
+
 
 interface FeedbackDialogProps {
   onClose: () => void;
@@ -17,7 +17,7 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({
   const [isActive, setIsActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const token = Cookies.get("token");
   useEffect(() => {
     if (isVisible) {
       setIsActive(true);
