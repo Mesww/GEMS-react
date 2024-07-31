@@ -22,7 +22,8 @@ const InfoDialog: React.FC<{
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   stations: AxiosResponse<Stations[], any> | null;
   selectedMarker: SelectedMarker | null;
-}> = ({ isVisible, setinfoIsVisible, stations, selectedMarker }) => {
+  selectedRoute: string | null;
+}> = ({ isVisible, setinfoIsVisible, stations, selectedMarker,selectedRoute }) => {
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);
   };
@@ -50,7 +51,7 @@ if (stations?.data !== undefined) {
 0}
 
 //ป้ายที่ใกล้กับเราที่สุด
-const closestStation = useNearestStation(stationMarkers, location); 
+const closestStation = useNearestStation(stationMarkers, location, selectedRoute); 
 
 
 //นำป้ายใกล้กับเรามาหา รถบัสที่ใกล้ที่สุด

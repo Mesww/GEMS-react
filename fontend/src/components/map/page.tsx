@@ -62,6 +62,7 @@ const Mappage = () => {
       setinfoIsVisible={setIsVisible}
       stations={stations}
       selectedMarker={selectedstationMarker}
+      selectedRoute={selectRoute}
       />
       <Navbar 
         activeContent={selectRoute}

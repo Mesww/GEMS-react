@@ -3,6 +3,7 @@ import axios from "axios"; // Import axios
 import { Stations } from "../../interfaces/station.interface";
 import { getUserinfo } from "../login/Login";
 import { useCookies } from "react-cookie";
+import { SelectedMarker } from "../../components/map/stationmarker";
 
 const api = import.meta.env.VITE_API;
 
@@ -65,7 +66,8 @@ function calculateDistance(
 
 function useNearestStation(
   stationData:Stations[],
-  userLocation: Location | null
+  userLocation: Location | null,
+  selectedRoute: string | null
 ): ClosestStation | null {
   const [closestStation, setClosestStation] = useState<ClosestStation | null>(
     null
@@ -147,7 +149,7 @@ function useNearestStation(
           location: `${closestStation.lat}, ${closestStation.lng}`,
           marker: closestStation.stationNameId,
           time: dateTime,
-          route: closestStation.route,
+          route: selectedRoute || "N/A",
         })
         .then(async (response) => {
           console.log("Activity posted successfully:", response.data);
