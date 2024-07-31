@@ -3,6 +3,7 @@ import { ClosestBusResult } from "../containers/calulateDistance/calculateDistan
 export interface Stations {
     _id: string;
     id: string;
+    name:string;
     position: string;
     waitingLength: number;
     route: string;

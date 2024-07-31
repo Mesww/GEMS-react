@@ -4,6 +4,7 @@ import { ClosestBusResult } from './bus.interface';
 
 export interface Station extends Document {
     id: string;
+    name:string;
     position: string;
     waiting: interface_User[];
     route: string;

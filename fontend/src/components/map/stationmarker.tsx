@@ -53,14 +53,15 @@ const StationMarker: React.FC<{
     },
     [setSelectedMarker, setCenter,setStationSelected,useCloseststation,stationSelected,busData,closestBus]
   );
-
+  
   // handle infowindow close
   const handleInfoWindowClose = useCallback(() => {
-    if (setSelectedMarker  ) {
+  if (setSelectedMarker  ) {
       setSelectedMarker(null);
     }
     setStationSelected(null);
   }, [setSelectedMarker,setStationSelected]);
+
 
   if (!position) return null;
 

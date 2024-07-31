@@ -16,6 +16,7 @@ import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
 import { Stations } from "../../interfaces/station.interface";
 import { BusData, BusInfo } from "../../containers/calulateDistance/calculateDistance";
+import InfostaionDialog from "../stationinfoDialog/stationinfoDialog";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
@@ -350,16 +351,6 @@ const MapComponant: React.FC<{
 
   const urlMarker2 = "/station2.png";
 
-  // ==================================================================================================
-
-  // interface SelectedMarker ==================================================================================================
-
-  // ==================================================================================================
-
-  // set selected station markers=================================================================================================
-  // const [selectedstationMarker, setselectedstationMarker] =
-  //   useState<SelectedMarker | null>(null);
-  // ==================================================================================================
 
   return (
     <>
@@ -382,7 +373,7 @@ const MapComponant: React.FC<{
         {/* station markers */}
 
         {selectedRoute === "route1" ? (
-          <StationMarker
+        <StationMarker
             position={filteredStations}
             selectedMarker={selectedstationMarker}
             setSelectedMarker={setselectedstationMarker}

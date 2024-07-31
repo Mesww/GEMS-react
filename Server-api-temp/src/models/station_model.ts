@@ -16,6 +16,7 @@ const statusBusSchema = new mongoose.Schema({
 
 const StationSchema: Schema = new Schema({
   id: { type: String, required: true },
+  name: {type: String, required: true ,default: ""},
   position: { type: String, required: true },
   waiting:{ type: [userSchema], default: []},
   route: { type: String, required: true },

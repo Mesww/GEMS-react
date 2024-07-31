@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react";
+import { useEffect, useMemo, useState} from "react";
 import { useCookies } from "react-cookie";
 import MapComponent from "./mapComponent";
 import Navbar from "../navbar/navbar";
@@ -12,6 +12,7 @@ import { SelectedMarker } from "./stationmarker";
 import { Stations } from "../../interfaces/station.interface";
 import FeedbackDialog from "../feedbackDialog/feedBackDialog";
 import Cookies from 'js-cookie';
+import InfostaionDialog from '../stationinfoDialog/stationinfoDialog';
 
 const Mappage = () => {
   const [, setCookie] = useCookies(["token"]);
@@ -50,7 +51,18 @@ const Mappage = () => {
         setShowFeedback(false);
     };
 
-
+    const filteredStations = useMemo(() => {
+      if (!stations || !stations.data) return [];
+      return stations.data.filter((station: { route: string }) => {
+        if (selectRoute === "route1") {
+          return station.route === "route 1&2" || station.route === "route 1";
+        } else if (selectRoute === "route2") {
+          return station.route === "route 2" || station.route === "route 1&2";
+        } else {
+          return true; // This will include all stations if no route is selected
+        }
+      });
+    }, [stations, selectRoute]);
 
   return (
     <>
@@ -58,11 +70,15 @@ const Mappage = () => {
 
 
       {loading && <Loading/>}
+
       <InfoDialog isVisible={isVisible}
       setinfoIsVisible={setIsVisible}
       stations={stations}
       selectedMarker={selectedstationMarker}
       />
+
+      {!loading && <InfostaionDialog selectRoue={selectRoute} fillteredstation={filteredStations} isVisible={selectRoute !== null}/>}
+
       <Navbar 
         activeContent={selectRoute}
         setActiveContent={setSelectRoute} 
