@@ -34,6 +34,7 @@ interface ClosestStation extends Station {
   stationId: string;
   stationNameId: string;
   waitingCount: number;
+  route: string
 }
 
 function parsePosition(position: string): [number, number] {
@@ -115,6 +116,7 @@ function useNearestStation(
         const stationId = data._id;
         const stationNameId = data.id;
         const waitingCount = data.waitingLength;
+        const route = data.route;
         const distance = calculateDistance(
           userLocation.lat,
           userLocation.lng,
@@ -125,7 +127,7 @@ function useNearestStation(
 
         if (distance < minDistance) {
           minDistance = distance;
-          closest = { id, lat, lng, distance, stationId, stationNameId, waitingCount};
+          closest = { id, lat, lng, distance, stationId, stationNameId, waitingCount ,route};
         }
       });
 
@@ -137,7 +139,7 @@ function useNearestStation(
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
 
   useEffect(() => {
-    if (closestStation && closestStation.distance <= 99999 && userInfo) {
+    if (closestStation && closestStation.distance <= 30 && userInfo) {
       let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
@@ -145,7 +147,7 @@ function useNearestStation(
           location: `${closestStation.lat}, ${closestStation.lng}`,
           marker: closestStation.stationNameId,
           time: dateTime,
-          route: "test",
+          route: closestStation.route,
         })
         .then(async (response) => {
           console.log("Activity posted successfully:", response.data);

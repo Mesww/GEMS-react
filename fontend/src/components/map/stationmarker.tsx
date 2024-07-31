@@ -1,8 +1,12 @@
-import React, { useCallback,  useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import "./style.sass";
-import { BusData,ClosestBusResult,useCloseststation } from "../../containers/calulateDistance/calculateDistance";
-import {   Stations } from "../../interfaces/station.interface";
+import {
+  BusData,
+  ClosestBusResult,
+  useCloseststation,
+} from "../../containers/calulateDistance/calculateDistance";
+import { Stations } from "../../interfaces/station.interface";
 import { AxiosResponse } from "axios";
 
 export interface TrackerData {
@@ -26,7 +30,9 @@ const StationMarker: React.FC<{
       lng: number;
     }>
   >;
-  setStation: React.Dispatch<React.SetStateAction<AxiosResponse<Stations[], any> | null>>;
+  setStation: React.Dispatch<
+    React.SetStateAction<AxiosResponse<Stations[], any> | null>
+  >;
   urlMarker: string;
 }> = ({
   position,
@@ -34,11 +40,11 @@ const StationMarker: React.FC<{
   setSelectedMarker,
   setCenter,
   urlMarker,
-  busData
+  busData,
 }) => {
   const [closestBus, setClosestBus] = useState<ClosestBusResult | null>(null);
-  const [stationSelected, setStationSelected] = useState<Stations | null >(null);
-  
+  const [stationSelected, setStationSelected] = useState<Stations | null>(null);
+
   // handle marker click
   const handleMarkerClick = useCallback(
     (key: string, value: Stations) => {
@@ -49,18 +55,26 @@ const StationMarker: React.FC<{
       }
       setCenter({ lat, lng });
       useCloseststation(value, busData, setClosestBus);
-      setStationSelected(value) ;
+      setStationSelected(value);
     },
-    [setSelectedMarker, setCenter,setStationSelected,useCloseststation,stationSelected,busData,closestBus]
+    [
+      setSelectedMarker,
+      setCenter,
+      setStationSelected,
+      useCloseststation,
+      stationSelected,
+      busData,
+      closestBus,
+    ]
   );
 
   // handle infowindow close
   const handleInfoWindowClose = useCallback(() => {
-    if (setSelectedMarker  ) {
+    if (setSelectedMarker) {
       setSelectedMarker(null);
     }
     setStationSelected(null);
-  }, [setSelectedMarker,setStationSelected]);
+  }, [setSelectedMarker, setStationSelected]);
 
   if (!position) return null;
 
@@ -82,8 +96,11 @@ const StationMarker: React.FC<{
                   position={{ lat, lng }}
                   title={`ป้ายหมายเลข: ${station.id}`}
                   onClick={() => handleMarkerClick(station.id, station)}
-                  label={{text:station.id,className: 'marker-label',
-                    color: 'white',}}
+                  label={{
+                    text: station.id,
+                    className: "marker-label",
+                    color: "white",
+                  }}
                   icon={{
                     url: urlMarker,
                     scaledSize: window.google.maps.Size
@@ -96,25 +113,36 @@ const StationMarker: React.FC<{
                       ? new window.google.maps.Point(27, 27)
                       : null,
                   }}
+                  animation={
+                    selectedMarker?.value._id == station._id
+                      ? window.google.maps.Animation.BOUNCE
+                      : null
+                  }
                 />
 
-                {closestBus &&
-                  selectedMarker &&
-                  selectedMarker.value._id === station._id && (
-                    <InfoWindow
-                      position={{ lat, lng }}
-                      onCloseClick={handleInfoWindowClose}
-                      headerContent={`ป้ายหมายเลข ${station.id}`}
-                    >
-                      <div>
-                        {/* <p>คนที่รอในขณะนี้: {station.waitingLength} คน</p> */}
-                        {closestBus.busId !== null && closestBus.distance !== null && closestBus.distance <=100 ? <p>มีรถgemsหมายเลข {closestBus.busId} อยู่ใกล้เคียงในระยะ {closestBus.distance?.toFixed(0)} เมตร</p>:"ไม่มีรถในระยะ"}
-                         {/* {station.direction.arrival!== undefined ? <p>(for Debugging)รถจะหันมาในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
+                {selectedMarker && selectedMarker.value._id === station._id && (
+                  <InfoWindow
+                    position={{ lat, lng }}
+                    onCloseClick={handleInfoWindowClose}
+                    headerContent={`ป้ายหมายเลข ${station.id}`}
+                    pixelOffset={[0, -45]}
+                  >
+                    <div>
+                      <p>คนที่รอในขณะนี้: {station.waitingLength} คน</p>
+                      {closestBus ? (
+                        <p>
+                          มีรถgemsหมายเลข {closestBus.busId} อยู่ใกล้เคียงในระยะ{" "}
+                          {closestBus.distance?.toFixed(0)} เมตร
+                        </p>
+                      ) : (
+                        <p>ไม่มีรถในระยะ</p>
+                      )}
+                      {/* {station.direction.arrival!== undefined ? <p>(for Debugging)รถจะหันมาในทิศ {station.direction.arrival[0]} , {station.direction.arrival[1]}  </p> : null}
                          {station.direction.approaching!== undefined ? <p>(for Debugging)รถจะมาถึงในทิศ {station.direction.approaching[0]} , {station.direction.approaching[1]}  </p> : null}
                          {station.direction.departure!== undefined ? <p>(for Debugging)รถจะออกจากป้ายในทิศ {station.direction.departure[0]} , {station.direction.departure[1]}  </p> : null} */}
-                      </div>
-                    </InfoWindow>
-                  )}
+                    </div>
+                  </InfoWindow>
+                )}
               </React.Fragment>
             );
           } else {
