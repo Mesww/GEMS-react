@@ -3,7 +3,6 @@ import axios from "axios"; // Import axios
 import { Stations } from "../../interfaces/station.interface";
 import { getUserinfo } from "../login/Login";
 import { useCookies } from "react-cookie";
-import { SelectedMarker } from "../../components/map/stationmarker";
 
 const api = import.meta.env.VITE_API;
 
