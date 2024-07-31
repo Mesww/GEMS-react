@@ -137,11 +137,11 @@ function useNearestStation(
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
 
   useEffect(() => {
-    if (closestStation && closestStation.distance <= 30) {
+    if (closestStation && closestStation.distance <= 99999 && userInfo) {
       let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
-          email: userInfo?.email,
+          email: userInfo.email,
           location: `${closestStation.lat}, ${closestStation.lng}`,
           marker: closestStation.stationNameId,
           time: dateTime,
@@ -152,11 +152,11 @@ function useNearestStation(
           // add user to station
           return await axios.post(`${api}/addusertoStaion`, {
             id: closestStation.stationId,
-            name: userInfo?.name,
-            email: userInfo?.email,
-            role: userInfo?.role
-          },{
-            headers:{"x-auth-token":cookie.token}
+            name: userInfo.name,
+            email: userInfo.email,
+            role: userInfo.role
+          }, {
+            headers: { "x-auth-token": cookie.token }
           });
         })
         .then((response) => {
@@ -166,8 +166,7 @@ function useNearestStation(
           console.error("Error:", error);
         });
     }
-  
-  }, [closestStation]);
+  }, [closestStation, userInfo]);
 
   return closestStation;
 }
