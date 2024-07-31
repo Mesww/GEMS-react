@@ -17,7 +17,7 @@ const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles =
 
   useEffect(() => {
     const fetchUserRole = async () => {
-      if (cookies.token) {
+      if (cookies.token && cookies.token !== undefined && cookies.token !== 'undefined') {
         try {
           const userInfo = await getUserinfo(cookies.token);
           if (userInfo && userInfo.role) {
@@ -29,6 +29,7 @@ const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles =
         } catch (error) {
           console.error('Error fetching user info:', error);
           setIsAuthen(false);
+          setIsLoading(false);
         }
       } else {
         setIsAuthen(false);
