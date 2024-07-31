@@ -89,7 +89,8 @@ const StationMarker: React.FC<{
             !isNaN(lat) &&
             !isNaN(lng) &&
             window.google &&
-            window.google.maps
+            window.google.maps &&
+            window.google.maps.Size 
           ) {
             return (
               <React.Fragment key={index}>

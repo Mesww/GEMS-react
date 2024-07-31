@@ -107,6 +107,7 @@ const Mappage = () => {
         setCenter={setCenter}
         setShouldResetCenter={setShouldResetCenter}
         shouldResetCenter={shouldResetCenter}
+        setLoading={setLoading}
       />
     
     </>

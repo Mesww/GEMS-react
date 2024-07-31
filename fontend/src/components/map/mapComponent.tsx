@@ -75,7 +75,8 @@ const MapComponant: React.FC<{
     lat: number;
     lng: number;
 }|null;
-}> = ({ polylines,selectedRoute, stations, selectedstationMarker, setselectedstationMarker,setStations,center,setCenter,setShouldResetCenter,shouldResetCenter }) => {
+setLoading:React.Dispatch<React.SetStateAction<boolean>>
+}> = ({setLoading, polylines,selectedRoute, stations, selectedstationMarker, setselectedstationMarker,setStations,center,setCenter,setShouldResetCenter,shouldResetCenter }) => {
  
   ///////////// test polyline component ///////////////////////
   const PolylineComponent: React.FC<{
@@ -177,49 +178,7 @@ const MapComponant: React.FC<{
   const [isOpen, setIsOpen] = useState(false);
   const location = useUserLocation();
 
-  const userMarker = useMemo(() => {
-    if (
-      location &&
-      location.lat &&
-      location.lng &&
-      window.google &&
-      window.google.maps
-    ) {
-      return (
-        <>
-          <Marker
-            key="user-location"
-            position={{ lat: location.lat, lng: location.lng }}
-            title="Your Location"
-            onClick={() => {
-              setIsOpen(true);
-            }}
-            icon={{
-              url: userIcon,
-              scaledSize: window.google.maps.Size
-                ? new window.google.maps.Size(22, 20)
-                : null,
-              origin: window.google.maps.Point
-                ? new window.google.maps.Point(0, 0)
-                : null,
-              anchor: window.google.maps.Point
-                ? new window.google.maps.Point(11, 10)
-                : null,
-            }}
-          />
-          {isOpen && (
-            <InfoWindow
-              position={{ lat: location.lat, lng: location.lng }}
-              onCloseClick={() => setIsOpen(false)}
-              headerContent={`คุณอยู่ตรงนี้`}
-            ></InfoWindow>
-          )}
-        </>
-      );
-    }
-    return null;
-  }, [location, isOpen]);
-
+  
   // markers รถเจม ==================================================================================================
   // เซ็ท marker ที่เลือก
   const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(
@@ -252,29 +211,76 @@ const MapComponant: React.FC<{
     setSelectedMarker(null);
     
   }, []);
-
-
+  
+  
   ////////////// test polyline path ///////////////////////
   const updatePolylinePath = useCallback((route: string) => {
-  
+    
     if (!polylines?.data ){
-        return setPolylinePath([]);
-      }
-      const polylineSelected = polylines.data
-      .filter((polyline) => polyline.name === route)
-      .flatMap((polyline) => polyline.path);
+      return setPolylinePath([]);
+    }
+    const polylineSelected = polylines.data
+    .filter((polyline) => polyline.name === route)
+    .flatMap((polyline) => polyline.path);
       setPolylinePath(polylineSelected);
     }, [polylines]);
   /////////////////////////////////////////////////////////
 
 
-
-
-  /////////////// test polyline path selected route ///////
+  
+  
   useEffect(() => {
     updatePolylinePath(selectedRoute || "");
-  }, [selectedRoute, updatePolylinePath]);
-  /////////////////////////////////////////////////////////
+    if (!window.google.maps) {
+      setLoading(true);
+    }
+  }, [selectedRoute, updatePolylinePath,setLoading]);
+  
+  const userMarker = useMemo(() => {
+    if (
+      location &&
+      location.lat &&
+      location.lng &&
+      window.google &&
+      window.google.maps&&
+      window.google.maps.Size
+    ) {
+      return (
+        <>
+          <Marker
+            key="user-location"
+            position={{ lat: location.lat, lng: location.lng }}
+            title="Your Location"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+            icon={{
+              url: userIcon,
+              scaledSize: window.google.maps.Size
+                ? new window.google.maps.Size(22, 20)
+                : null,
+              origin: window.google.maps.Point
+                ? new window.google.maps.Point(0, 0)
+                : null,
+              anchor: window.google.maps.Point
+                ? new window.google.maps.Point(11, 10)
+                : null,
+            }}
+          />
+          {isOpen && (
+            <InfoWindow
+              position={{ lat: location.lat, lng: location.lng }}
+              onCloseClick={() => setIsOpen(false)}
+              headerContent={`คุณอยู่ตรงนี้`}
+            ></InfoWindow>
+          )}
+        </>
+      );
+    }else{
+      setLoading(true);
+    }
+    return null;
+  }, [location, isOpen,setLoading]);
 
   const [gemscarselected,setgemscarselected] =useState<BusData|null>(null);
 
