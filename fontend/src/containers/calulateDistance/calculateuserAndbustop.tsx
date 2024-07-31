@@ -3,6 +3,7 @@ import axios from "axios"; // Import axios
 import { Stations } from "../../interfaces/station.interface";
 import { getUserinfo } from "../login/Login";
 import { useCookies } from "react-cookie";
+import { SelectedMarker } from "../../components/map/stationmarker";
 
 const api = import.meta.env.VITE_API;
 
@@ -34,6 +35,7 @@ interface ClosestStation extends Station {
   stationId: string;
   stationNameId: string;
   waitingCount: number;
+  route: string
 }
 
 function parsePosition(position: string): [number, number] {
@@ -64,7 +66,8 @@ function calculateDistance(
 
 function useNearestStation(
   stationData:Stations[],
-  userLocation: Location | null
+  userLocation: Location | null,
+  selectedRoute: string | null
 ): ClosestStation | null {
   const [closestStation, setClosestStation] = useState<ClosestStation | null>(
     null
@@ -115,6 +118,7 @@ function useNearestStation(
         const stationId = data._id;
         const stationNameId = data.id;
         const waitingCount = data.waitingLength;
+        const route = data.route;
         const distance = calculateDistance(
           userLocation.lat,
           userLocation.lng,
@@ -125,7 +129,7 @@ function useNearestStation(
 
         if (distance < minDistance) {
           minDistance = distance;
-          closest = { id, lat, lng, distance, stationId, stationNameId, waitingCount};
+          closest = { id, lat, lng, distance, stationId, stationNameId, waitingCount ,route};
         }
       });
 
@@ -137,26 +141,26 @@ function useNearestStation(
   // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
 
   useEffect(() => {
-    if (closestStation && closestStation.distance <= 30) {
+    if (closestStation && closestStation.distance <= 30 && userInfo) {
       let dateTime = new Date().toISOString();
       axios
         .post(`${api}/activity`, {
-          email: userInfo?.email,
+          email: userInfo.email,
           location: `${closestStation.lat}, ${closestStation.lng}`,
           marker: closestStation.stationNameId,
           time: dateTime,
-          route: "test",
+          route: selectedRoute || "N/A",
         })
         .then(async (response) => {
           console.log("Activity posted successfully:", response.data);
           // add user to station
           return await axios.post(`${api}/addusertoStaion`, {
             id: closestStation.stationId,
-            name: userInfo?.name,
-            email: userInfo?.email,
-            role: userInfo?.role
-          },{
-            headers:{"x-auth-token":cookie.token}
+            name: userInfo.name,
+            email: userInfo.email,
+            role: userInfo.role
+          }, {
+            headers: { "x-auth-token": cookie.token }
           });
         })
         .then((response) => {
@@ -166,8 +170,7 @@ function useNearestStation(
           console.error("Error:", error);
         });
     }
-  
-  }, [closestStation]);
+  }, [closestStation, userInfo]);
 
   return closestStation;
 }

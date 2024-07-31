@@ -42,6 +42,8 @@ center: {
 } | null
 shouldResetCenter: boolean;
 setShouldResetCenter: React.Dispatch<React.SetStateAction<boolean>>
+selectedRoute: string | null;
+
 }> = ({
   isVisible,
   setinfoIsVisible,
@@ -51,7 +53,8 @@ setShouldResetCenter: React.Dispatch<React.SetStateAction<boolean>>
   setCenter,
   center,
   setShouldResetCenter,
-  shouldResetCenter
+  shouldResetCenter,
+  selectedRoute
 }) => {
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);
@@ -104,8 +107,9 @@ setShouldResetCenter: React.Dispatch<React.SetStateAction<boolean>>
     0;
   }
 
-  //ป้ายที่ใกล้กับเราที่สุด
-  const closestStation = useNearestStation(stationMarkers, location);
+//ป้ายที่ใกล้กับเราที่สุด
+const closestStation = useNearestStation(stationMarkers, location,selectedRoute); 
+
 
   //นำป้ายใกล้กับเรามาหา รถบัสที่ใกล้ที่สุด
   const closestBusData = useClosestBus(closestStation, data);

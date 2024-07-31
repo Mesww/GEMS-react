@@ -85,6 +85,7 @@ const Mappage = () => {
       setShouldResetCenter={setShouldResetCenter}
       shouldResetCenter={shouldResetCenter}
       center={center}
+      selectedRoute={selectRoute}
       />
 
       {!loading && <InfostaionDialog selectRoue={selectRoute} fillteredstation={filteredStations} isVisible={selectRoute !== null}/>}
