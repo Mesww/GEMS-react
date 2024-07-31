@@ -191,17 +191,17 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute)
       >
         <div className="card flex justify-center">
           <div className="bg-white  rounded-xl shadow-lg py-6 px-10 h-60 w-96 relative">
-            <div className="title flex justify-between item-center">
+            <div className="title flex justify-between item-center text-sm">
               <p className="flex ">
                 <img src={gemlogo} alt="logo" className="w-10" />
                 Gem {closestBusData.busId}
               </p>
               {closestBusData.eta && closestBusData.eta > 0 ? (
                 <span>
-                  รถจะถึงป้ายในอีก {closestBusData.eta.toFixed(2)} นาที
+                  รถจะถึงป้ายคุณในอีก {closestBusData.eta.toFixed(2)} นาที
                 </span>
               ) : (
-                <span>รถจะถึงป้ายในอีก ? นาที</span>
+                <span>รถจะถึงป้ายคุณในอีก ? นาที</span>
               )}
             </div>
 
