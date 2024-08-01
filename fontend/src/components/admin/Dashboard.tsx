@@ -5,6 +5,7 @@ import Mappage from '../map/page';
 
 const Dashboard: React.FC = () => {
   return (
+    <div className="h-0">
     <div className="flex h-screen">
         <Sidebar />
     
@@ -23,6 +24,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
