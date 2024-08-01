@@ -5,12 +5,9 @@ import { regis_user } from "../service/user.service";
 import { interface_User } from "../interface/user.interface";
 
 export const auth_controller = async (req:Request,res:Response)=>{
-    
     const { code } = req.body;
     const userDetails = await auth(code);
-
     let role = "USER";
-
     if (userDetails.email === process.env.SUPERADMIN && process.env.SUPERADMIN !== undefined ) {
         role = "ADMIN";
     }
