@@ -6,6 +6,7 @@ import MapAdminComponent from './MapAdmin/mapAdminComponent';
 
 const Dashboard: React.FC = () => {
   return (
+    <div className="h-0">
     <div className="flex h-screen">
         <Sidebar />
       {/* Map Section */}
@@ -23,6 +24,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
