@@ -371,6 +371,7 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
 
   return (
     <>
+    <div className="h-0">
       <APIProvider apiKey={MAPAPIKEY} libraries={["places"]}>
         <Map
           style={{ width: "100%", height: "100vh" }}
@@ -416,6 +417,7 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
           color={selectedRoute === "route1" ? "#8b090c" : "#e2b644"}
         />
       </APIProvider>
+      </div>
     </>
   );
 };
