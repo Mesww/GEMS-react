@@ -229,12 +229,7 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
 
   
   
-  useEffect(() => {
-    updatePolylinePath(selectedRoute || "");
-    if (!window.google.maps) {
-      setLoading(true);
-    }
-  }, [selectedRoute, updatePolylinePath,setLoading]);
+
   
   const userMarker = useMemo(() => {
     if (
