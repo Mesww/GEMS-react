@@ -34,7 +34,7 @@ function App() {
           }
         ></Route>
         <Route
-          path="/admin/table"
+          path="/admin/mark-pin"
           element={
             <ProtectmapRoute requireRoles={["ADMIN", "USER"]}>
               <Table />
