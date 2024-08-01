@@ -229,7 +229,9 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
 
   
   
-
+  useEffect(() => {
+    updatePolylinePath(selectedRoute || "");
+  }, [selectedRoute, updatePolylinePath,setLoading]);
   
   const userMarker = useMemo(() => {
     if (
