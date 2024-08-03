@@ -56,7 +56,7 @@ router.post('/stations/add', auth_middleware ,addStationController);
 
 
 // update station
-router.put('/updatestations/:id', auth_middleware, updateStationController);
+router.patch('/updatestations/:id', auth_middleware, updateStationController);
 
 
 // delete station
