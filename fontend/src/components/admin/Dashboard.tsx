@@ -1,6 +1,5 @@
 import React from 'react';
 import Sidebar from './sidebar';
-import Mappage from '../map/page';
 import MapAdminComponent from './MapAdmin/mapAdminComponent';
 
 
