@@ -109,6 +109,74 @@ export async function findClosestStation(busData:BusData) {
   }
 }
 
+// add Station service
+export async function addStation(stationData: Partial<typeof Station>) {
+  try {
+    const newStation = new Station(stationData);
+    await newStation.save();
+    console.log("New station added successfully.");
+    return {
+      status: "Success",
+      message: "New station added successfully.",
+      data: newStation
+    };
+  } catch (error) {
+    console.error("Error adding new station:", error);
+    return {
+      status: "Error",
+      message: "Error adding new station: " + (error as Error).message,
+    };
+  }
+}
+
+// update Station service
+export async function updateStation(id: string, updateData: Partial<typeof Station>) {
+  try {
+    const updatedStation = await Station.findByIdAndUpdate(id, updateData, { new: true });
+    if (!updatedStation) {
+      return {
+        status: "Error",
+        message: "Station not found"
+      };
+    }
+    return {
+      status: "Success",
+      message: "Station updated successfully",
+      data: updatedStation
+    };
+  } catch (error) {
+    console.error("Error updating station:", error);
+    return {
+      status: "Error",
+      message: "Error updating station: " + (error as Error).message,
+    };
+  }
+}
+
+// delete Station service
+export async function deleteStation(id: string) {
+  try {
+    const deletedStation = await Station.findByIdAndDelete(id);
+    if (!deletedStation) {
+      return {
+        status: "Error",
+        message: "Station not found"
+      };
+    }
+    return {
+      status: "Success",
+      message: "Station deleted successfully",
+      data: deletedStation
+    };
+  } catch (error) {
+    console.error("Error deleting station:", error);
+    return {
+      status: "Error",
+      message: "Error deleting station: " + (error as Error).message,
+    };
+  }
+}
+
 
 const calculateBearing = (
   lat1: number,
