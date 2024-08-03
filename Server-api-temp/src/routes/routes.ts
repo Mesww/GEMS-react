@@ -1,7 +1,7 @@
 import StationModel from './../models/station_model';
 import express, { Request, Response } from "express";
 import Activity from "../models/activity_model";
-import { addUserToStationscontoller, getStations } from "../controllers/station_controllers";
+import { addStationController, addUserToStationscontoller, deleteStationController, getStations, updateStationController } from "../controllers/station_controllers";
 import { getPolylines } from "../controllers/polyline_controller";
 import { ObjectId } from 'mongodb';
 import { Station } from '../interface/station.interface';
@@ -49,6 +49,18 @@ router.get("/", async (req: Request, res: Response) => {
 // station
 router.get('/getStation', getStations);
 router.post('/addusertoStaion',auth_middleware ,addUserToStationscontoller);
+
+
+// add station
+router.post('/stations/add', auth_middleware ,addStationController);
+
+
+// update station
+router.patch('/updatestations/:id', auth_middleware, updateStationController);
+
+
+// delete station
+router.delete('/deletestations/:id', auth_middleware, deleteStationController);
 
 
 // get polyline
