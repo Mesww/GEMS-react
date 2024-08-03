@@ -33,6 +33,28 @@ export const getStations = async (
   }
 };
 
+// get data for websocket
+export async function getStationDataFromDatabase() {
+  try {
+    console.log("Fetching stations...");
+    const stations = await Station.find();
+    console.log(`Found ${stations.length} stations`);
+
+    const stationsWithoutWaiting = stations.map((station) => {
+      const { waiting, ...stationWithoutWaiting } = station.toObject();
+      return {
+        ...stationWithoutWaiting,
+        waitingLength: waiting && waiting.length ? waiting.length : 0,
+      };
+    });
+
+    return stationsWithoutWaiting;
+  } catch (error) {
+    console.error("Error fetching stations:", error);
+    throw error;
+  }
+}
+
 export const addUserToStationscontoller = async (
   req: Request,
   res: Response
