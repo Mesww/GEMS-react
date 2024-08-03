@@ -1,17 +1,17 @@
 import { APIProvider, Marker, Map } from "@vis.gl/react-google-maps";
-import { AxiosResponse } from "axios";
 import { useMemo, useState, useEffect } from "react";
 import { Stations } from "../../../interfaces/station.interface";
-import { fetchStations } from "../../../containers/station/getStation";
-import React from "react";
+import { useStationWebSocket } from "../../../containers/getGemsDataWebsocket/getStationWebsocket";
 
 const MapAdminComponent = () => {
-    const [stations, setStations] = useState<AxiosResponse<Stations[]> | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [stations, setStations] = useState<Stations[] | null>(null);
+    const { messages } = useStationWebSocket(); // Use the WebSocket hook
 
     useEffect(() => {
-        fetchStations(setStations, setLoading);
-    }, []);
+        if (messages) {
+            setStations(Array.isArray(messages) ? messages : [messages]);
+        }
+    }, [messages]);
 
     const getMarkerColor = (waitingLength: number) => {
         if (waitingLength >= 10) return "red";
@@ -21,23 +21,18 @@ const MapAdminComponent = () => {
     };
 
     const stationMarkers = useMemo(() => {
-        if (stations && !loading) {
-            return stations.data.map((station) => {
+        if (stations) {
+            return stations.map((station) => {
                 if (station && station.position) {
                     const [lat, lng] = station.position.split(",").map(Number);
                     if (!isNaN(lat) && !isNaN(lng)) {
                         const color = getMarkerColor(station.waitingLength);
                         return (
                             <Marker
-                                key={station.id}
+                                key={station._id}
                                 position={{ lat, lng }}
                                 title={`Station: ${station.id}, Waiting: ${station.waitingLength}`}
                                 icon={color ? `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png` : undefined}
-                                // label={{
-                                //     text: `ป้าย${station.id}`,
-                                //     className: "",
-                                //     color: "white",
-                                //   }}
                             />
                         );
                     }
@@ -46,7 +41,7 @@ const MapAdminComponent = () => {
             }).filter(Boolean);
         }
         return null;
-    }, [stations, loading]);
+    }, [stations]);
 
     return (
         <APIProvider apiKey={""}>
