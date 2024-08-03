@@ -14,14 +14,15 @@ const statusBusSchema = new mongoose.Schema({
 }, { _id: false });
 
 
-const StationSchema: Schema = new Schema({
+const StationSchema = new Schema({
   id: { type: String, required: true },
-  name: {type: String, required: true ,default: ""},
-  position: { type: String, required: true },
-  waiting:{ type: [userSchema], default: []},
+  name: { type: String, required: true, default: "" },
+  position: { type: String, default: "" },
+  waiting: { type: [userSchema], default: [] },
   route: { type: String, required: true },
-  direction: { type: Object, required: true },
-  statusBus: { type: statusBusSchema,default: null },
+  direction: { type: Object, default: {} },
+  statusBus: { type: statusBusSchema, default: null },
 });
+
 
 export default mongoose.model<Station>('Station', StationSchema);
