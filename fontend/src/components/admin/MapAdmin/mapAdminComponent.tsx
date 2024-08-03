@@ -3,7 +3,6 @@ import { AxiosResponse } from "axios";
 import { useMemo, useState, useEffect } from "react";
 import { Stations } from "../../../interfaces/station.interface";
 import { fetchStations } from "../../../containers/station/getStation";
-import React from "react";
 
 const MapAdminComponent = () => {
     const [stations, setStations] = useState<AxiosResponse<Stations[]> | null>(null);

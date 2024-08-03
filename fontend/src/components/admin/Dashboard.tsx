@@ -1,14 +1,14 @@
 import React from 'react';
 import Sidebar from './sidebar';
-import Mappage from '../map/page';
 import MapAdminComponent from './MapAdmin/mapAdminComponent';
 
+import { Cookie, CookieSetOptions } from 'universal-cookie';
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<{setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void}> = ({setCookies}) => {
   return (
     <div className="h-0">
     <div className="flex h-screen">
-        <Sidebar />
+        <Sidebar setCookies={setCookies} />
       {/* Map Section */}
       <div className="flex-1 flex justify-center items-center p-4">
         <div className="w-full h-full bg-white rounded-xl overflow-hidden border-8 border-yellow-300">

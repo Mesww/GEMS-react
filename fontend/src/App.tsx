@@ -7,37 +7,39 @@ import ProtectmapRoute from "./components/protect_route/protectmap.route";
 import ProtectloginRoute from "./components/protect_route/protectlogin.route";
 import Dashboard from "./components/admin/Dashboard";
 import Table from "./components/admin/Table";
+import { useCookies } from "react-cookie";
 
 function App() {
+  const [cookies, setCookie] = useCookies(["token"]);
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={
-        <ProtectloginRoute>
-          <Login />
+        <ProtectloginRoute cookies={cookies}>
+          <Login setCookie={setCookie} />
         </ProtectloginRoute>
         }></Route>
         <Route
           path="/map"
           element={
-            <ProtectmapRoute requireRoles={["ADMIN", "USER"]}>
-              <Map />
+            <ProtectmapRoute cookies={cookies} setCookie={setCookie}  requireRoles={["ADMIN", "USER"]}>
+              <Map setCookies={setCookie} />
             </ProtectmapRoute>
           }
         ></Route>
         <Route
           path="/admin/dashboard"
           element={
-            <ProtectmapRoute requireRoles={["ADMIN", "USER"]}>
-              <Dashboard />
+            <ProtectmapRoute cookies={cookies} setCookie={setCookie}   requireRoles={["ADMIN"]}>
+              <Dashboard setCookies={setCookie} />
             </ProtectmapRoute>
           }
         ></Route>
         <Route
           path="/admin/mark-pin"
           element={
-            <ProtectmapRoute requireRoles={["ADMIN", "USER"]}>
-              <Table />
+            <ProtectmapRoute cookies={cookies} setCookie={setCookie}   requireRoles={["ADMIN"]}   >
+              <Table setCookies={setCookie}/>
             </ProtectmapRoute>
           }
         ></Route>

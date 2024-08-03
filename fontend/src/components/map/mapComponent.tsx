@@ -115,58 +115,7 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
     return messages && messages.status === "ok" ? messages.data : null;
   }, [messages]);
 
-  // test data ==================================================================================================
 
-  // const data : BusData = {
-  //   // "01": {
-  //   // _id:"bus01",
-  //   //   direction: 45,
-  //   //   position: "20.045659393241642, 99.89133178188165",
-  //   //   server_time: "2024-07-26T10:00:00Z",
-  //   //   speed: 0, // in km/h
-  //   //   tracker_time: "2024-07-26T10:00:00Z"
-  //   // },
-  //   "01": {
-  //   _id:"bus01",
-  //     direction: 45,
-  //     position: "20.045700, 99.891400",
-  //     server_time: "2024-07-26T10:00:00Z",
-  //     speed: 0, // in km/h
-  //     tracker_time: "2024-07-26T10:00:00Z"
-  //   },
-  //   // "01": {
-  //   // _id:"bus01",
-  //   //   direction: 45,
-  //   //   position: "20.045668, 99.891346",
-  //   //   server_time: "2024-07-26T10:00:00Z",
-  //   //   speed: 0, // in km/h
-  //   //   tracker_time: "2024-07-26T10:00:00Z"
-  //   // },
-  //   // "01": {
-  //   // _id:"bus01",
-  //   //   direction: 45,
-  //   //   position: "20.045600, 99.891300",
-  //   //   server_time: "2024-07-26T10:00:00Z",
-  //   //   speed: 0, // in km/h
-  //   //   tracker_time: "2024-07-26T10:00:00Z"
-  //   // },
-  //   // "02": {
-  //   //   _id:"bus2",
-  //   //   direction: 50,
-  //   //   position: "20.045600, 99.891300",
-  //   //   server_time: "2024-07-26T10:00:00Z",
-  //   //   speed: 35,
-  //   //   tracker_time: "2024-07-26T10:00:00Z"
-  //   // },
-  //   "03": {
-  //     _id:"bus3",
-  //     direction: 30,
-  //     position: "20.045800, 99.891500",
-  //     server_time: "2024-07-26T10:00:00Z",
-  //     speed: 20,
-  //     tracker_time: "2024-07-26T10:00:00Z"
-  //   }
-  // };
 
   ////////// test polyline state ///////////////////////
   const [polylinePath, setPolylinePath] = useState<google.maps.LatLngLiteral[]>(
@@ -273,8 +222,6 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
           )}
         </>
       );
-    }else{
-      setLoading(true);
     }
     return null;
   }, [location, isOpen,setLoading]);

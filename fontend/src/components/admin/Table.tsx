@@ -19,6 +19,7 @@ import {
   Grid,
 } from "@mui/material";
 import { Visibility, Edit, Delete, VisibilityOff } from "@mui/icons-material";
+import { Cookie, CookieSetOptions } from 'universal-cookie';
 
 interface Data {
   trackingId: string;
@@ -101,11 +102,13 @@ const rows: Data[] = [
   },
 ];
 
-const TableComponent: React.FC = () => {
+const TableComponent: React.FC<
+{setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void}
+> = ({setCookies}) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -120,7 +123,7 @@ const TableComponent: React.FC = () => {
     <div className="h-0">
       <Box display="flex" height="100vh">
         <CssBaseline />
-        <Sidebar />
+        <Sidebar setCookies={setCookies}/>
         <Box
           component="main"
           sx={{

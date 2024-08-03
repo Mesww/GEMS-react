@@ -5,12 +5,14 @@ import Swal from 'sweetalert2'
 import 'animate.css';
 import * as React from 'react';
 // export const [activeContent, setActiveContent] = useState(null);
+import { Cookie, CookieSetOptions } from 'universal-cookie';
+
 const Navbar: React.FC<{
   activeContent: any;
   setActiveContent: React.Dispatch<React.SetStateAction<string | null>>;
-  setCookie: any;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ activeContent, setActiveContent, setCookie,setinfoIsVisible }) => {
+  setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void
+}> = ({ activeContent, setActiveContent, setinfoIsVisible,setCookies }) => {
   const [isAnimating, setIsAnimating] = useState(true);
 
 
@@ -52,7 +54,7 @@ const Navbar: React.FC<{
           }
       })
       if (isConfirmed) {
-        setCookie("token", "");
+        setCookies("token","")
         setActiveContent(null);
       }
   };

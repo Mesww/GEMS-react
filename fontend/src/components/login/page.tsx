@@ -6,10 +6,11 @@ import { getUserinfo, sencodetobackend } from "../../containers/login/Login";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
-import { useState } from "react";
+import React, { useState } from "react";
 import Loading from '../loading/loading';
-// import { Button,TouchableHighlight,View,Icon,Text } from "react-native";
-const Login = () => {
+import { Cookie, CookieSetOptions } from 'universal-cookie';
+
+const Login:React.FC<{setCookie:(name: "token", value: Cookie, options?: CookieSetOptions) => void}> = () => {
   const [, setCookie] = useCookies(["token"]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ const Login = () => {
     if (userInfo.role === null) {
       return console.error("Database error");
     }
-
+    
     console.log("Role : ", userInfo.role);
     setLoading(false);
     switch (userInfo.role) {
@@ -31,7 +32,7 @@ const Login = () => {
         navigate("/map", { replace: true });
         break;
       case "ADMIN":
-        navigate("/map", { replace: true });
+        navigate("/admin/dashboard", { replace: true });
         break;
       default:
         break;
