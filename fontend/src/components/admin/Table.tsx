@@ -265,7 +265,7 @@ const TableComponent: React.FC = () => {
             p: 3,
           }}
         >
-          <Container className="p-5 rounded-xl bg-white">
+          <Container className="p-5 rounded-xl bg-white w-full h-full">
             <Grid container justifyContent="flex-end">
               <Button
                 variant="contained"
@@ -278,10 +278,11 @@ const TableComponent: React.FC = () => {
             </Grid>
             <Paper
               sx={{
-                width: "100%",
                 mb: 2,
+                padding: "16px",
                 borderRadius: 4,
-                height: "600px",
+                width: "100%",
+                maxHeight: "600px",
                 overflow: "auto",
               }}
             >
@@ -378,7 +379,16 @@ const TableComponent: React.FC = () => {
       </Box>
 
       {/* Add Dialog */}
-      <Dialog open={openAddDialog} onClose={handleAddClose}>
+      <Dialog
+        open={openAddDialog}
+        onClose={handleAddClose}
+        PaperProps={{
+          style: {
+            padding: "16px",
+            borderRadius: "16px",
+          },
+        }}
+      >
         <DialogTitle>Add New Station</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -432,10 +442,36 @@ const TableComponent: React.FC = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAddClose} color="primary">
+          <Button
+            onClick={handleAddClose}
+            color="error"
+            sx={{
+              backgroundColor: "#FF4D4F",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#FF1A1A",
+                boxShadow: "0 4px 8px rgba(255, 0, 0, 0.3)",
+              },
+              borderRadius: "8px",
+              fontWeight: "bold",
+            }}
+          >
             Cancel
           </Button>
-          <Button onClick={handleAddSubmit} color="primary">
+          <Button
+            onClick={handleAddSubmit}
+            color="success"
+            sx={{
+              backgroundColor: "#4CAF50",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#388E3C",
+                boxShadow: "0 4px 8px rgba(0, 255, 0, 0.3)",
+              },
+              borderRadius: "8px",
+              fontWeight: "bold",
+            }}
+          >
             Add
           </Button>
         </DialogActions>
