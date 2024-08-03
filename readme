@@ -17,3 +17,30 @@
 # DON'T EDIT ON SERVER 
 # this is resource of database
 https://drive.google.com/drive/folders/1U48LxWkWvqCJZ7NMeB_8Ss_AhZm54cAt?usp=sharing
+
+
+หน้าบ้านต้องการ Env ใหม่
+1.VITE_WSURL ให้ใส่ /busws ตามหลัง ip
+2.VITE_STATIONWSURL ให้ใส่ /stationws ตามหลัง ip
+3.VITE_SRCHEATMAP = https://maps.googleapis.com/maps/api/js?key=&libraries=visualization
+4.VITE_WEBSOCKETKEY = มาถามกู
+
+หลังบ้านต้องการ Env ใหม่
+1.WEBSOCKETKEY = มาถามกู
+2.BEARER_TOKEN = มาถามกู || ดูเอาจาก commit ก่อนเพราะกูเผลอเอาลง
+
+
+
+เพื่อให้ websocket ส่งข้อมูลแบบ realtime ต้องไป config mongo ก่อน
+1. ให้หยุด mongo ก่อน คำสั่ง windows ส่วน linux ไม่บอกกกกกกกกกกก
+  net stop MongoDB
+2. ในไฟล์ mongod.conf ให้ใส่ จากนั้น save 
+replication:
+   replSetName: rs0
+
+3. ให้เข้า mongosh (mongo shell)
+พิมพ์คำสั่ง rs.initiate()
+จากนั้น พิมพ์ rs.status() เพื่อเช็ก
+
+4. ให้เปิด mongo ใหม่
+ net start MongoDB

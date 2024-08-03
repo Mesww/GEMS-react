@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 const VITE_WSURL = import.meta.env.VITE_WSURL
-
+const TOKEN = import.meta.env.VITE_WEBSOCKETKEY;
 
 interface TrackerData {
   server_time: string;
@@ -20,7 +20,7 @@ interface WebSocketMessage {
 export function useWebSocketData() {
   const [messages, setMessages] = useState<WebSocketMessage | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const url = `${VITE_WSURL}` || 'ws://localhost:80/api';
+  const url = `${VITE_WSURL}?token=${TOKEN}`;
 
   useEffect(() => {
     const ws = new WebSocket(url);
