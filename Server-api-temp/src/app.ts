@@ -5,13 +5,12 @@ import { router } from "./routes/routes";
 import { authroute } from "./routes/authroutes";
 import { logger } from "./middle/log";
 import http from "http";
-import WebSocket from "ws";
-import axios from "axios";
 import cors from "cors";
-import { BusData } from "./interface/bus.interface";
-import { findClosestStation } from "./service/station.service";
-import cron from 'node-cron';
+import cron from "node-cron";
 import { cleanStationWaitingLists } from "./service/cleanStation";
+import { setupWebSocket } from "./websocket";
+
+
 dotenv.config();
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -19,13 +18,12 @@ app.use(express.json());
 
 const FONTENDURL = process.env.FONTENDURL || "http://localhost:5173";
 console.log("Fontendurl : " + FONTENDURL);
-// Configure CORS to allow requests from your frontend origin
+
 app.use(
   cors({
     origin: [FONTENDURL, "http://localhost:5173"],
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    // Allow cookies to be sent
   })
 );
 
@@ -41,71 +39,26 @@ mongoose
   .then(() => console.log("DB Connected!"))
   .catch((err) => console.error(`Error details: ${err}`));
 
-// ? middleware log
+// Middleware log
 app.use(logger);
-
 app.use("/", router);
 app.use("/users", authroute);
 
 const PORT = process.env.PORT || 4444;
 
-
-// =========================================================
-// สร้าง HTTP server
+// Create HTTP server
 const server = http.createServer(app);
-// สร้าง WebSocket server
-const wss = new WebSocket.Server({ server });
-const BEARER_TOKEN = "k3wbpy57L4pVQC";
-// กำหนด WebSocket logic
-wss.on("connection", async (ws: WebSocket) => {
-  console.log("Client connected");
-  let busData: BusData = {};
-  const fetchAndSendData = async () => {
-    try {
-      // เปลี่ยน URL นี้เป็น API ที่คุณต้องการ fetch
-      const response = await axios.get(
-        "https://www.ppgps171.com/mobile/api/mfutransit",
-        {
-          headers: {
-            Authorization: `Bearer ${BEARER_TOKEN}`,
-          },
-        }
-      );
-      busData = await response.data.data;
-      // console.log(busData);
-      ws.send(JSON.stringify(response.data));
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
-  // เริ่ม polling ทันทีที่ client เชื่อมต่อ
-  await fetchAndSendData();
-  // await findClosestStation(busData);
-  const intervalId = setInterval(async () => {
-     await fetchAndSendData();
-    //  await findClosestStation(busData);
-  }, 5000); // ทุก 5 วินาที
-
-  ws.on("message", (message: string) => {
-    console.log("Received message:", message);
-    // จัดการกับข้อความที่ได้รับจาก client ตามต้องการ
-  });
-  ws.on("close", () => {
-    console.log("Client disconnected");
-    clearInterval(intervalId);
-  });
-});
-// ======================================================
-
+// Set up WebSocket server
+setupWebSocket(server); // Call the setup function
 
 // Schedule the task to run every 1 minute
-cron.schedule('* * * * *', async () => {
-  console.log('Running station waiting list cleanup');
+cron.schedule("* * * * *", async () => {
+  console.log("Running station waiting list cleanup");
   await cleanStationWaitingLists();
 });
 
-// ใช้ server.listen แทน app.listen
+// Use server.listen instead of app.listen
 server.listen(PORT, () => {
   console.log(`Server is rocking at ${PORT}`);
 });
