@@ -1,11 +1,44 @@
-import { APIProvider, Marker, Map } from "@vis.gl/react-google-maps";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from 'react';
+import { APIProvider, Marker, Map, useMap } from "@vis.gl/react-google-maps";
 import { Stations } from "../../../interfaces/station.interface";
 import { useStationWebSocket } from "../../../containers/getGemsDataWebsocket/getStationWebsocket";
+const MapID = import.meta.env.VITE_MAPID;
+
+const HeatmapOverlay = ({ stations }: { stations: Stations[] }) => {
+    const map = useMap();
+    
+    useEffect(() => {
+        if (!map || !stations.length) return;
+
+        const heatmapData = stations
+            .filter(station => station.waitingLength >= 1)  // Filter stations with waiting length > 1
+            .map(station => {
+                const [lat, lng] = station.position.split(",").map(Number);
+                return {
+                    location: new google.maps.LatLng(lat, lng),
+                    weight: station.waitingLength
+                };
+            });
+
+        if (heatmapData.length === 0) return; // Don't create heatmap if no data
+
+        const heatmap = new google.maps.visualization.HeatmapLayer({
+            data: heatmapData,
+            map: map,
+            radius: 30
+        });
+
+        return () => {
+            heatmap.setMap(null);
+        };
+    }, [map, stations]);
+
+    return null;
+};
 
 const MapAdminComponent = () => {
     const [stations, setStations] = useState<Stations[] | null>(null);
-    const { messages } = useStationWebSocket(); // Use the WebSocket hook
+    const { messages } = useStationWebSocket();
 
     useEffect(() => {
         if (messages) {
@@ -17,7 +50,7 @@ const MapAdminComponent = () => {
         if (waitingLength >= 10) return "red";
         if (waitingLength >= 5) return "orange";
         if (waitingLength >= 1) return "yellow";
-        return "green"; // default color (usually red)
+        return "green";
     };
 
     const stationMarkers = useMemo(() => {
@@ -51,8 +84,10 @@ const MapAdminComponent = () => {
                 defaultCenter={{ lat: 20.045116568504863, lng: 99.89429994369891 }}
                 gestureHandling={"greedy"}
                 disableDefaultUI={true}
+                mapId={MapID}
             >
                 {stationMarkers}
+                {stations && <HeatmapOverlay stations={stations} />}
             </Map>
         </APIProvider>
     );

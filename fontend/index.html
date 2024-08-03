@@ -13,11 +13,20 @@
       rel="stylesheet">
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="mobile-web-app-capable" content="yes"/>
+    <script type="module">
+      // Dynamically create and append the script tag for Google Maps
+      const script = document.createElement('script');
+      script.src = import.meta.env.VITE_SRCHEATMAP;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+  </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   </body>
 </html>
