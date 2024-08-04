@@ -5,12 +5,15 @@ import Login from "./components/login/page";
 import Map from "./components/map/page";
 import ProtectmapRoute from "./components/protect_route/protectmap.route";
 import ProtectloginRoute from "./components/protect_route/protectlogin.route";
-import Dashboard from "./components/admin/Dashboard";
-import Table from "./components/admin/Table";
 import { useCookies } from "react-cookie";
+import { Dashboard,Table } from '../src/components/admin/pages';
+
 
 function App() {
   const [cookies, setCookie] = useCookies(["token"]);
+  // ! Dummy data
+  
+
   return (
     <BrowserRouter>
       <Routes>

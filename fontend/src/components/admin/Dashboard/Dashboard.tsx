@@ -1,6 +1,6 @@
 import React from 'react';
-import Sidebar from './sidebar';
-import MapAdminComponent from './MapAdmin/mapAdminComponent';
+import Sidebar from '../Sidebar/sidebar';
+import MapAdminComponent from '../MapAdmin/mapAdminComponent';
 
 import { Cookie, CookieSetOptions } from 'universal-cookie';
 
