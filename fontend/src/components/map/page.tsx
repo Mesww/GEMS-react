@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState} from "react";
-import { useCookies } from "react-cookie";
+import  React, { useEffect, useMemo, useState} from "react";
 import MapComponent from "./mapComponent";
 import Navbar from "../navbar/navbar";
 import InfoDialog from "../infoDialog/infoDialog";
@@ -13,9 +12,14 @@ import { Stations } from "../../interfaces/station.interface";
 import FeedbackDialog from "../feedbackDialog/feedBackDialog";
 import Cookies from 'js-cookie';
 import InfostaionDialog from '../stationinfoDialog/stationinfoDialog';
+import { Cookie, CookieSetOptions } from 'universal-cookie';
 
-const Mappage = () => {
-  const [, setCookie] = useCookies(["token"]);
+const Mappage:React.FC<
+  {
+  setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void
+
+  }
+> = ({setCookies}) => {
   const [selectRoute, setSelectRoute] = useState<string | null>("route1");
   const [isVisible, setIsVisible] = useState(false);
   const [stations, setStations] = useState<AxiosResponse<Stations[]> | null>(null);
@@ -37,7 +41,7 @@ const Mappage = () => {
       console.log(polylines?.data);
     });
   
-    console.log(loading);
+    // console.log(loading);
 
 
     // Feedback Dialog =================================================================================================
@@ -91,9 +95,9 @@ const Mappage = () => {
       {!loading && <InfostaionDialog selectRoue={selectRoute} fillteredstation={filteredStations} isVisible={selectRoute !== null}/>}
 
       <Navbar 
+      setCookies={setCookies}
         activeContent={selectRoute}
         setActiveContent={setSelectRoute} 
-        setCookie={setCookie}
         setinfoIsVisible={setIsVisible}
       />
       <MapComponent 

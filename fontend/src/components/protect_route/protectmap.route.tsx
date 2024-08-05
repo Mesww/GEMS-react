@@ -1,16 +1,20 @@
-import { useCookies } from 'react-cookie';
 import React, { useEffect, useState } from 'react';
 import {  Navigate} from 'react-router-dom';
 import { getUserinfo } from '../../containers/login/Login';
 import Loading from '../loading/loading';
+import Swal from 'sweetalert2';
+import { Cookie, CookieSetOptions } from 'universal-cookie';
 
 interface ProtectRouteProps {
   children: React.ReactNode;
   requireRoles?: string[];
+  cookies:{
+    token?: any;
+}
+setCookie: (name: "token", value: Cookie, options?: CookieSetOptions) => void
 }
 
-const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles = [] }) => {
-  const [cookies, ] = useCookies(['token']);
+const ProtectmapRoute: React.FC<ProtectRouteProps> =  ({ children, requireRoles = [],cookies,setCookie }) => {
   const [userRole, setUserRole] = useState<{ email: string; name: string; role: string } | null>(null);
   const [isAuthen, setIsAuthen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,22 +47,34 @@ const ProtectmapRoute: React.FC<ProtectRouteProps> = ({ children, requireRoles =
   if (isLoading) {
     return <Loading/>; // Or any other loading indicator
   }
-
+  console.log(`isAuthen : ${isAuthen}`);
   if (!isAuthen) {
     return <Navigate to="/" replace />;
   }
-
+  console.log(`userRole : ${userRole}`);
   if (!userRole || !userRole.role) {
     return <Navigate to="/" replace />;
   }
 
   const matchRoles = !requireRoles.length || requireRoles.includes(userRole.role);
+  console.log(matchRoles);
   if (!matchRoles) {
-    return <Navigate to="/403" replace />;
+
+     Swal.fire({
+      title: 'Permission denied',
+      text: 'You do not have permission to access this page',
+      icon: 'error',
+      allowOutsideClick: false,
+      confirmButtonText: 'OK',}).then(()=>{
+        setCookie("token","");
+          return <Navigate to="/" replace />;
+      });
   }
   
 
   return <>{children}</>;
 };
+
+
 
 export default ProtectmapRoute;
