@@ -9,41 +9,44 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=1234
     volumes:
       - ./db:/data/db
+      - ./config/mongod.conf:/etc/mongod.conf
+      - ./config/security.keyFile:/etc/mongodb/security.keyFile
+    # command: mongod --replSet rs0 --bind_ip localhost,database
     networks:
       - finalpjnet
     restart: unless-stopped
   
-  api:
-    build: ./Server-api-temp
-    ports:
-      - '8886:8886'
-    environment:
-      - MONGODB_URL = mongodb://root:1234@database:27017/finalpj?authSource=admin
-    networks:
-      - finalpjnet
-    depends_on:
-      - database
-    restart: unless-stopped
+  # api:
+  #   build: ./Server-api-temp
+  #   ports:
+  #     - '8886:8886'
+  #   environment:
+  #     - MONGODB_URL = mongodb://root:1234@database:27017/finalpj?authSource=admin
+  #   networks:
+  #     - finalpjnet
+  #   depends_on:
+  #     - database
+  #   restart: unless-stopped
 
-  fontend:
-    build: ./fontend
-    ports:
-      - 3000:80
-    depends_on:
-      - api
-    networks:
-      - finalpjnet
-    restart: unless-stopped
-  nginx:
-    build: ./nginx
-    image: nginx:alpine
-    ports:
-      - 80:80
-    depends_on:
-      - fontend
-    networks:
-      - finalpjnet
-    restart: unless-stopped
+  # fontend:
+  #   build: ./fontend
+  #   ports:
+  #     - 3000:80
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - finalpjnet
+  #   restart: unless-stopped
+  # nginx:
+  #   build: ./nginx
+  #   image: nginx:alpine
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - fontend
+  #   networks:
+  #     - finalpjnet
+  #   restart: unless-stopped
 
 networks:
   finalpjnet:

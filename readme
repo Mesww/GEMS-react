@@ -38,6 +38,8 @@ https://drive.google.com/drive/folders/1U48LxWkWvqCJZ7NMeB_8Ss_AhZm54cAt?usp=sha
 replication:
    replSetName: rs0
 
+(in container use this command "mongod --config /etc/mongod.conf")
+
 3. ให้เข้า mongosh (mongo shell)
 พิมพ์คำสั่ง rs.initiate()
 จากนั้น พิมพ์ rs.status() เพื่อเช็ก
