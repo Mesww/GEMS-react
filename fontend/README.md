@@ -35,3 +35,12 @@ export default {
     —-> เก็บ component ที่ไม่มีการใช้ state โดย folder ข้างใน 1 folder จะเก็บ 1 component โดยตั้งชื่อ component ขึ้นต้นด้วย capital letter เพื่อบอกว่าเป็น component และ 1 folder จะประกอบด้วย 2 files คือ .js (เขียน code JSX) และ .css (เขียน CSS)
  ## containers
     —-> เก็บ component ที่ใช้ state โดยหลักการตั้งชื่อและสร้าง component จะเหมือนกับ folder components
+
+## สามารถใช้route แบบนี้ได้
+  const createAdminRoutes = (setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void, cookies: { token?: any }): RouteObject[] => [
+    { path: "dashboard", element: <Dashboard  /> },
+    { path: "mark-pin", element: <Table  /> },
+    { path: "manage-user", element: <ManageUser /> },
+    { path: "summary", element: <Summary aigendata={newSchedule} /> },
+  ];
+  

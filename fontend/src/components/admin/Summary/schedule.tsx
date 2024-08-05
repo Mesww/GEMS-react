@@ -1,30 +1,22 @@
 import React from "react";
-import { AigenSchedule } from "../../../interfaces/schedule.interface";
+import { AigenSchedule,DepartionPerRoutes,headerTime } from "../../../interfaces/schedule.interface";
 import "./style.sass";
-const Summary:React.FC<{aigendata:AigenSchedule[]}> = ({aigendata}) => {
+import DepartionPerRoutesTable from "../Table/DepartionPerRoutesTable";
+const Summary:React.FC<{}> = ({}) => {
+  // ? Dummy data => replace with real data
+  const aigendata:DepartionPerRoutes[] = [
+    {
+      route: "Route 1",
+      amountofDeparture: Array(14).fill('') // 14 time slots initially empty
+  },
+  {
+      route: "Route 2",
+      amountofDeparture: Array(14).fill('') // 14 time slots initially empty
+  }
+  ];
     return (
-        <div className="bus-schedule">
-          {aigendata.map((bus) => (
-            <div key={bus.busId} className="bus">
-              <h2>{bus.busId} - {bus.route}</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Station</th>
-                    <th>Departure Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bus.schedule.map((stop, index) => (
-                    <tr key={index}>
-                      <td>{stop.station}</td>
-                      <td>{stop.departureTime}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
+      <div className="overflow-x-auto w-full p-14 ">
+        <DepartionPerRoutesTable aigendata={aigendata}/>
         </div>
       );
 }

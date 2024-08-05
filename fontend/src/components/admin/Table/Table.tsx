@@ -1,6 +1,6 @@
 // TableComponent.tsx
 import React from "react";
-import Sidebar from "./sidebar";
+// import Sidebar from "./Sidebar/sidebar";
 import {
   Box,
   Paper,
@@ -19,7 +19,6 @@ import {
   Grid,
 } from "@mui/material";
 import { Visibility, Edit, Delete, VisibilityOff } from "@mui/icons-material";
-import { Cookie, CookieSetOptions } from 'universal-cookie';
 
 interface Data {
   trackingId: string;
@@ -102,9 +101,7 @@ const rows: Data[] = [
   },
 ];
 
-const TableComponent: React.FC<
-{setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void}
-> = ({setCookies}) => {
+const TableComponent: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
@@ -120,10 +117,8 @@ const TableComponent: React.FC<
   };
 
   return (
-    <div className="h-0">
-      <Box display="flex" height="100vh">
+      <Box display="flex" height="100vh" width="100vw">
         <CssBaseline />
-        <Sidebar setCookies={setCookies}/>
         <Box
           component="main"
           sx={{
@@ -231,7 +226,6 @@ const TableComponent: React.FC<
           </Container>
         </Box>
       </Box>
-    </div>
   );
 };
 
