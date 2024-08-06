@@ -39,6 +39,8 @@ replication:
    replSetName: rs0
 (in docker must generate keyfile "openssl rand -base64 756 > /etc/keyFile" and "chmod 400 keyFile") 
 
+(in container use this command "mongod --config /etc/mongod.conf")
+
 3. ให้เข้า mongosh (mongo shell)
 พิมพ์คำสั่ง rs.initiate()
 จากนั้น พิมพ์ rs.status() เพื่อเช็ก
