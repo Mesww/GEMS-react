@@ -134,3 +134,5 @@ db/*
 db/
 public/
 data/
+
+mongo/keyFile
