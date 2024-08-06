@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios, { all } from "axios";
-import Sidebar from "./sidebar";
+import axios from "axios";
+// TableComponent.tsx
+// import Sidebar from "./Sidebar/sidebar";
 import {
   Box,
   Paper,
@@ -75,7 +76,7 @@ const TableComponent: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -253,10 +254,9 @@ const TableComponent: React.FC = () => {
   }
 
   return (
-    <div className="h-0">
-      <Box display="flex" height="100vh">
+    <div>
+      <Box display="flex" height="100vh" width="100vw">
         <CssBaseline />
-        <Sidebar />
         <Box
           component="main"
           sx={{

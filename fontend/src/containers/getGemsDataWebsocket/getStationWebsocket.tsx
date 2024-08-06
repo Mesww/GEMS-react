@@ -1,19 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Stations } from '../../interfaces/station.interface';
 const VITE_WSURL = import.meta.env.VITE_STATIONWSURL;
-
-// interface StationData {
-//   // Define the structure of your station data
-//   id: string;
-//   name: string;
-//   location: string;
-//   // Add other fields as needed
-// }
+const TOKEN = import.meta.env.VITE_WEBSOCKETKEY;
 
 export function useStationWebSocket() {
   const [messages, setMessages] = useState<Stations | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const url = `${VITE_WSURL}` || 'ws://localhost:80/api/stationws';
+  const url = `${VITE_WSURL}?token=${TOKEN}`;
 
   useEffect(() => {
     const ws = new WebSocket(url);

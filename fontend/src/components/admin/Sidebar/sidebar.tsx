@@ -12,11 +12,8 @@ import {
 import Swal from 'sweetalert2';
 import 'animate.css';
 
-const deleteCookie = (name: string) => {
-  document.cookie = `${name}=; Max-Age=-99999999;`;
-};
-
-const Sidebar: React.FC = () => {
+import { Cookie, CookieSetOptions } from 'universal-cookie';
+const Sidebar: React.FC<{setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void}> = ({setCookies}) => {
   const handleLogout = async () => {
     const { isConfirmed } = await Swal.fire({
       title: 'ออกจากระบบ!',
@@ -46,7 +43,7 @@ const Sidebar: React.FC = () => {
     });
 
     if (isConfirmed) {
-      deleteCookie("token");
+      setCookies("token","");
     }
   };
 

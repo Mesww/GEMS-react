@@ -5,42 +5,53 @@ import Login from "./components/login/page";
 import Map from "./components/map/page";
 import ProtectmapRoute from "./components/protect_route/protectmap.route";
 import ProtectloginRoute from "./components/protect_route/protectlogin.route";
-import Dashboard from "./components/admin/Dashboard";
-import Table from "./components/admin/Table";
+import { useCookies } from "react-cookie";
+import createAdminRoutes from "./components/admin/pages";
+import Adminlayout from "./layout/admin.layout";
 
 function App() {
+  const [cookies, setCookie] = useCookies(["token"]);
+  const adminRoutes = createAdminRoutes();
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={
-        <ProtectloginRoute>
-          <Login />
-        </ProtectloginRoute>
-        }></Route>
+        <Route
+          path="/"
+          element={
+            <ProtectloginRoute cookies={cookies}>
+              <Login setCookie={setCookie} />
+            </ProtectloginRoute>
+          }
+        ></Route>
         <Route
           path="/map"
           element={
-            <ProtectmapRoute requireRoles={["ADMIN", "USER"]}>
-              <Map />
+            <ProtectmapRoute
+              cookies={cookies}
+              setCookie={setCookie}
+              requireRoles={["ADMIN", "USER"]}
+            >
+              <Map setCookies={setCookie} />
             </ProtectmapRoute>
           }
         ></Route>
-        <Route
-          path="/admin/dashboard"
+
+<Route
+          path="/admin/*"
           element={
-            <ProtectmapRoute requireRoles={["ADMIN", "USER"]}>
-              <Dashboard />
+            <ProtectmapRoute
+              cookies={cookies}
+              setCookie={setCookie}
+              requireRoles={["ADMIN"]}
+            >
+              <Adminlayout setCookies={setCookie} />
             </ProtectmapRoute>
           }
-        ></Route>
-        <Route
-          path="/admin/mark-pin"
-          element={
-            <ProtectmapRoute requireRoles={["ADMIN", "USER"]}>
-              <Table />
-            </ProtectmapRoute>
-          }
-        ></Route>
+        >
+          {adminRoutes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+        </Route>
       </Routes>
     </BrowserRouter>
   );
