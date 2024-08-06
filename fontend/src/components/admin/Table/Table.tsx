@@ -254,8 +254,8 @@ const TableComponent: React.FC = () => {
   }
 
   return (
-    <div>
-      <Box display="flex" height="100vh" width="100vw">
+    <div className="h-0 w-full">
+      <Box display="flex" height="100vh">
         <CssBaseline />
         <Box
           component="main"
