@@ -15,7 +15,7 @@ import StationMarker, { SelectedMarker } from "./stationmarker";
 import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
 import { Stations } from "../../interfaces/station.interface";
-import { BusData, BusInfo } from "../../containers/calulateDistance/calculateDistance";
+import { BusData, BusInfo } from "../../interfaces/bus.interface";
 
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
@@ -241,20 +241,22 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
           key === "03" ||
           key === "04" ||
           key === "05" ||
-          key === "07" ||
+                   key === "06" ||
+                   key === "07" ||
+                   key === "08"||
           key === "09" ||
           key === "10" ||
           key === "11" ||
           key === "12" ||
           key === "13" ||
-          key === "14" ||
-          key === "15"
+          key === "14" 
+ 
       );
     }
 
     if (selectedRoute === "route2") {
       filteredData = filteredData.filter(
-        ([key]) => key === "06" || key === "08" || key === "16"
+        ([key]) => key === "15" || key === "16"
       );
     }
 
@@ -279,8 +281,13 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
                   headerContent={`รถเจมหมายเลข ${key}`}
                 >
                   <div>
-                    <p>ทิศทาง: {value.direction} องศา</p>
+                    {/* <p>ทิศทาง: {value.direction} องศา</p> */}
                     <p>ความเร็ว: {value.speed} km/h</p>
+                    <p>สถานีปัจุบัน: {value.currentStation} </p>
+                    <p>สถานีต่อไป: {value.incomingStation} </p>
+                    <p>จะถึงสถานีต่อไปอีก: {value.incomingEta} นาที</p>
+                    <p>trackertime: {value.tracker_time}</p>
+                    <p>servertime: {value.server_time}</p>
                   </div>
                 </InfoWindow>
               )}

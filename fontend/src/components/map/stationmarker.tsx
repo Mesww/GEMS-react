@@ -2,12 +2,13 @@ import React, { useCallback, useState } from "react";
 import { Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import "./style.sass";
 import {
-  BusData,
+  
   ClosestBusResult,
   useCloseststation,
 } from "../../containers/calulateDistance/calculateDistance";
 import { Stations } from "../../interfaces/station.interface";
 import { AxiosResponse } from "axios";
+import { BusData } from "../../interfaces/bus.interface";
 
 export interface TrackerData {
   _id: string;
@@ -126,15 +127,16 @@ const StationMarker: React.FC<{
                   <InfoWindow
                     position={{ lat, lng }}
                     onCloseClick={handleInfoWindowClose}
-                    headerContent={`ป้ายหมายเลข ${station.id}`}
+                    headerContent={`ป้ายหมายเลข ${station.id} - ${station.name}`}
                     pixelOffset={[0, -45]}
                   >
                     <div>
+
                       <p>คนที่รอในขณะนี้: {station.waitingLength} คน</p>
-                      {closestBus ? (
+                      {closestBus && closestBus.distance !== Infinity && closestBus.distance && closestBus.distance <= 50  ?(
                         <p>
                           มีรถgemsหมายเลข {closestBus.busId} อยู่ใกล้เคียงในระยะ{" "}
-                          {closestBus.distance?.toFixed(0)} เมตร
+                          { closestBus.distance?.toFixed(0)} เมตร  
                         </p>
                       ) : (
                         <p>ไม่มีรถในระยะ</p>

@@ -1,24 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
+import { BusData } from '../../interfaces/bus.interface';
 const VITE_WSURL = import.meta.env.VITE_WSURL
 const TOKEN = import.meta.env.VITE_WEBSOCKETKEY;
 
-interface TrackerData {
-  server_time: string;
-  tracker_time: string;
-  direction: number;
-  position: string;
-  speed: number;
-}
 
-interface WebSocketMessage {
-  status: string;
-  data: {
-    [key: string]: TrackerData;
-  };
-}
 
 export function useWebSocketData() {
-  const [messages, setMessages] = useState<WebSocketMessage | null>(null);
+  const [messages, setMessages] = useState<BusData | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const url = `${VITE_WSURL}?token=${TOKEN}`;
 
@@ -32,7 +20,7 @@ export function useWebSocketData() {
 
     ws.onmessage = (event: MessageEvent) => {
       try {
-        const newMessage: WebSocketMessage = JSON.parse(event.data);
+        const newMessage: BusData = JSON.parse(event.data);
         setMessages(newMessage);
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
