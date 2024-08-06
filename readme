@@ -37,7 +37,7 @@ https://drive.google.com/drive/folders/1U48LxWkWvqCJZ7NMeB_8Ss_AhZm54cAt?usp=sha
 2. ในไฟล์ mongod.conf ให้ใส่ จากนั้น save 
 replication:
    replSetName: rs0
-(in docker must generate keyfile "openssl rand -base64 756 > /etc/keyFile" and "chmod 400 keyFile") 
+(in docker must generate keyfile "openssl rand -base64 756 > /mongo/keyFile" and "chmod 400 /mongo/keyFile") 
 
 (in container use this command "mongod --config /etc/mongod.conf")
 
