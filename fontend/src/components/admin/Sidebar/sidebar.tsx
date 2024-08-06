@@ -57,22 +57,21 @@ const Sidebar: React.FC<{ setCookies: (name: 'token', value: Cookie, options?: C
       <Box
         component="nav"
         sx={{
-          width: isOpen ? 250 : 50,
+          width: isOpen ? 250 : 0,
           flexShrink: 0,
-          bgcolor: '#E2B644',
-          color: 'white',
-          p: 2,
+          bgcolor: isOpen ? '#E2B644' : 'transparent',
+          color: 'white', 
           transition: 'width 0.3s ease',
         }}
       >
         <IconButton
-          sx={{ mb: 2 }}
+          sx={{ p: 2 }}
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <CloseIcon /> : <MenuIcon />}
         </IconButton>
         {isOpen && (
-          <List>
+          <List sx={{ p: 2 }}>
             <ListItem>
               <ListItemAvatar>
                 <Avatar src="path-to-avatar.jpg" />
