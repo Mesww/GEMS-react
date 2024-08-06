@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import useClosestBus, {
-  BusInfo,
+  
 } from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
@@ -16,6 +16,7 @@ import useNearestStation from "../../containers/calulateDistance/calculateuserAn
 import { SelectedMarker } from "../map/stationmarker";
 import { Stations } from "../../interfaces/station.interface";
 import StationToStationComponent from "../../containers/calulateDistance/calStationToStation";
+import { BusInfo } from "../../interfaces/bus.interface";
 
 interface WebSocketMessage {
   status: string;

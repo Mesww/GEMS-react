@@ -1,5 +1,5 @@
 import React from "react";
-import { AigenSchedule,DepartionPerRoutes,headerTime, StudentPerStations } from "../../../interfaces/schedule.interface";
+import { DepartionPerRoutes, StudentPerStations } from "../../../interfaces/schedule.interface";
 import "./style.sass";
 import DepartionPerRoutesTable from "../Table/DepartionPerRoutesTable";
 import StudentPerStationsTable from "../Table/StudentPerStation";
