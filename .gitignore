@@ -133,3 +133,4 @@ db/*
 # db folder
 db/
 public/
+data/
