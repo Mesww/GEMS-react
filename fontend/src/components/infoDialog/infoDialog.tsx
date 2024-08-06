@@ -108,7 +108,7 @@ selectedRoute: string | null;
   }
 
 //ป้ายที่ใกล้กับเราที่สุด
-const closestStation = useNearestStation(stationMarkers, location,selectedRoute); 
+const closestStation = useNearestStation(stationMarkers, location,selectedRoute, selectedMarker); 
 
 
   //นำป้ายใกล้กับเรามาหา รถบัสที่ใกล้ที่สุด

@@ -3,6 +3,7 @@ import axios from "axios"; // Import axios
 import { Stations } from "../../interfaces/station.interface";
 import { getUserinfo } from "../login/Login";
 import { useCookies } from "react-cookie";
+import { SelectedMarker } from "../../components/map/stationmarker";
 
 const api = import.meta.env.VITE_API;
 
@@ -66,7 +67,8 @@ function calculateDistance(
 function useNearestStation(
   stationData:Stations[],
   userLocation: Location | null,
-  selectedRoute: string | null
+  selectedRoute: string | null,
+  selectedMarker: SelectedMarker | null
 ): ClosestStation | null {
   const [closestStation, setClosestStation] = useState<ClosestStation | null>(
     null
@@ -137,7 +139,7 @@ function useNearestStation(
     }
   }, [userLocation, stationData]);
 
-  // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 25 เมตร
+  // Effect เพื่อตรวจสอบและส่งคำขอเมื่อระยะทาง <= 30 เมตร
 
   useEffect(() => {
     if (closestStation && closestStation.distance <= 30 && userInfo) {
@@ -146,9 +148,10 @@ function useNearestStation(
         .post(`${api}/activity`, {
           email: userInfo.email,
           location: `${closestStation.lat}, ${closestStation.lng}`,
-          marker: closestStation.stationNameId,
+          stationMarker: closestStation.stationNameId,
           time: dateTime,
           route: selectedRoute || "N/A",
+          destinationMarker: selectedMarker?.value._id || "N/A",
         })
         .then(async (response) => {
           console.log("Activity posted successfully:", response.data);

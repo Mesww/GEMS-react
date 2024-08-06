@@ -17,9 +17,9 @@ const router = express.Router();
 router.post("/activity", async (req: Request, res: Response) => {
   try {
     // Validate incoming data (optional but recommended)
-    const { email, location, marker, time,route } = req.body; // Destructure body properties
+    const { email, location, stationMarker, time, route, destinationMarker } = req.body; // Destructure body properties
     // Create a new Todo instance using the validated data
-    const newActivity = new Activity({ email, location, marker, time,route });
+    const newActivity = new Activity({ email, location, stationMarker, time,route, destinationMarker });
     // Save the new Todo to the database
     await newActivity.save();
     // Respond with success and the created Todo
