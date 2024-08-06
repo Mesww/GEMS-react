@@ -8,10 +8,17 @@ export interface Schedule{
    departureTime: string;
 }
 
+
 export interface DepartionPerRoutes{
     route: string;
     amountofDeparture: number[] | string[];
 }
+
+export interface StudentPerStations{
+    station: string;
+    amountofStudent: number[] | string[];
+}
+
 
 // Manually collect the times in headerTime
 export const headerTime = [
