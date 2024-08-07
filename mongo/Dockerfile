@@ -10,4 +10,4 @@ COPY mongod.conf /etc/mongod.conf
 COPY keyFile /etc/mongo.key
 # RUN chown mongodb:mongodb /etc/mongo.key
 # Start MongoDB with replication
-# CMD ["mongod", "--config", "/etc/mongod.conf", "--replSet", "rs0"] 
+CMD ["mongod", "--config", "/etc/mongod.conf", "--replSet", "rs0"] 
