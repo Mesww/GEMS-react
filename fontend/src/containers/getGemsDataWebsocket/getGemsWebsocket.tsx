@@ -22,10 +22,10 @@ export function useWebSocketData() {
   const [cookie] = useCookies(["token"]);
   const [messages, setMessages] = useState<WebSocketMessage | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const url = `${VITE_WSURL}?token=${cookie.token}`;
+  const url = `${VITE_WSURL}`;
 
   useEffect(() => {
-    const ws = new WebSocket(url);
+    const ws = new WebSocket(url,[cookie.token]);
 
     ws.onopen = () => {
       console.log('WebSocket connected');

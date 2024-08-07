@@ -8,10 +8,10 @@ export function useStationWebSocket() {
   const [cookie] = useCookies(["token"]);
   const [messages, setMessages] = useState<Stations | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const url = `${VITE_WSURL}?token=${cookie.token}`;
+  const url = `${VITE_WSURL}`;
 
   useEffect(() => {
-    const ws = new WebSocket(url);
+    const ws = new WebSocket(url,[cookie.token]);
 
     ws.onopen = () => {
       console.log('WebSocket connected to /stationws');
