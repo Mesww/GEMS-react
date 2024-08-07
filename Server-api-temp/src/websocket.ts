@@ -4,10 +4,12 @@ import { getStationDataFromDatabase } from "./controllers/station_controllers";
 import Station from "./models/station_model";
 import { IncomingMessage } from "http";
 import dotenv from "dotenv";
+import jwt from 'jsonwebtoken';
+
 dotenv.config();
 
-const BEARER_TOKEN = process.env.BEARER_TOKEN; // Replace with your actual bearer token
-const WS_AUTH_TOKEN = process.env.WEBSOCKETKEY; // Replace with your actual WebSocket auth token
+const BEARER_TOKEN = process.env.BEARER_TOKEN;
+const JWT_SECRET = process.env.TOKEN_KEY || "kimandfamily";
 
 export const setupWebSocket = (server: any) => {
   const wss = new WebSocket.Server({ noServer: true });
@@ -16,15 +18,28 @@ export const setupWebSocket = (server: any) => {
     const url = new URL(request.url!, `http://${request.headers.host}`);
     const token = url.searchParams.get('token');
 
-    if (token !== WS_AUTH_TOKEN) {
+    if (!token) {
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
       socket.destroy();
       return;
     }
 
-    wss.handleUpgrade(request, socket, head, function done(ws) {
-      wss.emit('connection', ws, request);
-    });
+    try {
+      const verified = jwt.verify(token, JWT_SECRET);
+      if (!verified) {
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        socket.destroy();
+        return;
+      }
+
+      wss.handleUpgrade(request, socket, head, function done(ws) {
+        wss.emit('connection', ws, request);
+      });
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+      socket.destroy();
+    }
   });
 
   wss.on("connection", async (ws: WebSocket, request: IncomingMessage) => {

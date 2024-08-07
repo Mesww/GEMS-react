@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Stations } from '../../interfaces/station.interface';
+import { useCookies } from 'react-cookie';
 const VITE_WSURL = import.meta.env.VITE_STATIONWSURL;
-const TOKEN = import.meta.env.VITE_WEBSOCKETKEY;
+
 
 export function useStationWebSocket() {
+  const [cookie] = useCookies(["token"]);
   const [messages, setMessages] = useState<Stations | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const url = `${VITE_WSURL}?token=${TOKEN}`;
+  const url = `${VITE_WSURL}?token=${cookie.token}`;
 
   useEffect(() => {
     const ws = new WebSocket(url);

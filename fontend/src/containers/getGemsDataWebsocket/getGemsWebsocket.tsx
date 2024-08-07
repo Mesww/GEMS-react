@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useCookies } from 'react-cookie';
 const VITE_WSURL = import.meta.env.VITE_WSURL
-const TOKEN = import.meta.env.VITE_WEBSOCKETKEY;
+
 
 interface TrackerData {
   server_time: string;
@@ -18,9 +19,10 @@ interface WebSocketMessage {
 }
 
 export function useWebSocketData() {
+  const [cookie] = useCookies(["token"]);
   const [messages, setMessages] = useState<WebSocketMessage | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const url = `${VITE_WSURL}?token=${TOKEN}`;
+  const url = `${VITE_WSURL}?token=${cookie.token}`;
 
   useEffect(() => {
     const ws = new WebSocket(url);
