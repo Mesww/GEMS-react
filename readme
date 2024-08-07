@@ -31,6 +31,8 @@ https://drive.google.com/drive/folders/1U48LxWkWvqCJZ7NMeB_8Ss_AhZm54cAt?usp=sha
 
 
 
+
+
 เพื่อให้ websocket ส่งข้อมูลแบบ realtime ต้องไป config mongo ก่อน
 1. ให้หยุด mongo ก่อน คำสั่ง windows ส่วน linux ไม่บอกกกกกกกกกกก
   net stop MongoDB
@@ -50,3 +52,12 @@ replication:
 
 5. connect to mongo replace <credentials> with username:password
   "mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.6"
+=======================================================================================================
+# เมื่อdeploy
+1. openssl rand -base64 756 > mongo/keyFile
+2. chmod 400 mongo/keyFile
+3. docker compose up -d --build
+4. docker exec -it mongo1 bash
+5. chown mongodb:mongodb /etc/mongo.key (ใน container)
+6. exit
+ึ7. docker-compose restart
