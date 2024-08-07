@@ -108,8 +108,9 @@ export const useCloseststation = (
       // };
 
       if (
-        distance < minDistance &&
-        findApproaching({ stationSelected, closestBus: { busId, distance, busInfo, eta } }) !== null
+        distance < minDistance 
+        // &&
+        // findApproaching({ stationSelected, closestBus: { busId, distance, busInfo, eta } }) !== null
         // extractStationName(busInfo.incomingStation) === stationSelected.name||
         // extractStationName(busInfo.currentStation) === stationSelected.name
       ) {

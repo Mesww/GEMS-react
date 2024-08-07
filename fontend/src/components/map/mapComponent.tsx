@@ -285,9 +285,9 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
                     <p>ความเร็ว: {value.speed} km/h</p>
                     <p>สถานีปัจุบัน: {value.currentStation} </p>
                     <p>สถานีต่อไป: {value.incomingStation} </p>
-                    <p>จะถึงสถานีต่อไปอีก: {value.incomingEta} นาที</p>
-                    <p>trackertime: {value.tracker_time}</p>
-                    <p>servertime: {value.server_time}</p>
+                    {/* <p>จะถึงสถานีต่อไปอีก: {value.incomingEta} นาที</p> */}
+                    {/* <p>trackertime: {value.tracker_time}</p>
+                    <p>servertime: {value.server_time}</p> */}
                   </div>
                 </InfoWindow>
               )}
