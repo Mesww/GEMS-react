@@ -23,9 +23,9 @@ const busIcon = (direction:number)=>  {
   
   return{
   url: "/Bus.svg",
-  scaledSize: window.google.maps.Size ? new window.google.maps.Size(128, 64):null , // Adjusted size as needed
+  scaledSize: window.google.maps.Size ? new window.google.maps.Size(100, 64):null , // Adjusted size as needed
   origin: window.google.maps.Point? new window.google.maps.Point(0, 0):null, // The origin point of the icon image (usually top-left)
-  anchor: window.google.maps.Point? new window.google.maps.Point(64, 32):null, // The anchor point of the icon image (center bottom for 64x36)
+  anchor: window.google.maps.Point? new window.google.maps.Point(50, 32):null, // The anchor point of the icon image (center bottom for 64x36)
   rotation: direction, // Set the rotation based on direction
 }};
 // const busIcon = (direction:number) => {
