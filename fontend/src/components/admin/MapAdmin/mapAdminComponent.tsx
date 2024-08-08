@@ -15,7 +15,7 @@ import {
   Paper,
 } from "@mui/material";
 const MapID = import.meta.env.VITE_MAPID;
-
+const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
 // heatmap overlay ========
 const HeatmapOverlay = ({ stations }: { stations: Stations[] }) => {
@@ -111,7 +111,7 @@ const MapAdminComponent = () => {
   };
 
   return (
-    <APIProvider apiKey={""}>
+    <APIProvider apiKey={MAPAPIKEY}>
       <div style={{ position: "relative", width: "100%", height: "100vh" }}>
         <Map
           style={{ width: "100%", height: "100%" }}
