@@ -56,8 +56,14 @@ replication:
 # เมื่อdeploy
 1. openssl rand -base64 756 > mongo/keyFile
 2. chmod 400 mongo/keyFile
-3. docker compose up -d --build
-4. docker exec -it mongo1 bash
-5. chown mongodb:mongodb /etc/mongo.key (ใน container)
-6. exit
-ึ7. docker-compose restart
+4. ปิด CMD ใน mongo/Dockerfile 
+5. docker compose up -d --build
+6. docker exec -it gems-react-database-1 bash
+7. chown mongodb:mongodb /etc/mongo.key (ใน container)
+8. exit
+9. เปิด CMD ใน mongo/Dockerfile2
+10. docker compose down && docker compose up -d --build
+11. docker exec -it gems-react-database-1 mongosh -u <user> -p <password> (เปลี่ยน <user> กับ <password> ให้ตรงกับที่เราตั้งไว้)
+12. rs.initiate()
+13. rs.status()
+14. exit
