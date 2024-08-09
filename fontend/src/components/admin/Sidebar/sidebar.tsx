@@ -13,12 +13,12 @@ import {
 import { Menu as MenuIcon, Close as CloseIcon } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import 'animate.css';
+import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
 
-import { Cookie, CookieSetOptions } from 'universal-cookie';
-
-const Sidebar: React.FC<{ setCookies: (name: 'token', value: Cookie, options?: CookieSetOptions) => void }> = ({ setCookies }) => {
+const Sidebar: React.FC<{}> = ({  }) => {
   const [isOpen, setIsOpen] = useState(true);
-
+  const navigate = useNavigate();
   const handleLogout = async () => {
     const { isConfirmed } = await Swal.fire({
       title: 'ออกจากระบบ!',
@@ -48,7 +48,8 @@ const Sidebar: React.FC<{ setCookies: (name: 'token', value: Cookie, options?: C
     });
 
     if (isConfirmed) {
-      setCookies('token', '');
+      Cookies.remove('token');  
+      navigate('/',{replace:true});
     }
   };
 

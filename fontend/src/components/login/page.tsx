@@ -5,19 +5,19 @@ import "./style.sass";
 import { getUserinfo, sencodetobackend } from "../../containers/login/Login";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import { useCookies } from "react-cookie";
 import React, { useState } from "react";
 import Loading from '../loading/loading';
-import { Cookie, CookieSetOptions } from 'universal-cookie';
+import Cookies from 'js-cookie';
 
-const Login:React.FC<{setCookie:(name: "token", value: Cookie, options?: CookieSetOptions) => void}> = () => {
-  const [, setCookie] = useCookies(["token"]);
+const Login:React.FC<{}> = () => {
+  // const [, setCookie] = useCookies(["token"]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const login = async (codeResponse: { code: string }) => {
     setLoading(true);
     const token = await sencodetobackend(codeResponse.code);
-    setCookie("token", token);
+    // setCookie("token", token);
+    Cookies.set("token", token);
     // get role from user info
     const userInfo = await getUserinfo(token);
 

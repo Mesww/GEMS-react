@@ -12,14 +12,12 @@ import { Stations } from "../../interfaces/station.interface";
 import FeedbackDialog from "../feedbackDialog/feedBackDialog";
 import Cookies from 'js-cookie';
 import InfostaionDialog from '../stationinfoDialog/stationinfoDialog';
-import { Cookie, CookieSetOptions } from 'universal-cookie';
 
 const Mappage:React.FC<
   {
-  setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void
 
   }
-> = ({setCookies}) => {
+> = ({}) => {
   const [selectRoute, setSelectRoute] = useState<string | null>("route1");
   const [isVisible, setIsVisible] = useState(false);
   const [stations, setStations] = useState<AxiosResponse<Stations[]> | null>(null);
@@ -95,7 +93,6 @@ const Mappage:React.FC<
       {!loading && <InfostaionDialog selectRoue={selectRoute} fillteredstation={filteredStations} isVisible={selectRoute !== null}/>}
 
       <Navbar 
-      setCookies={setCookies}
         activeContent={selectRoute}
         setActiveContent={setSelectRoute} 
         setinfoIsVisible={setIsVisible}

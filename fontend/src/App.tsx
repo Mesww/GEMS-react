@@ -5,21 +5,19 @@ import Login from "./components/login/page";
 import Map from "./components/map/page";
 import ProtectmapRoute from "./components/protect_route/protectmap.route";
 import ProtectloginRoute from "./components/protect_route/protectlogin.route";
-import { useCookies } from "react-cookie";
 import createAdminRoutes from "./components/admin/pages";
 import Adminlayout from "./layout/admin.layout";
-
 function App() {
-  const [cookies, setCookie] = useCookies(["token"]);
   const adminRoutes = createAdminRoutes();
+  
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
           element={
-            <ProtectloginRoute cookies={cookies}>
-              <Login setCookie={setCookie} />
+            <ProtectloginRoute>
+              <Login  />
             </ProtectloginRoute>
           }
         ></Route>
@@ -27,11 +25,9 @@ function App() {
           path="/map"
           element={
             <ProtectmapRoute
-              cookies={cookies}
-              setCookie={setCookie}
               requireRoles={["ADMIN", "USER"]}
             >
-              <Map setCookies={setCookie} />
+              <Map />
             </ProtectmapRoute>
           }
         ></Route>
@@ -40,11 +36,9 @@ function App() {
           path="/admin/*"
           element={
             <ProtectmapRoute
-              cookies={cookies}
-              setCookie={setCookie}
               requireRoles={["ADMIN"]}
             >
-              <Adminlayout setCookies={setCookie} />
+              <Adminlayout />
             </ProtectmapRoute>
           }
         >

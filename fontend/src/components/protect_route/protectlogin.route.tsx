@@ -2,24 +2,23 @@ import React, { useEffect, useState } from 'react';
 import {  Navigate } from 'react-router-dom';
 import Loading from '../loading/loading';
 import { getUserinfo } from '../../containers/login/Login';
-
+import Cookies from 'js-cookie';
 interface ProtectRouteProps {
   children: React.ReactNode;
   requireRoles?: string[];
-  cookies:{
-    token?: any;
-}
+
 }
 
-const ProtectloginRoute: React.FC<ProtectRouteProps> = ({ children = [],cookies }) => {
+const ProtectloginRoute: React.FC<ProtectRouteProps> = ({ children = []}) => {
   const [isAuthen, setIsAuthen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<{ email: string; name: string; role: string } | null>(null);
+  
   useEffect(() => {
     const fetchUserRole = async () => {
-      if (cookies.token && cookies.token !== undefined && cookies.token !== 'undefined') {
+      if (Cookies.get("token") && Cookies.get("token") !== undefined && Cookies.get("token") !== 'undefined') {
         try {
-          const userInfo = await getUserinfo(cookies.token);
+          const userInfo = await getUserinfo(Cookies.get("token"));
           if (userInfo && userInfo.role) {
             setIsAuthen(true);
             setUserRole(userInfo);
@@ -38,7 +37,7 @@ const ProtectloginRoute: React.FC<ProtectRouteProps> = ({ children = [],cookies 
     };
 
     fetchUserRole();
-  }, [cookies.token]);
+  }, [Cookies.get("token")]);
 
   if (isLoading) {
     return <Loading/>; // Or any other loading indicator

@@ -5,15 +5,15 @@ import Swal from 'sweetalert2'
 import 'animate.css';
 import * as React from 'react';
 // export const [activeContent, setActiveContent] = useState(null);
-import { Cookie, CookieSetOptions } from 'universal-cookie';
-
+import  Cookies  from 'js-cookie';
+import { useNavigate } from "react-router-dom";
 const Navbar: React.FC<{
   activeContent: any;
   setActiveContent: React.Dispatch<React.SetStateAction<string | null>>;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setCookies: (name: "token", value: Cookie, options?: CookieSetOptions) => void
-}> = ({ activeContent, setActiveContent, setinfoIsVisible,setCookies }) => {
+}> = ({ activeContent, setActiveContent, setinfoIsVisible }) => {
   const [isAnimating, setIsAnimating] = useState(true);
+  const navigate = useNavigate();
 
 
   const handleLogoClick = () => {
@@ -54,7 +54,9 @@ const Navbar: React.FC<{
           }
       })
       if (isConfirmed) {
-        setCookies("token","")
+        // setCookies("token","")
+        Cookies.remove("token");
+        navigate('/',{replace:true});
         setActiveContent(null);
       }
   };

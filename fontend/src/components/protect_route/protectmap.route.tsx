@@ -3,27 +3,27 @@ import {  Navigate} from 'react-router-dom';
 import { getUserinfo } from '../../containers/login/Login';
 import Loading from '../loading/loading';
 import Swal from 'sweetalert2';
-import { Cookie, CookieSetOptions } from 'universal-cookie';
+import Cookies from 'js-cookie';
+
 
 interface ProtectRouteProps {
   children: React.ReactNode;
   requireRoles?: string[];
-  cookies:{
-    token?: any;
-}
-setCookie: (name: "token", value: Cookie, options?: CookieSetOptions) => void
+
 }
 
-const ProtectmapRoute: React.FC<ProtectRouteProps> =  ({ children, requireRoles = [],cookies,setCookie }) => {
+const ProtectmapRoute: React.FC<ProtectRouteProps> =  ({ children, requireRoles = []}) => {
   const [userRole, setUserRole] = useState<{ email: string; name: string; role: string } | null>(null);
   const [isAuthen, setIsAuthen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserRole = async () => {
-      if (cookies.token && cookies.token !== undefined && cookies.token !== 'undefined') {
+      if (Cookies.get("token") && Cookies.get("token") !== undefined && Cookies.get("token") !== 'undefined') {
         try {
-          const userInfo = await getUserinfo(cookies.token);
+          const userInfo = await getUserinfo(Cookies.get("token"));
+          console.log(userInfo);
+
           if (userInfo && userInfo.role) {
             setIsAuthen(true);
             setUserRole(userInfo);
@@ -42,31 +42,32 @@ const ProtectmapRoute: React.FC<ProtectRouteProps> =  ({ children, requireRoles 
     };
 
     fetchUserRole();
-  }, [cookies.token]);
+  }, [Cookies.get("token")]);
 
   if (isLoading) {
     return <Loading/>; // Or any other loading indicator
   }
   console.log(`isAuthen : ${isAuthen}`);
   if (!isAuthen) {
+    Cookies.remove("token");
     return <Navigate to="/" replace />;
   }
   console.log(`userRole : ${userRole}`);
   if (!userRole || !userRole.role) {
+    Cookies.remove("token");
     return <Navigate to="/" replace />;
   }
 
   const matchRoles = !requireRoles.length || requireRoles.includes(userRole.role);
   console.log(matchRoles);
   if (!matchRoles) {
-
      Swal.fire({
       title: 'Permission denied',
       text: 'You do not have permission to access this page',
       icon: 'error',
       allowOutsideClick: false,
       confirmButtonText: 'OK',}).then(()=>{
-        setCookie("token","");
+          Cookies.remove("token");
           return <Navigate to="/" replace />;
       });
   }
