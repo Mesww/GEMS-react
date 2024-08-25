@@ -1,5 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from 'jwt-decode';
+import { User } from "../../interfaces/user.interface";
 const VITE_API = import.meta.env.VITE_API || "http://localhost:8886" 
 
 export const sencodetobackend = async (code: string) => {
@@ -27,11 +28,7 @@ export const getUserinfo = async function (token?:string) {
             `${VITE_API}/users/getUser`,
            {headers:{"x-auth-token":token}}
           );
-        const user = jwtDecode<{
-            email: string;
-            name: string;
-            role: string;
-        }>(response.data);
+        const user = jwtDecode<User>(response.data);
         console.log( new Date().getMilliseconds() ,user);
         if (!user) {
             return {"role":null}

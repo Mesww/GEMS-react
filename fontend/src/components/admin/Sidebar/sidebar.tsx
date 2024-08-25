@@ -15,10 +15,12 @@ import Swal from 'sweetalert2';
 import 'animate.css';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
+import { User } from '../../../interfaces/user.interface';
 
-const Sidebar: React.FC<{}> = ({  }) => {
+const Sidebar: React.FC<{userInfo:User|null}> = ({ userInfo  }) => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
+  const secondary = userInfo? userInfo.email || 'admin@email.com':'admin@email.com';
   const handleLogout = async () => {
     const { isConfirmed } = await Swal.fire({
       title: 'ออกจากระบบ!',
@@ -69,7 +71,7 @@ const Sidebar: React.FC<{}> = ({  }) => {
           sx={{ p: 2 }}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <CloseIcon /> : <MenuIcon />}
+          {isOpen ? <CloseIcon htmlColor='#8b090c' /> : <MenuIcon htmlColor='#8b090c'/>}
         </IconButton>
         {isOpen && (
           <List sx={{ p: 2 }}>
@@ -77,7 +79,7 @@ const Sidebar: React.FC<{}> = ({  }) => {
               <ListItemAvatar>
                 <Avatar src="path-to-avatar.jpg" />
               </ListItemAvatar>
-              <ListItemText primary="Admin" secondary="admin@email.com" />
+              <ListItemText primary="Admin" secondary={secondary} />
             </ListItem>
             <Divider />
             {['Dashboard', 'Mark Pin', 'Manage User', 'Summary'].map((text) => (
