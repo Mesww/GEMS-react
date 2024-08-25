@@ -22,7 +22,7 @@ const Navbar: React.FC<{
 
   const handleContentClick = (contentId: any) => {
     setActiveContent((prevContentId) =>
-      prevContentId === contentId ? "route1" : contentId
+      prevContentId === contentId ? prevContentId : contentId
     );
   };
 
