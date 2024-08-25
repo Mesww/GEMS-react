@@ -67,3 +67,18 @@ replication:
 12. rs.initiate()
 13. rs.status()
 14. exit
+
+if MongoServerError[InvalidReplicaSetConfig]: Our replica set config is invalid or we are not a member of it when running rs.initiate()
+1. ให้เข้า mongo shell ใน container
+# 10.1.216.115 is ip address of server
+2. พิมพ์ rs.reconfig({
+  _id: "rs0",
+  version: 2,
+  members: [
+    { _id: 0, host: "10.1.216.115:27017" } 
+  ]
+}, { force: true })
+
+3. พิมพ์ rs.initiate()
+4. พิมพ์ rs.status()
+5. ออกจาก mongo shell และ container
