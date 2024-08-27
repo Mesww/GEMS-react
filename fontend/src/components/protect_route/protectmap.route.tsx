@@ -23,7 +23,7 @@ const ProtectmapRoute: React.FC<ProtectRouteProps> =  ({ children, requireRoles 
         try {
           const userInfo = await getUserinfo(Cookies.get("token"));
           console.log(userInfo);
-
+          
           if (userInfo && userInfo.role) {
             setIsAuthen(true);
             setUserRole(userInfo);

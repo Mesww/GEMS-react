@@ -48,6 +48,8 @@ const ProtectloginRoute: React.FC<ProtectRouteProps> = ({ children = []}) => {
       return <Navigate to="/admin/dashboard" replace />;
     }
     return <Navigate to="/map" replace />;
+  }else{
+    Cookies.remove("token");
   }
 
   return <>{children}</>;
