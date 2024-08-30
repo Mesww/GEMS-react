@@ -32,15 +32,16 @@ https://drive.google.com/drive/folders/1U48LxWkWvqCJZ7NMeB_8Ss_AhZm54cAt?usp=sha
 
 
 เพื่อให้ websocket ส่งข้อมูลแบบ realtime ต้องไป config mongo ก่อน
-1. ให้หยุด mongo ก่อน คำสั่ง windows ส่วน linux ไม่บอกกกกกกกกกกก
-  net stop MongoDB
-2. ในไฟล์ mongod.conf ให้ใส่ จากนั้น save 
+1. ในไฟล์ mongod.conf ให้ใส่ จากนั้น save 
 replication:
    replSetName: rs0
 
-3. ให้เข้า mongosh (mongo shell)
+2. ให้หยุด mongo ก่อน คำสั่ง windows ส่วน linux ไม่บอกกกกกกกกกกก
+  net stop MongoDB
+
+3. ให้เปิด mongo ใหม่
+ net start MongoDB
+
+4. ให้เข้า mongosh (mongo shell)
 พิมพ์คำสั่ง rs.initiate()
 จากนั้น พิมพ์ rs.status() เพื่อเช็ก
-
-4. ให้เปิด mongo ใหม่
- net start MongoDB
