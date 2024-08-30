@@ -31,6 +31,7 @@
     "react-router-dom": "^6.24.1",
     "sass": "^1.77.6",
     "sweetalert2": "^11.12.3",
+    "use-sound": "^4.0.3",
     "yarn": "^1.22.22"
   },
   "devDependencies": {

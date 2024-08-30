@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { APIProvider, Marker, Map, useMap } from "@vis.gl/react-google-maps";
 import { Stations } from "../../../interfaces/station.interface";
 import { useStationWebSocket } from "../../../containers/getGemsDataWebsocket/getStationWebsocket";
@@ -14,13 +14,15 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import useSound from "use-sound";
+import notificationSound from "/mixkit-bell-notification-933.wav"; // Import the sound file
+
 const MapID = import.meta.env.VITE_MAPID;
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
 // heatmap overlay ========
 const HeatmapOverlay = ({ stations }: { stations: Stations[] }) => {
   const map = useMap();
-
   useEffect(() => {
     if (!map || !stations.length) return;
 
@@ -54,13 +56,39 @@ const HeatmapOverlay = ({ stations }: { stations: Stations[] }) => {
 const MapAdminComponent = () => {
   const [stations, setStations] = useState<Stations[] | null>(null);
   const { messages } = useStationWebSocket();
+  const [playNotification] = useSound(notificationSound);
+  const prevStationsRef = useRef<Stations[] | null>(null);
+  const isFirstFetchRef = useRef(true);
 
+
+  // Update stations when messages change and play notification if needed
   useEffect(() => {
     if (messages) {
-      setStations(Array.isArray(messages) ? messages : [messages]);
-    }
-  }, [messages]);
+      const newStations = Array.isArray(messages) ? messages : [messages];
 
+      if (!isFirstFetchRef.current && prevStationsRef.current) {
+        const hasIncreased = newStations.some((newStation) => {
+          const prevStation = prevStationsRef.current?.find(
+            (s) => s._id === newStation._id
+          );
+          return (
+            prevStation && newStation.waitingLength > prevStation.waitingLength
+          );
+        });
+        
+          // Play notification if waiting length increased
+        if (hasIncreased) {
+          playNotification();
+        }
+      }
+
+      setStations(newStations);
+      prevStationsRef.current = newStations;
+      isFirstFetchRef.current = false;
+    }
+  }, [messages, playNotification]);
+
+  // Get marker color based on waiting length
   const getMarkerColor = (waitingLength: number) => {
     if (waitingLength >= 10) return "red";
     if (waitingLength >= 5) return "orange";
@@ -68,6 +96,7 @@ const MapAdminComponent = () => {
     return "green";
   };
 
+  // Create station markers
   const stationMarkers = useMemo(() => {
     if (stations) {
       return stations
@@ -109,6 +138,7 @@ const MapAdminComponent = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
+
 
   return (
     <APIProvider apiKey={MAPAPIKEY}>
@@ -183,7 +213,7 @@ const MapAdminComponent = () => {
             style={{
               position: "absolute",
               right: 0,
-              top: "11.3rem",
+              top: "16.66rem",
               backgroundColor: "white",
               borderRadius: "4px 0 0 4px",
             }}
