@@ -140,7 +140,7 @@ const StationMarker: React.FC<{
                   >
                     <div>
                       <p>คนที่รอในขณะนี้: {station.waitingLength} คน</p>
-                      {closestBus && closestBus.distance !== Infinity && closestBus.distance && closestBus.distance <= 50  ?(
+                      {closestBus && closestBus.distance !== Infinity && closestBus.distance && closestBus.distance <= 100  ?(
                         <p>
                           มีรถgemsหมายเลข {closestBus.busId} อยู่ใกล้เคียงในระยะ{" "}
                           { closestBus.distance?.toFixed(0)} เมตร  
