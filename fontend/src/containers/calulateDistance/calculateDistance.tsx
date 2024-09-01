@@ -35,6 +35,7 @@ const useClosestBus = (
           busLat,
           busLng
         );
+        
         if (distance < minDistance) {
           minDistance = distance;
           closestBusId = busId;
@@ -78,6 +79,7 @@ export const useCloseststation = (
   console.log(
     `stationSelected : ${stationSelected.id} ${stationSelected.position}`
   );
+
   const [lat, lng] = stationSelected.position.split(",").map(Number);
   const stationLocation = { lat, lng };
 
@@ -87,46 +89,30 @@ export const useCloseststation = (
     let closestBusInfo = null;
     let eta = null;
     for (const [busId, busInfo] of Object.entries(busData)) {
+  
       const [busLat, busLng] = busInfo.position.split(",").map(Number);
       console.log(`busLocation : ${busLat} ${busLng}`);
       const distance = haversine(stationLocation, {
         lat: busLat,
         lng: busLng,
       });
-      console.log(
-        `busid:${busId} \t busLocation : ${busLat} ${busLng} \t distance : ${distance} m`
-      );
-
-      // const extractStationName = (
-      //   incomingStation: string | null | undefined
-      // ): string => {
-      //   if (incomingStation === null || incomingStation === undefined) {
-      //     return "";
-      //   }
-      //   const parts = incomingStation.split(" - ");
-      //   return parts.length > 1 ? parts[1] : incomingStation;
-      // };
-
+     
       if (
-        distance < minDistance 
-        // &&
-        // findApproaching({ stationSelected, closestBus: { busId, distance, busInfo, eta } }) !== null
-        // extractStationName(busInfo.incomingStation) === stationSelected.name||
-        // extractStationName(busInfo.currentStation) === stationSelected.name
+        distance < minDistance &&
+        findApproaching({ stationSelected, closestBus: { busId, distance, busInfo, eta },distance }) !== null
       ) {
-        minDistance = distance;
-        closestBusId = busId;
-        closestBusInfo = busInfo;
-        // console.log(`incoming ${ extractStationName(busInfo.incomingStation)}`);
-        // Calculate ETA
-        if (busInfo.speed > 0) {
-          // Convert speed from km/h to km/min
-          const speedKmPerMin = busInfo.speed / 60;
-          // Calculate ETA in minutes
-          eta = distance / 1000 / speedKmPerMin;
-        } else {
-          eta = null; // Bus is not moving
-        }
+          minDistance = distance;
+          closestBusId = busId;
+          closestBusInfo = busInfo;
+          // Calculate ETA
+          if (busInfo.speed > 0) {
+            // Convert speed from km/h to km/min
+            const speedKmPerMin = busInfo.speed / 60;
+            // Calculate ETA in minutes
+            eta = distance / 1000 / speedKmPerMin;
+          } else {
+            eta = null; // Bus is not moving
+          }
       } else {
         console.log(`not found`);
       }
@@ -144,6 +130,7 @@ export const useCloseststation = (
 export function findApproaching(data: {
   stationSelected: Stations | null;
   closestBus: ClosestBusResult | null;
+  distance: number;
 }): ClosestBusResult | null {
   if (
     data.stationSelected === null ||
@@ -152,7 +139,6 @@ export function findApproaching(data: {
   ) {
     return null;
   }
-  console.log(`closestBusId : ${data.closestBus.busId}`);
 
   const [stationlat, stationlng] = data.stationSelected.position
     .split(",")
@@ -164,13 +150,20 @@ export function findApproaching(data: {
   if (bearing === null) {
     return null;
   }
-  console.log(`bearing : ${bearing}`);
+ 
+  if (data.distance < 50) {
+    console.log(`bearing : ${bearing}`);
+  }
 
   if (
     data.stationSelected.direction.approaching !== undefined &&
     bearing < data.stationSelected.direction.approaching[1] &&
     bearing > data.stationSelected.direction.approaching[0]
+   && data.distance < 50
   ) {
+  console.log(`closestBusId : ${data.closestBus.busId}`);
+    console.log(`distance : ${data.distance}`);
+    console.log(`bearing : ${bearing}`);
     return data.closestBus;
   }
   return null;
