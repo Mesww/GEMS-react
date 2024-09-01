@@ -1,8 +1,8 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { APIProvider, Marker, Map, useMap } from "@vis.gl/react-google-maps";
 import { Stations } from "../../../interfaces/station.interface";
 import { useStationWebSocket } from "../../../containers/getGemsDataWebsocket/getStationWebsocket";
-import { IconButton, Drawer } from "@mui/material";
+import { IconButton, Drawer, Slider, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {
@@ -14,18 +14,20 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-const MapID = import.meta.env.VITE_MAPID;
+import useSound from "use-sound";
+import notificationSound from "/mixkit-bell-notification-933.wav";
 
+const MapID = import.meta.env.VITE_MAPID;
+const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
 // heatmap overlay ========
 const HeatmapOverlay = ({ stations }: { stations: Stations[] }) => {
   const map = useMap();
-
   useEffect(() => {
     if (!map || !stations.length) return;
 
     const heatmapData = stations
-      .filter((station) => station.waitingLength >= 1) // Filter stations with waiting length > 1
+      .filter((station) => station.waitingLength >= 1)
       .map((station) => {
         const [lat, lng] = station.position.split(",").map(Number);
         return {
@@ -34,7 +36,7 @@ const HeatmapOverlay = ({ stations }: { stations: Stations[] }) => {
         };
       });
 
-    if (heatmapData.length === 0) return; // Don't create heatmap if no data
+    if (heatmapData.length === 0) return;
 
     const heatmap = new google.maps.visualization.HeatmapLayer({
       data: heatmapData,
@@ -54,12 +56,37 @@ const HeatmapOverlay = ({ stations }: { stations: Stations[] }) => {
 const MapAdminComponent = () => {
   const [stations, setStations] = useState<Stations[] | null>(null);
   const { messages } = useStationWebSocket();
+  const [volume, setVolume] = useState(0.5); // State for volume level (0 to 1)
+  const [playNotification] = useSound(notificationSound, { volume }); // Pass volume to useSound
+  const prevStationsRef = useRef<Stations[] | null>(null);
+  const isFirstFetchRef = useRef(true);
 
+  // Update stations when messages change and play notification if needed
   useEffect(() => {
     if (messages) {
-      setStations(Array.isArray(messages) ? messages : [messages]);
+      const newStations = Array.isArray(messages) ? messages : [messages];
+
+      if (!isFirstFetchRef.current && prevStationsRef.current) {
+        const hasIncreased = newStations.some((newStation) => {
+          const prevStation = prevStationsRef.current?.find(
+            (s) => s._id === newStation._id
+          );
+          return (
+            prevStation && newStation.waitingLength > prevStation.waitingLength
+          );
+        });
+
+        // Play notification if waiting length increased
+        if (hasIncreased) {
+          playNotification();
+        }
+      }
+
+      setStations(newStations);
+      prevStationsRef.current = newStations;
+      isFirstFetchRef.current = false;
     }
-  }, [messages]);
+  }, [messages, playNotification]);
 
   const getMarkerColor = (waitingLength: number) => {
     if (waitingLength >= 10) return "red";
@@ -97,21 +124,22 @@ const MapAdminComponent = () => {
     return null;
   }, [stations]);
 
-  // sort stations by waiting length
   const sortedStations = useMemo(() => {
     if (!stations) return [];
     return [...stations].sort((a, b) => b.waitingLength - a.waitingLength);
   }, [stations]);
 
-
-  // drawer state
   const [drawerOpen, setDrawerOpen] = useState(true);
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
 
+  const handleVolumeChange = (_event: Event, newValue: number | number[]) => {
+    setVolume(typeof newValue === "number" ? newValue / 100 : volume); // Convert range to 0-1
+  };
+
   return (
-    <APIProvider apiKey={""}>
+    <APIProvider apiKey={MAPAPIKEY}>
       <div style={{ position: "relative", width: "100%", height: "100vh" }}>
         <Map
           style={{ width: "100%", height: "100%" }}
@@ -149,9 +177,23 @@ const MapAdminComponent = () => {
               padding: "8px",
             }}
           >
+         <div className="flex justify-between w-full">
+            <div>
             <IconButton onClick={toggleDrawer}>
               <ChevronRightIcon />
             </IconButton>
+            </div>
+            <div className="px-4">
+              <Typography gutterBottom>เสียงการแจ้งเตือน</Typography>
+              <Slider
+                value={volume * 100}
+                onChange={handleVolumeChange}
+                aria-labelledby="volume-slider"
+                min={0}
+                max={100}
+              />
+            </div>
+         </div>
           </div>
           <TableContainer component={Paper}>
             <Table stickyHeader size="small" aria-label="station table">
@@ -183,7 +225,7 @@ const MapAdminComponent = () => {
             style={{
               position: "absolute",
               right: 0,
-              top: "11.3rem",
+              top: "16.66rem",
               backgroundColor: "white",
               borderRadius: "4px 0 0 4px",
             }}

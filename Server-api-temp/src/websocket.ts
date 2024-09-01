@@ -4,37 +4,81 @@ import { getStationDataFromDatabase } from "./controllers/station_controllers";
 import Station from "./models/station_model";
 import { IncomingMessage } from "http";
 import dotenv from "dotenv";
+import jwt from 'jsonwebtoken';
+import { findUserById } from "./service/user.service";
+
+
 dotenv.config();
 
-const BEARER_TOKEN = process.env.BEARER_TOKEN; // Replace with your actual bearer token
-const WS_AUTH_TOKEN = process.env.WEBSOCKETKEY; // Replace with your actual WebSocket auth token
+const BEARER_TOKEN = process.env.BEARER_TOKEN;
+const JWT_SECRET = process.env.TOKEN_KEY || "kimandfamily";
+
+interface AuthenticatedWebSocket extends WebSocket {
+  isAuthenticated?: boolean;
+  userId?: string;
+  roles?: string;
+}
+
+interface TokenPayload {
+  id: string;
+  roles: string;
+}
 
 export const setupWebSocket = (server: any) => {
   const wss = new WebSocket.Server({ noServer: true });
 
-  server.on('upgrade', function upgrade(request: IncomingMessage, socket: any, head: Buffer) {
-    const url = new URL(request.url!, `http://${request.headers.host}`);
-    const token = url.searchParams.get('token');
+  server.on('upgrade', async function upgrade(request: IncomingMessage, socket: any, head: Buffer) {
+    const protocols = request.headers['sec-websocket-protocol'];
+    const token = protocols ? protocols.split(',')[0].trim() : null;
 
-    if (token !== WS_AUTH_TOKEN) {
+    if (!token) {
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
       socket.destroy();
       return;
     }
 
-    wss.handleUpgrade(request, socket, head, function done(ws) {
-      wss.emit('connection', ws, request);
-    });
+    try {
+      const verified = jwt.verify(token, JWT_SECRET) as TokenPayload;
+      if (!verified) {
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        socket.destroy();
+        return;
+      }
+
+      const user = await findUserById(verified.id);
+      if (!user) {
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        socket.destroy();
+        return;
+      }
+
+      wss.handleUpgrade(request, socket, head, function done(ws: AuthenticatedWebSocket) {
+        ws.isAuthenticated = true;
+        ws.userId = user.id;
+        ws.roles = user.role;
+        wss.emit('connection', ws, request);
+      });
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+      socket.destroy();
+    }
   });
 
-  wss.on("connection", async (ws: WebSocket, request: IncomingMessage) => {
+  wss.on('connection', (ws: AuthenticatedWebSocket, request: IncomingMessage) => {
+    console.log(`New connection established. Authenticated: ${ws.isAuthenticated}, User ID: ${ws.userId}`);
+    
     const url = new URL(request.url!, `http://${request.headers.host}`);
     const pathname = url.pathname;
 
     if (pathname === "/busws") {
       handleBusWsConnection(ws);
     } else if (pathname === "/stationws") {
-      handleStationWsConnection(ws);
+      if (ws.roles === "ADMIN") {
+        handleStationWsConnection(ws);
+      } else {
+        ws.close(1008, "Forbidden: Admins only");
+      }
     } else {
       ws.close(1008, "Invalid endpoint");
     }
