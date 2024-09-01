@@ -19,11 +19,11 @@ const Adminlayout:React.FC<{
     fetchUserInfo();
   }, []);
     return (
-        <div className="h-0">
-      <div className="flex h-screen">
-      <Sidebar userInfo={userInfo} />
-      <Outlet/>
-      </div>
+      <div className="h-0" >
+        <div className="flex h-screen" style={ {backgroundColor: "#E2B644"} }>
+          <Sidebar userInfo={userInfo} />
+          <Outlet/>
+        </div>
       </div>
     );
 };

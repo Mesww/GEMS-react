@@ -6,6 +6,7 @@ import {
 
 const StudentPerStationsTable: React.FC<{
   aigendata: StudentPerStations[];
+  
 }> = ({ aigendata }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
@@ -22,10 +23,10 @@ const StudentPerStationsTable: React.FC<{
     setCurrentPage(page);
   };
   return (
-    <div>
-      <div className="min-w-full border-8 border-yellow-500 rounded-xl overflow-scroll">
-        <table className="divide-y divide-gray-200">
-          <thead className="bg-gray-100">
+    <div className="w-full ">
+      <div className="rounded-lg overflow-x-scroll overflow-y-scroll max-h-[50vh]">
+        <table className=" divide-y divide-gray-200">
+          <thead className="bg-white">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Route/Time
@@ -59,19 +60,19 @@ const StudentPerStationsTable: React.FC<{
           </tbody>
         </table>
       </div>
-      <div className="mt-4 flex justify-end items-center">
+      <div className="bg-white flex justify-end items-center rounded-b-xl">
         <button
-          className=" px-4 py-2 bg-gray-300 text-gray-800 rounded-full material-icons "
+          className=" px-4 py-2  text-gray-800 rounded-full material-icons "
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
           {currentPage === 1 ? "close" : "arrow_back"}
         </button>
         <span>
-          Page {currentPage} of {totalPages}
+           {currentPage} of {totalPages}
         </span>
         <button
-          className="px-4 py-2 bg-gray-300 text-gray-800 rounded-full material-icons"
+          className="px-4 py-2  text-gray-800 rounded-full material-icons"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >

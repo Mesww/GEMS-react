@@ -265,12 +265,11 @@ const TableComponent: React.FC = () => {
             p: 3,
           }}
         >
-          <Container className="p-5 rounded-xl bg-white w-full h-full">
+          <Container className="pt-2 rounded-xl bg-white w-full h-full">
             <Grid container justifyContent="flex-end">
               <Button
                 variant="contained"
                 color="error"
-                sx={{ mb: 2 }}
                 onClick={handleAddOpen}
               >
                 + Add Station
@@ -278,12 +277,10 @@ const TableComponent: React.FC = () => {
             </Grid>
             <Paper
               sx={{
-                mb: 2,
-                padding: "16px",
                 borderRadius: 4,
                 width: "100%",
-                maxHeight: "600px",
-                overflow: "auto",
+                maxHeight: "100%",
+                overflow: "hidden",
               }}
             >
               <TableContainer>
