@@ -1,7 +1,7 @@
 import { DepartionPerRoutes, headerTime } from "../../../interfaces/schedule.interface"
 
 const DepartionPerRoutesTable:React.FC<{aigendata:DepartionPerRoutes[]}> = ({aigendata}) => {
-    return(  <div className="overflow-y-scroll max-h-[50vh] rounded-lg">
+    return(  <div className="overflow-y-scroll max-h-[50vh] rounded-lg shadow-md">
         <table className="w-full  divide-y  divide-gray-200 ">
               <thead className="bg-white">
                   <tr>

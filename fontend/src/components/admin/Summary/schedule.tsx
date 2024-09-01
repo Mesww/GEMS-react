@@ -40,7 +40,7 @@ const Summary:React.FC<{}> = ({}) => {
 
     return (
       <div className="w-full flex flex-col items-center justify-center min-h-screen overflow-x-auto">
-        <div className=" max-w-7xl min-w-44 space-y-4 ">
+        <div className=" max-w-7xl min-w-44 space-y-4 shadow-md bg-white rounded-lg p-6">
           <DepartionPerRoutesTable aigendata={aigendataDepartion} />
           <StudentPerStationsTable aigendata={aigendataStudent} />
         </div>

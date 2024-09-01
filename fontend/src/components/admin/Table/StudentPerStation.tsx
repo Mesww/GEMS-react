@@ -24,7 +24,7 @@ const StudentPerStationsTable: React.FC<{
   };
   return (
     <div className="w-full ">
-      <div className="rounded-lg overflow-x-scroll overflow-y-scroll max-h-[50vh]">
+      <div className="rounded-lg overflow-x-scroll overflow-y-scroll max-h-[50vh] shadow-md">
         <table className=" divide-y divide-gray-200">
           <thead className="bg-white">
             <tr>
