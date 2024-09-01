@@ -23,7 +23,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { User } from "../../../interfaces/user.interface";
 const Sidebar: React.FC<{ userInfo: User | null }> = ({ userInfo }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const secondary = userInfo
     ? userInfo.email || "admin@email.com"
