@@ -16,6 +16,9 @@ import {
 } from "@mui/material";
 import useSound from "use-sound";
 import notificationSound from "/mixkit-bell-notification-933.wav";
+import "./style.sass";
+import FlipClock from "../Flipclock/Flipclock";
+
 
 const MapID = import.meta.env.VITE_MAPID;
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
@@ -60,7 +63,6 @@ const MapAdminComponent = () => {
   const [playNotification] = useSound(notificationSound, { volume }); // Pass volume to useSound
   const prevStationsRef = useRef<Stations[] | null>(null);
   const isFirstFetchRef = useRef(true);
-
   // Update stations when messages change and play notification if needed
   useEffect(() => {
     if (messages) {
@@ -108,12 +110,18 @@ const MapAdminComponent = () => {
                   key={station._id}
                   position={{ lat, lng }}
                   title={`Station: ${station.id}, Waiting: ${station.waitingLength}`}
-                  icon={
-                    color
-                      ? `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`
-                      : undefined
+                  icon={{ url: color ? `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png` : '', labelOrigin: new google.maps.Point(15, -10), }
                   }
+                  label={{
+
+                    text: station.id.toString(),
+                    color: "#8b090c", // Customize color as needed
+                    fontSize: "13px", // Customize font size as needed
+                    fontWeight: "bold", // Customize font weight as needed
+                  }}
+
                 />
+
               );
             }
           }
@@ -138,6 +146,7 @@ const MapAdminComponent = () => {
     setVolume(typeof newValue === "number" ? newValue / 100 : volume); // Convert range to 0-1
   };
 
+
   return (
     <APIProvider apiKey={MAPAPIKEY}>
       <div style={{ position: "relative", width: "100%", height: "100vh" }}>
@@ -152,6 +161,7 @@ const MapAdminComponent = () => {
           {stationMarkers}
           {stations && <HeatmapOverlay stations={stations} />}
         </Map>
+
         <Drawer
           variant="persistent"
           anchor="right"
@@ -177,23 +187,23 @@ const MapAdminComponent = () => {
               padding: "8px",
             }}
           >
-         <div className="flex justify-between w-full">
-            <div>
-            <IconButton onClick={toggleDrawer}>
-              <ChevronRightIcon />
-            </IconButton>
+            <div className="flex justify-between w-full">
+              <div>
+                <IconButton onClick={toggleDrawer}>
+                  <ChevronRightIcon />
+                </IconButton>
+              </div>
+              <div className="px-4">
+                <Typography gutterBottom>เสียงการแจ้งเตือน</Typography>
+                <Slider
+                  value={volume * 100}
+                  onChange={handleVolumeChange}
+                  aria-labelledby="volume-slider"
+                  min={0}
+                  max={100}
+                />
+              </div>
             </div>
-            <div className="px-4">
-              <Typography gutterBottom>เสียงการแจ้งเตือน</Typography>
-              <Slider
-                value={volume * 100}
-                onChange={handleVolumeChange}
-                aria-labelledby="volume-slider"
-                min={0}
-                max={100}
-              />
-            </div>
-         </div>
           </div>
           <TableContainer component={Paper}>
             <Table stickyHeader size="small" aria-label="station table">
@@ -216,6 +226,7 @@ const MapAdminComponent = () => {
                       </TableCell>
                     </TableRow>
                   ))}
+
               </TableBody>
             </Table>
           </TableContainer>
@@ -234,6 +245,10 @@ const MapAdminComponent = () => {
             <ChevronLeftIcon />
           </IconButton>
         )}
+        <div className="absolute bottom-10 right-7 w-fit h-fit rounded-xl">
+          <FlipClock/>         
+        </div>
+
       </div>
     </APIProvider>
   );

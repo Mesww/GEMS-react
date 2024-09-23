@@ -1,12 +1,13 @@
 import React from "react";
 import MapAdminComponent from "../MapAdmin/mapAdminComponent";
-import "./style.sass";
+import "./style.sass";  
 const Dashboard: React.FC<{}> = () => {
- 
+
   return (
     <div className="bg flex-1 flex justify-center items-center p-4">
       <div className="w-full h-full rounded-xl overflow-hidden ">
         <MapAdminComponent />
+        
         <div className="absolute top-10 right-10 bg-white p-2 rounded-md shadow-md">
           <ul>
             <li className="flex items-center space-x-2">
