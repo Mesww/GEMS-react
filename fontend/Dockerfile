@@ -2,7 +2,7 @@ FROM node:20.0.0 as build
 
 WORKDIR /app/font
 COPY package.json .
-RUN yarn install
+RUN npm install
 
 COPY . .
 
