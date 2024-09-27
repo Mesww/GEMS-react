@@ -5,6 +5,7 @@ import { useStationWebSocket } from "../../../containers/getGemsDataWebsocket/ge
 import { IconButton, Drawer, Slider, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Loading from "../../loading/loading";
 import {
   Table,
   TableBody,
@@ -58,13 +59,14 @@ const HeatmapOverlay = ({ stations }: { stations: Stations[] }) => {
 // map admin component ========
 const MapAdminComponent = () => {
   const [stations, setStations] = useState<Stations[] | null>(null);
-  const { messages } = useStationWebSocket();
+  const { messages, loading } = useStationWebSocket();
   const [volume, setVolume] = useState(0.5); // State for volume level (0 to 1)
   const [playNotification] = useSound(notificationSound, { volume }); // Pass volume to useSound
   const prevStationsRef = useRef<Stations[] | null>(null);
   const isFirstFetchRef = useRef(true);
   // Update stations when messages change and play notification if needed
   useEffect(() => {
+    console.log(loading);
     if (messages) {
       const newStations = Array.isArray(messages) ? messages : [messages];
 
@@ -150,7 +152,7 @@ const MapAdminComponent = () => {
   return (
     <APIProvider apiKey={MAPAPIKEY}>
       <div style={{ position: "relative", width: "100%", height: "100vh" }}>
-        <Map
+        {loading ? <Loading /> : <Map
           style={{ width: "100%", height: "100%" }}
           defaultZoom={15}
           defaultCenter={{ lat: 20.04954958835222, lng: 99.91135912936342 }}
@@ -161,7 +163,7 @@ const MapAdminComponent = () => {
           {stationMarkers}
           {stations && <HeatmapOverlay stations={stations} />}
         </Map>
-
+        }
         <Drawer
           variant="persistent"
           anchor="right"
@@ -246,7 +248,7 @@ const MapAdminComponent = () => {
           </IconButton>
         )}
         <div className="absolute bottom-10 right-7 w-fit h-fit rounded-xl">
-          <FlipClock/>         
+          <FlipClock />
         </div>
 
       </div>

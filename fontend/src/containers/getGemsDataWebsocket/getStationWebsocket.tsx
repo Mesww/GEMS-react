@@ -8,6 +8,7 @@ export function useStationWebSocket() {
   const token = Cookies.get("token") || "";
   const [messages, setMessages] = useState<Stations | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [loading, setLoading] = useState(true);
   const url = `${VITE_WSURL}`;
 
   useEffect(() => {
@@ -16,6 +17,7 @@ export function useStationWebSocket() {
     ws.onopen = () => {
       console.log('WebSocket connected to /stationws');
       setSocket(ws);
+      setLoading(false);
     };
 
     ws.onmessage = (event: MessageEvent) => {
@@ -46,5 +48,5 @@ export function useStationWebSocket() {
     }
   }, [socket]);
 
-  return { messages, sendMessage };
+  return { messages, sendMessage,loading };
 }
