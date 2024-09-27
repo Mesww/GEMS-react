@@ -112,18 +112,7 @@ const StationMarker: React.FC<{
                     className: "marker-label",
                     color: "white",
                   }}
-                  icon={{
-                    url: urlMarker,
-                    scaledSize: window.google.maps.Size
-                      ? new window.google.maps.Size(54, 54)
-                      : null,
-                    origin: window.google.maps.Point
-                      ? new window.google.maps.Point(0, 0)
-                      : null,
-                    anchor: window.google.maps.Point
-                      ? new window.google.maps.Point(27, 27)
-                      : null,
-                  }}
+                  icon={{ url: urlMarker ? `http://maps.google.com/mapfiles/ms/icons/${urlMarker}-dot.png` : '', labelOrigin: new google.maps.Point(15, -10), }}
                   animation={
                     selectedMarker?.value._id == station._id
                       ? window.google.maps.Animation.BOUNCE
