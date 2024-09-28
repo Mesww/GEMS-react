@@ -16,7 +16,6 @@ import { AxiosResponse } from "axios";
 import { Polylines } from "../../interfaces/polylines.interface";
 import { Stations } from "../../interfaces/station.interface";
 import { BusData, BusInfo } from "../../interfaces/bus.interface";
-
 const MAPID = import.meta.env.VITE_MAPID || "";
 const MAPAPIKEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 const busIcon = (direction:number)=>  {
@@ -273,6 +272,7 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
                 title={`รถเจมหมายเลข: ${key}`}
                 onClick={() => handleMarkerClick(key, value)}
                 icon={busIcon(value.direction)}
+                zIndex={1000} // Higher zIndex for vehicle markers
               />
               {selectedMarker && selectedMarker.key === key && (
                 <InfoWindow
@@ -318,10 +318,9 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
     });
   }, [stations, selectedRoute]);
 
-  const urlMarker1 = "/station1.png";
-
-  const urlMarker2 = "/station2.png";
-
+  
+const iconStation1 = 'green';
+const iconStation2 = 'red';
 
   return (
     <>
@@ -352,7 +351,7 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
             setSelectedMarker={setselectedstationMarker}
             setCenter={setCenter}
             setStation={setStations}
-            urlMarker={urlMarker1}
+            urlMarker={iconStation1}
             busData={gemscarselected}
           />
         ) : (
@@ -362,7 +361,7 @@ setLoading:React.Dispatch<React.SetStateAction<boolean>>
             setSelectedMarker={setselectedstationMarker}
             setCenter={setCenter}
             setStation={setStations}
-            urlMarker={urlMarker2}
+            urlMarker={iconStation2}
             busData={gemscarselected}
           />
         )}
