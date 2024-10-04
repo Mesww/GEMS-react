@@ -5,9 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import useClosestBus, {
-  
-} from "../../containers/calulateDistance/calculateDistance";
+import useClosestBus from "../../containers/calulateDistance/calculateDistance";
 import useUserLocation from "../../containers/userLocation/getUserLocation";
 import { useWebSocketData } from "../../containers/getGemsDataWebsocket/getGemsWebsocket";
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
@@ -17,6 +15,7 @@ import { SelectedMarker } from "../map/stationmarker";
 import { Stations } from "../../interfaces/station.interface";
 import StationToStationComponent from "../../containers/calulateDistance/calStationToStation";
 import { BusInfo } from "../../interfaces/bus.interface";
+import { useTranslation } from "react-i18next";
 
 interface WebSocketMessage {
   status: string;
@@ -33,18 +32,19 @@ const InfoDialog: React.FC<{
   setSelectedMarker: React.Dispatch<
     React.SetStateAction<SelectedMarker | null>
   >;
-  setCenter:React.Dispatch<React.SetStateAction<{
+  setCenter: React.Dispatch<
+    React.SetStateAction<{
+      lat: number;
+      lng: number;
+    } | null>
+  >;
+  center: {
     lat: number;
     lng: number;
-}|null>>
-center: {
-  lat: number;
-  lng: number;
-} | null
-shouldResetCenter: boolean;
-setShouldResetCenter: React.Dispatch<React.SetStateAction<boolean>>
-selectedRoute: string | null;
-
+  } | null;
+  shouldResetCenter: boolean;
+  setShouldResetCenter: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedRoute: string | null;
 }> = ({
   isVisible,
   setinfoIsVisible,
@@ -55,7 +55,7 @@ selectedRoute: string | null;
   center,
   setShouldResetCenter,
   shouldResetCenter,
-  selectedRoute
+  selectedRoute,
 }) => {
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);
@@ -108,9 +108,13 @@ selectedRoute: string | null;
     0;
   }
 
-//ป้ายที่ใกล้กับเราที่สุด
-const closestStation = useNearestStation(stationMarkers, location,selectedRoute, selectedMarker); 
-
+  //ป้ายที่ใกล้กับเราที่สุด
+  const closestStation = useNearestStation(
+    stationMarkers,
+    location,
+    selectedRoute,
+    selectedMarker
+  );
 
   //นำป้ายใกล้กับเรามาหา รถบัสที่ใกล้ที่สุด
   const closestBusData = useClosestBus(closestStation, data);
@@ -125,11 +129,11 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
     const roundedMinutes = Math.round(timeInMinutes * 2) / 2;
     const minutes = Math.floor(roundedMinutes);
     const seconds = Math.round((roundedMinutes % 1) * 60);
-    return `${minutes}:${seconds.toString().padStart(2, "0")} นาที`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   }, []);
 
   const eta = useMemo(() => {
-    return stationToStation > 0 ? calETA(stationToStation) : "? นาที";
+    return stationToStation > 0 ? calETA(stationToStation) : "?";
   }, [stationToStation, calETA]);
 
   useEffect(() => {
@@ -166,7 +170,7 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
     const [lat, lng] = station.position.split(",").map(Number);
     setCenter({
       lat: lat,
-      lng: lng
+      lng: lng,
     });
     setShouldResetCenter(true);
   };
@@ -177,11 +181,14 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
         setCenter(null);
         setShouldResetCenter(false);
       }, 0);
-  
+
       // Cleanup the timer if the component unmounts
       return () => clearTimeout(timer);
     }
   }, [center, shouldResetCenter]);
+
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Dialog */}
@@ -199,10 +206,12 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
               </p>
               {closestBusData.eta && closestBusData.eta > 0 ? (
                 <span>
-                  รถจะถึงป้ายคุณในอีก {closestBusData.eta.toFixed(2)} นาที
+                  {t("navbar.infodialog.busArrival", {
+                    minutes: closestBusData.eta.toFixed(2),
+                  })}
                 </span>
               ) : (
-                <span>รถจะถึงป้ายคุณในอีก ? นาที</span>
+                <span>{t("navbar.infodialog.busArrivalError")}</span>
               )}
             </div>
 
@@ -236,12 +245,12 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
                   {/* station ======================================================================================= */}
                   {
                     <p>
-                      {" "}
                       {closestStation
-                        ? `ป้ายที่ใกล้คุณ ${
-                            closestStation.stationNameId
-                          } ${closestStation.distance.toFixed(0)} เมตร`
-                        : "กำลังหาตำแหน่งของคุณ"}
+                        ? t("navbar.infodialog.closestStation", {
+                            stationName: closestStation.stationNameId,
+                            distance: closestStation.distance.toFixed(0),
+                          })
+                        : t("navbar.infodialog.findingLocation")}
                     </p>
                   }
                 </span>
@@ -255,11 +264,17 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
                   <div className="flex-col">
                     <div>
                       <span className="text-black">
-                        ห่างประมาณ {stationToStation.toFixed(0)} เมตร
+                        {t("navbar.infodialog.distanceInfo", {
+                          distance: stationToStation.toFixed(0),
+                        })}{" "}
+                        {/* Distance interpolation */}
                       </span>
                     </div>
                     <div>
-                      <span>ใช้เวลาประมาณ {eta}</span>
+                      <span>
+                        {t("navbar.infodialog.etaInfo", { eta })}{" "}
+                        {/* ETA interpolation */}
+                      </span>
                     </div>
                   </div>
                 ) : (
@@ -277,11 +292,13 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
                 </div>
                 {selectedMarker ? (
                   <span className="text-white font-semibold pl-2">
-                    ป้ายหมายเลข {selectedMarker.key}
+                    {t("navbar.infodialog.markerInfo", {
+                      markerKey: selectedMarker.key,
+                    })}
                   </span>
                 ) : (
                   <span className="text-white font-semibold pl-2">
-                    โปรดเลือกป้ายที่จะไป
+                    {t("navbar.infodialog.selectMarker")}
                   </span>
                 )}
               </div>
@@ -309,15 +326,19 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
             {/* Search Overlay */}
             {isSearch && (
               <div
-                className={`fixed inset-0 h-12 z-70 flex items-center justify-center search-overlay ${isSearch ? 'active' : ''}`}
+                className={`fixed inset-0 h-12 z-70 flex items-center justify-center search-overlay ${
+                  isSearch ? "active" : ""
+                }`}
               >
                 <div
                   ref={overlayRef}
-                  className={`bg-white rounded-lg shadow-lg p-4 w-80 max-h-96 overflow-y-auto search-container ${isSearch ? 'active' : ''}`}
+                  className={`bg-white rounded-lg shadow-lg p-4 w-80 max-h-96 overflow-y-auto search-container ${
+                    isSearch ? "active" : ""
+                  }`}
                 >
                   <input
                     type="text"
-                    placeholder="ค้นหาป้าย"
+                    placeholder={t("navbar.infodialog.searchPlaceholder")} // Use translation for placeholder
                     className="w-full h-10 mb-4 shadow-lg border border-gray-300 rounded-lg pl-3"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -337,7 +358,7 @@ const closestStation = useNearestStation(stationMarkers, location,selectedRoute,
                     className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg"
                     onClick={toggleSearch}
                   >
-                    ปิด
+                    {t("navbar.infodialog.closeSearch")}
                   </button>
                 </div>
               </div>

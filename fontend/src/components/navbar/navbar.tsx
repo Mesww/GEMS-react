@@ -4,9 +4,11 @@ import { useState } from "react";
 import Swal from 'sweetalert2'
 import 'animate.css';
 import * as React from 'react';
-// export const [activeContent, setActiveContent] = useState(null);
 import  Cookies  from 'js-cookie';
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+// export const [activeContent, setActiveContent] = useState(null);
+
 const Navbar: React.FC<{
   activeContent: any;
   setActiveContent: React.Dispatch<React.SetStateAction<string | null>>;
@@ -26,15 +28,18 @@ const Navbar: React.FC<{
     );
   };
 
+
+  const {t} = useTranslation();
+
   const handleSignout = async () =>  {
     const { isConfirmed}= await  Swal.fire({
-        title: 'ออกจากระบบ!',
-        text: 'คุณแน่ใจใช่ไหม?',
+        title: t('navbar.logoutDialog.title'),
+        text: t('navbar.logoutDialog.text'),
         icon: 'warning',
-        confirmButtonText: 'ยืนยัน',
+        confirmButtonText: t('navbar.logoutDialog.confirm'),
         confirmButtonColor: '#8b090c',
         showCancelButton: true,
-        cancelButtonText: 'ยกเลิก',
+        cancelButtonText: t('navbar.logoutDialog.cancel'),
         cancelButtonColor: '#e2b644',
         background: '#f9f4d4',
         reverseButtons: true,
@@ -102,13 +107,13 @@ const Navbar: React.FC<{
           } `}
           onClick={() => handleContentClick("route1")}
         >
-          สาย 1
+         {t('navbar.route.route1')}
         </div>
         <div
           className={`content  ${activeContent === "route2" ? "selected" : ""} `}
           onClick={() => handleContentClick("route2")}
         >
-          สาย 2
+          {t('navbar.route.route2')}
         </div>
       </div>
 
