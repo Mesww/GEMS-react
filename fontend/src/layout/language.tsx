@@ -10,6 +10,8 @@ const resources = {
         to: "To",
         destination: "Destination",
       },
+
+      
       navbar: {
         logoutDialog: {
           title: "Sign out",
@@ -33,6 +35,10 @@ const resources = {
           searchPlaceholder: "Search for a Station",
           closeSearch: "Close",
         },
+
+
+
+        // station กับ bus marker ไม่เกี่ยวกับ navbar แต่ต้องเอาใส่ใน navbar เพราะใส้ข้างนอกแล้วใช้ไม่ได้ ฝากแก้หน่อยนะ 555555555 ===================================
         stationMarker: {
           markerTitle: "Station: {{stationId}}",
           infoWindowHeader: "Station: {{stationId}} - {{stationName}}",
