@@ -13,10 +13,9 @@ import FeedbackDialog from "../feedbackDialog/feedBackDialog";
 import Cookies from "js-cookie";
 import InfostaionDialog from "../stationinfoDialog/stationinfoDialog";
 import CookieModal from "../cookieModal/cookieModal";
+import LanguageSwitcher from "../buttonLanguage/LanguageSwitcher";
 
-const Mappage: React.FC<{
- 
-}> = ({  }) => {
+const Mappage: React.FC<{}> = ({}) => {
   const [selectRoute, setSelectRoute] = useState<string | null>("route1");
   const [isVisible, setIsVisible] = useState(false);
   const [stations, setStations] = useState<AxiosResponse<Stations[]> | null>(
@@ -85,6 +84,8 @@ const Mappage: React.FC<{
 
   return (
     <>
+      <LanguageSwitcher />
+      
       <CookieModal
         showCookieModal={showCookieModal}
         setShowCookieModal={setShowCookieModal}
