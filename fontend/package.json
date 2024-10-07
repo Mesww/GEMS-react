@@ -33,6 +33,7 @@
     "react-i18next": "^15.0.2",
     "react-native-web": "^0.19.12",
     "react-router-dom": "^6.24.1",
+    "react-switch": "^7.0.0",
     "sass": "^1.77.6",
     "sweetalert2": "^11.12.3",
     "use-sound": "^4.0.3",

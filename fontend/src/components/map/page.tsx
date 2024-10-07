@@ -13,11 +13,13 @@ import FeedbackDialog from "../feedbackDialog/feedBackDialog";
 import Cookies from "js-cookie";
 import InfostaionDialog from "../stationinfoDialog/stationinfoDialog";
 import CookieModal from "../cookieModal/cookieModal";
-import LanguageSwitcher from "../buttonLanguage/LanguageSwitcher";
+// import LanguageSwitcher from "../buttonLanguage/LanguageSwitcher";
+import SettingModal from "../settingModal/settingModal";
 
 const Mappage: React.FC<{}> = ({}) => {
   const [selectRoute, setSelectRoute] = useState<string | null>("route1");
   const [isVisible, setIsVisible] = useState(false);
+  const [issettingIsVisible, setsettingIsVisible] = useState(false);
   const [stations, setStations] = useState<AxiosResponse<Stations[]> | null>(
     null
   );
@@ -84,7 +86,7 @@ const Mappage: React.FC<{}> = ({}) => {
 
   return (
     <>
-      <LanguageSwitcher />
+      {/* <LanguageSwitcher /> */}
       
       <CookieModal
         showCookieModal={showCookieModal}
@@ -115,10 +117,13 @@ const Mappage: React.FC<{}> = ({}) => {
         />
       )}
 
+      <SettingModal setActiveContent={setSelectRoute} setsettingIsVisible={setsettingIsVisible} settingisVisible={issettingIsVisible}/>
+
       <Navbar
         activeContent={selectRoute}
         setActiveContent={setSelectRoute}
         setinfoIsVisible={setIsVisible}
+        setsettingIsVisible={setsettingIsVisible}
       />
       <MapComponent
         selectedRoute={selectRoute}

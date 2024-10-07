@@ -1,21 +1,19 @@
 import gemlogo from "/Screenshot_2567-07-10_at_12.04.25-removebg.png";
 import "./style.sass";
 import { useState } from "react";
-import Swal from 'sweetalert2'
 import 'animate.css';
 import * as React from 'react';
-import  Cookies  from 'js-cookie';
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+
 // export const [activeContent, setActiveContent] = useState(null);
 
 const Navbar: React.FC<{
   activeContent: any;
   setActiveContent: React.Dispatch<React.SetStateAction<string | null>>;
   setinfoIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ activeContent, setActiveContent, setinfoIsVisible }) => {
+  setsettingIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setsettingIsVisible,activeContent, setActiveContent, setinfoIsVisible }) => {
   const [isAnimating, setIsAnimating] = useState(true);
-  const navigate = useNavigate();
 
 
   const handleLogoClick = () => {
@@ -28,46 +26,16 @@ const Navbar: React.FC<{
     );
   };
 
-
   const {t} = useTranslation();
 
-  const handleSignout = async () =>  {
-    const { isConfirmed}= await  Swal.fire({
-        title: t('navbar.logoutDialog.title'),
-        text: t('navbar.logoutDialog.text'),
-        icon: 'warning',
-        confirmButtonText: t('navbar.logoutDialog.confirm'),
-        confirmButtonColor: '#8b090c',
-        showCancelButton: true,
-        cancelButtonText: t('navbar.logoutDialog.cancel'),
-        cancelButtonColor: '#e2b644',
-        background: '#f9f4d4',
-        reverseButtons: true,
-        showClass: {
-            popup: `
-              animate__animated
-              animate__fadeInUp
-              animate__faster
-            `
-          },
-          hideClass: {
-            popup: `
-              animate__animated
-              animate__fadeOutDown
-              animate__faster
-            `
-          }
-      })
-      if (isConfirmed) {
-        // setCookies("token","")
-        Cookies.remove("token");
-        navigate('/',{replace:true});
-        setActiveContent(null);
-      }
-  };
+  
 
   const toggleVisibility = () => {
     setinfoIsVisible((prev) => !prev);
+  };
+
+  const toggleVisibilitySetting = () => {
+    setsettingIsVisible((prev) => !prev);
   };
   
 
@@ -82,9 +50,9 @@ const Navbar: React.FC<{
           className={`content ${
             activeContent === "content1" ? "selected" : ""
           }  material-icons`}
-          onClick={() => handleSignout()}
+          onClick={() => toggleVisibilitySetting()}
         >
-          logout
+          settings
         </div>
         <div
           className={`content ${
