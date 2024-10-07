@@ -6,8 +6,8 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import thailandicon from '../../../public/thailand.svg';
-import usaicon from '../../../public/usa.svg';
+import thailandicon from './thailand.svg';
+import usaicon from './usa.svg';
 import Swal from 'sweetalert2'
 import  Cookies  from 'js-cookie';
 import { useNavigate } from "react-router-dom";
