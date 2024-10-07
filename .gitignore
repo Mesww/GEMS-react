@@ -132,7 +132,7 @@ db/*
 /db/*
 # db folder
 db/
-public/
+dist/
 data/
 
 mongo/keyFile
