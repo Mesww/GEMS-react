@@ -7,37 +7,37 @@ import ProtectmapRoute from "./components/protect_route/protectmap.route";
 import ProtectloginRoute from "./components/protect_route/protectlogin.route";
 import createAdminRoutes from "./components/admin/pages";
 import Adminlayout from "./layout/admin.layout";
+import BrowserDetector from "./components/checkBrowser/browserDetector";
+
+
 function App() {
   const adminRoutes = createAdminRoutes();
-  
+
   return (
     <BrowserRouter>
+      <BrowserDetector /> 
       <Routes>
         <Route
           path="/"
           element={
             <ProtectloginRoute>
-              <Login  />
+              <Login />
             </ProtectloginRoute>
           }
         ></Route>
         <Route
           path="/map"
           element={
-            <ProtectmapRoute
-              requireRoles={["ADMIN", "USER"]}
-            >
+            <ProtectmapRoute requireRoles={["ADMIN", "USER"]}>
               <Map />
             </ProtectmapRoute>
           }
         ></Route>
 
-<Route
+        <Route
           path="/admin/*"
           element={
-            <ProtectmapRoute
-              requireRoles={["ADMIN"]}
-            >
+            <ProtectmapRoute requireRoles={["ADMIN"]}>
               <Adminlayout />
             </ProtectmapRoute>
           }
